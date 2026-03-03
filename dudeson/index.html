@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bohdan Sorozhynskyi — Frontend Engineer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=TASA+Orbiter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Bohdan Sorozhynskyi",
+    "jobTitle": "Frontend Engineer",
+    "email": "mailto:dudeson26@gmail.com",
+    "telephone": "+38 063 951 32 83",
+    "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Kyiv",
+        "addressCountry": "Ukraine"
+    },
+    "worksFor": [
+        {
+            "@type": "Organization",
+            "name": "Django Stars",
+            "jobTitle": "Senior Frontend Engineer",
+            "startDate": "2017-11"
+        },
+        {
+            "@type": "Organization",
+            "name": "Fresh Design Agency",
+            "jobTitle": "JavaScript Developer",
+            "startDate": "2010-01",
+            "endDate": "2017-10"
+        }
+    ]
+}
+  </script>
+  <style>
+    /* === PROGRAMME: Base Unit === */
+    :root {
+      --unit: 8px;
+      --col: 720px;
+
+      /* Accent system: functional only */
+      --fg: #111;
+      --fg-secondary: #555;
+      --fg-tertiary: #888;
+      --bg: #fff;
+      --bg-tag: #f0f0f0;
+      --accent: #2a5bd7;
+      --border: #e0e0e0;
+      --border-light: #f0f0f0;
+    }
+
+    /* === Dark mode: manual toggle OR system preference === */
+    [data-theme="dark"] {
+      --fg: #e8e8e8;
+      --fg-secondary: #aaa;
+      --fg-tertiary: #777;
+      --bg: #111;
+      --bg-tag: #1e1e1e;
+      --accent: #6b9bff;
+      --border: #2a2a2a;
+      --border-light: #1e1e1e;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --fg: #e8e8e8;
+        --fg-secondary: #aaa;
+        --fg-tertiary: #777;
+        --bg: #111;
+        --bg-tag: #1e1e1e;
+        --accent: #6b9bff;
+        --border: #2a2a2a;
+        --border-light: #1e1e1e;
+      }
+    }
+
+    /* === Reset + Base === */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'TASA Orbiter', -apple-system, system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--fg);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* === Single Column Programme === */
+    .page {
+      max-width: var(--col);
+      margin: 0 auto;
+      padding: calc(var(--unit) * 8) calc(var(--unit) * 3);
+    }
+
+    /* === HEADER: Name + Position + Contact === */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: calc(var(--unit) * 4);
+      margin-bottom: calc(var(--unit) * 6);
+    }
+
+    .header-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .header-photo {
+      flex-shrink: 0;
+      width: 108px;
+      height: 108px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center top;
+      opacity: 0.92;
+      display: none;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      line-height: 1.15;
+    }
+
+    .title {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--fg-secondary);
+      margin-top: calc(var(--unit) * 1);
+    }
+
+    .contact {
+      display: flex;
+      flex-wrap: wrap;
+      gap: calc(var(--unit) * 2);
+      margin-top: calc(var(--unit) * 2);
+      font-size: 13px;
+      color: var(--fg-tertiary);
+    }
+
+    .contact a, .contact [itemprop="email"], .contact [itemprop="telephone"] {
+      color: var(--fg-tertiary);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .contact a:hover, .contact [itemprop="email"]:hover, .contact [itemprop="telephone"]:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .contact span::before {
+      content: '';
+      display: inline-block;
+      width: 3px;
+      height: 3px;
+      background: var(--fg-tertiary);
+      border-radius: 50%;
+      vertical-align: middle;
+      margin-right: calc(var(--unit) * 2);
+      opacity: 0.5;
+    }
+
+    .contact span:first-child::before {
+      display: none;
+    }
+
+    /* === SECTION === */
+    section {
+      margin-bottom: calc(var(--unit) * 6);
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--fg-tertiary);
+      margin-bottom: calc(var(--unit) * 1.5);
+    }
+
+    /* === PROJECT CARD === */
+    .project {
+      margin-bottom: calc(var(--unit) * 5);
+      padding-bottom: calc(var(--unit) * 5);
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .project:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .project-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: calc(var(--unit) * 1);
+      margin-bottom: calc(var(--unit) * 0.5);
+    }
+
+    .project-name {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--fg);
+    }
+
+    .project-role {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--fg-secondary);
+    }
+
+    .project-context {
+      font-size: 13px;
+      color: var(--fg-tertiary);
+      margin-bottom: calc(var(--unit) * 1.5);
+    }
+
+    .project-bullets {
+      list-style: none;
+      margin-bottom: calc(var(--unit) * 2);
+    }
+
+    .project-bullets li {
+      position: relative;
+      padding-left: calc(var(--unit) * 2);
+      margin-bottom: calc(var(--unit) * 0.75);
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--fg);
+    }
+
+    .project-bullets li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 9px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0.6;
+    }
+
+    /* === TECH TAGS === */
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 8px;
+      background: var(--bg-tag);
+      border-radius: 3px;
+      color: var(--fg-secondary);
+      letter-spacing: 0.2px;
+    }
+
+    /* === TIMELINE (Employment - minimal) === */
+    .timeline-item {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: calc(var(--unit) * 1);
+      margin-bottom: calc(var(--unit) * 1);
+    }
+
+    .timeline-item .place {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .timeline-item .period {
+      font-size: 12px;
+      color: var(--fg-tertiary);
+    }
+
+    /* === FOOTER META === */
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: calc(var(--unit) * 4);
+      font-size: 13px;
+      color: var(--fg-tertiary);
+    }
+
+    .meta-row dt {
+      font-weight: 500;
+      color: var(--fg-secondary);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 2px;
+    }
+
+    .meta-row dd {
+      margin: 0;
+    }
+
+    @media (min-width: 500px) {
+      .header-photo { display: block; }
+    }
+
+    /* === SCALE UP: large displays === */
+    @media (min-width: 1400px) {
+      :root {
+        --unit: 10px;
+        --col: 860px;
+      }
+
+      body { font-size: 17px; }
+      h1 { font-size: 40px; }
+      .header-photo { width: 132px; height: 132px; }
+      .project-name { font-size: 20px; }
+      .project-bullets li { font-size: 16px; }
+      .tag { font-size: 12px; padding: 3px 10px; }
+    }
+
+    /* === PRINT: Single-page A4 fit === */
+    @media print {
+      :root {
+        --fg: #000;
+        --fg-secondary: #333;
+        --fg-tertiary: #555;
+        --bg: #fff;
+        --bg-tag: transparent;
+        --accent: #000;
+        --border: #bbb;
+        --border-light: #ddd;
+      }
+
+      body {
+        font-size: 10.5pt;
+        line-height: 1.45;
+      }
+
+      .page {
+        max-width: 100%;
+        padding: 0;
+      }
+
+      .floating-controls { display: none !important; }
+      .header-photo { display: none !important; }
+
+      header { display: block; margin-bottom: 16pt; }
+      h1 { font-size: 18pt; }
+      .title { font-size: 10pt; margin-top: 4pt; }
+      .contact { font-size: 9pt; gap: 12pt; margin-top: 6pt; }
+
+      .section-label { font-size: 8pt; margin-bottom: 7pt; letter-spacing: 1.5pt; }
+
+      section { margin-bottom: 24pt; }
+
+      .project { margin-bottom: 14pt; padding-bottom: 14pt; }
+      .project-header { margin-bottom: 2pt; gap: 6pt; }
+      .project-name { font-size: 11.5pt; }
+      .project-role { font-size: 9.5pt; }
+      .project-context { font-size: 9pt; margin-bottom: 5pt; }
+
+      .project-bullets { margin-bottom: 7pt; }
+      .project-bullets li { font-size: 9.5pt; padding-left: 12pt; margin-bottom: 2.5pt; line-height: 1.45; }
+      .project-bullets li::before { top: 6pt; width: 3pt; height: 3pt; }
+
+      .tag {
+        background: none;
+        border: 0.5pt solid var(--border);
+        font-size: 8pt;
+        padding: 1pt 4pt;
+      }
+      .tags { gap: 4pt; }
+
+      .timeline-item { margin-bottom: 5pt; gap: 6pt; }
+      .timeline-item .place { font-size: 9.5pt; }
+      .timeline-item .period { font-size: 8.5pt; }
+
+      .meta-row { gap: 24pt; font-size: 9pt; }
+      .meta-row dt { font-size: 7.5pt; letter-spacing: 1.5pt; margin-bottom: 1pt; }
+
+      /* ATS keyword block — visible in print for parsers */
+      .ats-keywords {
+        display: block !important;
+        font-size: 1pt;
+        color: #fff;
+        line-height: 1;
+        margin-top: 2pt;
+      }
+
+      /* ATS plaintext resume — visible in print */
+      .ats-plaintext {
+        display: block !important;
+        font-size: 8.5pt;
+        color: #000;
+        line-height: 1.35;
+        white-space: pre-wrap;
+        margin-top: 8pt;
+        padding-top: 6pt;
+        border-top: 0.5pt solid #ccc;
+      }
+
+      @page {
+        size: A4;
+        margin: 14mm 16mm;
+      }
+    }
+
+    /* === Floating controls (theme + print) === */
+    .floating-controls {
+      position: fixed;
+      top: calc(var(--unit) * 3);
+      right: calc(var(--unit) * 3);
+      display: flex;
+      gap: 8px;
+      z-index: 10;
+    }
+
+    .theme-toggle,
+    .print-btn {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      background: var(--bg);
+      color: var(--fg-tertiary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.15s, color 0.15s;
+      font-size: 16px;
+      line-height: 1;
+      padding: 0;
+    }
+
+    .theme-toggle:hover,
+    .print-btn:hover {
+      border-color: var(--fg-secondary);
+      color: var(--fg);
+    }
+
+    /* Hidden ATS content — screen only hide, print shows */
+    .ats-keywords, .ats-plaintext {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="floating-controls">
+  <button class="print-btn" aria-label="Export as PDF / Print" title="Export as PDF / Print" id="printBtn">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="1" width="10" height="7" rx="1"/>
+      <path d="M3 8H2a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1h-1"/>
+      <rect x="4" y="11" width="8" height="4" rx="0.5"/>
+      <circle cx="12.5" cy="10" r="0.75" fill="currentColor" stroke="none"/>
+    </svg>
+  </button>
+  <button class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark/light mode" id="themeToggle">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+      <circle cx="8" cy="8" r="3.5"/>
+      <line x1="8" y1="1" x2="8" y2="3"/>
+      <line x1="8" y1="13" x2="8" y2="15"/>
+      <line x1="1" y1="8" x2="3" y2="8"/>
+      <line x1="13" y1="8" x2="15" y2="8"/>
+      <line x1="3.05" y1="3.05" x2="4.46" y2="4.46"/>
+      <line x1="11.54" y1="11.54" x2="12.95" y2="12.95"/>
+      <line x1="3.05" y1="12.95" x2="4.46" y2="11.54"/>
+      <line x1="11.54" y1="4.46" x2="12.95" y2="3.05"/>
+    </svg>
+  </button>
+  </div>
+
+  <div class="page h-resume">
+
+    <header class="h-card p-contact">
+      <div class="header-text">
+        <h1 class="p-name">Bohdan Sorozhynskyi</h1>
+        <div class="p-job-title title">Frontend Engineer with 10+ years of experience building web and mobile applications.<br/>
+          Specialising in elegant UIs, fintech integrations, analytics, and performance with a product-minded approach. Early AI adopter who actively tracks new tools and trends.<br/>
+          Currently expanding into backend to grow toward a full-stack profile.<br/>
+        </div>
+        <div class="contact">
+          <span class="p-locality">Kyiv, Ukraine</span>
+          <span><a class="u-email" href="mailto:dudeson26@gmail.com">dudeson26@gmail.com</a></span>
+          <span><a class="p-tel" href="tel:+380639513283">+38 063 951 32 83</a></span>
+        </div>
+      </div>
+      <img class="header-photo" src="bo.jpg" alt="Bohdan Sorozhynskyi">
+    </header>
+
+    <!-- === PROJECTS === -->
+    <section>
+      <h2 class="section-label">Recent Projects</h2>
+
+      <div class="project h-event p-experience">
+        <div class="project-header">
+          <span class="project-name p-name">Eatclub</span>
+          <span class="project-role p-job-title">Lead Software Engineer</span>
+        </div>
+        <div class="project-context">Corporate catering for office teams</div>
+        <ul class="project-bullets">
+          <li>Led migration from AngularJS 1.5 and Vanilla JS to React + TypeScript across the entire frontend</li>
+          <li>Integrated FreedomPay payment processing and built food routing features on Google Maps API</li>
+          <li>Mentored a team of 4 engineers through code reviews and pair programming</li>
+        </ul>
+        <div class="tags">
+          <span class="tag">TypeScript</span>
+          <span class="tag">React</span>
+          <span class="tag">React Native</span>
+          <span class="tag">Ionic</span>
+          <span class="tag">Google Maps API</span>
+          <span class="tag">FreedomPay</span>
+          <span class="tag">TanStack Query</span>
+          <span class="tag">Jest</span>
+          <span class="tag">GTM / GA</span>
+        </div>
+      </div>
+
+      <div class="project h-event p-experience">
+        <div class="project-header">
+          <span class="project-name p-name">iCANS</span>
+          <span class="project-role p-job-title">Senior Frontend Engineer</span>
+        </div>
+        <div class="project-context">SaaS command center for the dumpster rental industry</div>
+        <ul class="project-bullets">
+          <li>Optimized API usage and Command Center performance for task management and ops workflows</li>
+          <li>Built real-time map experiences to visualize live vehicle/driver movement and operational status</li>
+          <li>Delivered a premium analytics feature: dashboards, charts, and actionable insights for managers</li>
+        </ul>
+        <div class="tags">
+          <span class="tag">Vite</span>
+          <span class="tag">React</span>
+          <span class="tag">TypeScript</span>
+          <span class="tag">TanStack Query</span>
+          <span class="tag">Zustand</span>
+          <span class="tag">Google Maps</span>
+          <span class="tag">Recharts</span>
+          <span class="tag">React Hook Form</span>
+          <span class="tag">Zod</span>
+        </div>
+      </div>
+
+      <div class="project h-event p-experience">
+        <div class="project-header">
+          <span class="project-name p-name">Molo</span>
+          <span class="project-role p-job-title">Senior Frontend Engineer</span>
+        </div>
+        <div class="project-context">Fully digital mortgage lender, UK</div>
+        <ul class="project-bullets">
+          <li>Built application forms for customers and brokers with Onfido identity verification</li>
+          <li>Developed landing pages that drove customer acquisition and conversions</li>
+          <li>Rewrote legacy codebase for maintainability and performance</li>
+        </ul>
+        <div class="tags">
+          <span class="tag">React</span>
+          <span class="tag">Vue.js</span>
+          <span class="tag">Next.js</span>
+          <span class="tag">TypeScript</span>
+          <span class="tag">Onfido</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- === EMPLOYMENT (minimal timeline) === -->
+    <section>
+      <h2 class="section-label">Employment</h2>
+      <div class="timeline-item h-event p-experience">
+        <span class="place p-org h-card">Django Stars</span>
+        <span class="period"><time class="dt-start">Nov 2017</time> — Present · Senior FE Engineer</span>
+      </div>
+      <div class="timeline-item h-event p-experience">
+        <span class="place p-org h-card">Fresh Design Agency</span>
+        <span class="period"><time class="dt-start">Jan 2010</time> – <time class="dt-end">Oct 2017</time> · JavaScript Developer</span>
+      </div>
+    </section>
+
+    <!-- === META (footer) === -->
+    <section>
+      <dl class="meta-row">
+        <div>
+          <dt>Based in</dt>
+          <dd>Kyiv, Ukraine</dd>
+        </div>
+        <div>
+          <dt>Languages</dt>
+          <dd>Fluent English and Ukrainian · some Spanish</dd>
+        </div>
+        <div>
+          <dt>Education</dt>
+          <dd>Computer Programming — National Economics College, Kyiv</dd>
+        </div>
+      </dl>
+    </section>
+
+    <!-- ATS plaintext resume -->
+    <div class="ats-plaintext" aria-hidden="true">
+BOHDAN SOROZHINSKYI
+Frontend Engineer
+Kyiv, Ukraine
+Email: dudeson26@gmail.com
+Phone: +38 063 951 32 83
+
+SUMMARY
+Frontend Engineer with 10+ years of experience building web and mobile applications. Specialising in elegant UIs, fintech integrations, analytics, and performance with a product-minded approach. Early AI adopter who actively tracks new tools and trends. Currently expanding into backend to grow toward a full-stack profile.
+
+RECENT PROJECTS
+
+Eatclub — Lead Software Engineer
+Corporate catering for office teams
+• Led migration from AngularJS 1.5 and Vanilla JS to React + TypeScript across the entire frontend
+• Integrated FreedomPay payment processing and built food routing features on Google Maps API
+• Mentored a team of 4 engineers through code reviews and pair programming
+Technologies: TypeScript, React, React Native, Ionic, Google Maps API, FreedomPay, TanStack Query, Jest, GTM / GA
+
+iCANS — Senior Frontend Engineer
+SaaS command center for the dumpster rental industry
+• Optimized API usage and Command Center performance for task management and ops workflows
+• Built real-time map experiences to visualize live vehicle/driver movement and operational status
+• Delivered a premium analytics feature: dashboards, charts, and actionable insights for managers
+Technologies: Vite, React, TypeScript, TanStack Query, Zustand, Google Maps, Recharts, React Hook Form, Zod
+
+Molo — Senior Frontend Engineer
+Fully digital mortgage lender, UK
+• Built application forms for customers and brokers with Onfido identity verification
+• Developed landing pages that drove customer acquisition and conversions
+• Rewrote legacy codebase for maintainability and performance
+Technologies: React, Vue.js, Next.js, TypeScript, Onfido
+
+EMPLOYMENT
+
+Django Stars — Senior FE Engineer
+Nov 2017 — Present
+
+Fresh Design Agency — JavaScript Developer
+Jan 2010 – Oct 2017
+
+EDUCATION
+Computer Programming — National Economics College, Kyiv
+
+LANGUAGES
+Fluent English and Ukrainian, some Spanish
+
+SKILLS
+JavaScript, TypeScript, React, React Native, Next.js, Angular, Vue.js, Ionic, HTML5, CSS3, SCSS, SASS, Jest, Enzyme, Testing Library, ESLint, Prettier, Material-UI, Ant Design, Bootstrap, Responsive Design, Web Accessibility, FreedomPay, Hyperwallet, Google Maps, Leaflet, Mapbox, Chart.js, Highcharts, Recharts, Formik, React Hook Form, Yup, ZOD, TanStack Query, Redux, Styled Components, Webpack, Google Analytics, Google Tag Manager, SQL, Internationalization, WebRTC, Onfido, Cross-platform, Mentoring, Code Reviews, Fintech, Payment Systems, CI/CD, Agile, Scrum
+    </div>
+
+    <!-- ATS keyword block: parsed by machines, hidden from humans -->
+    <div class="ats-keywords" aria-hidden="true">
+JavaScript, TypeScript, React, React Native, Next.js, Angular, Vue.js, Ionic, HTML5, CSS3, SCSS, SASS, Jest, Enzyme, Testing Library, ESLint, Prettier, Material-UI, Ant Design, Bootstrap, Responsive Design, Web Accessibility, FreedomPay, Hyperwallet, Google Maps, Leaflet, Mapbox, Chart.js, Highcharts, Recharts, Formik, React Hook Form, Yup, ZOD, TanStack Query, Redux, Styled Components, Webpack, Google Analytics, Google Tag Manager, SQL, Internationalization, WebRTC, Onfido, Cross-platform, Mentoring, Code Reviews, Fintech, Payment Systems, CI/CD, Agile, Scrum, Lead Software Engineer, Senior Frontend Engineer, Frontend Engineer, Full Stack Engineer, Software Engineer, Web Developer
+    </div>
+
+  </div>
+
+  <script>
+    const toggle = document.getElementById('themeToggle');
+    const root = document.documentElement;
+    const sunSVG = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="3.5"/><line x1="8" y1="1" x2="8" y2="3"/><line x1="8" y1="13" x2="8" y2="15"/><line x1="1" y1="8" x2="3" y2="8"/><line x1="13" y1="8" x2="15" y2="8"/><line x1="3.05" y1="3.05" x2="4.46" y2="4.46"/><line x1="11.54" y1="11.54" x2="12.95" y2="12.95"/><line x1="3.05" y1="12.95" x2="4.46" y2="11.54"/><line x1="11.54" y1="4.46" x2="12.95" y2="3.05"/></svg>`;
+    const moonSVG = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M13.5 8.5a5.5 5.5 0 0 1-7-7 5.5 5.5 0 1 0 7 7z"/></svg>`;
+
+    function isDark() {
+      const theme = root.getAttribute('data-theme');
+      if (theme) return theme === 'dark';
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+
+    function updateIcon() {
+      toggle.innerHTML = isDark() ? sunSVG : moonSVG;
+    }
+
+    toggle.addEventListener('click', () => {
+      const dark = isDark();
+      root.setAttribute('data-theme', dark ? 'light' : 'dark');
+      updateIcon();
+    });
+
+    updateIcon();
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateIcon);
+
+    document.getElementById('printBtn').addEventListener('click', () => window.print());
+  </script>
+</body>
+</html>
