@@ -7,6 +7,26 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=TASA+Orbiter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Ivan Korniienko",
+    "jobTitle": "Design Engineer",
+    "email": "mailto:mrivankorniyenko@gmail.com",
+    "telephone": "+38 063 435 42 68",
+    "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Kyiv",
+        "addressCountry": "Ukraine"
+    },
+    "url": "https://linkedin.com/in/skylixone",
+    "sameAs": [
+        "https://linkedin.com/in/skylixone",
+        "https://github.com/skylixone"
+    ]
+}
+    </script>
     <style>
         /* === PROGRAMME: Base Unit === */
         :root {
@@ -95,14 +115,14 @@
             color: var(--fg-tertiary);
         }
 
-        .contact a {
+        .contact a, .contact [itemprop="email"], .contact [itemprop="telephone"] {
             color: var(--fg-tertiary);
             text-decoration: none;
             border-bottom: 1px solid var(--border);
             transition: color 0.15s, border-color 0.15s;
         }
 
-        .contact a:hover {
+        .contact a:hover, .contact [itemprop="email"]:hover, .contact [itemprop="telephone"]:hover {
             color: var(--accent);
             border-color: var(--accent);
         }
@@ -361,7 +381,18 @@
                 font-size: 1pt;
                 color: #fff;
                 line-height: 1;
-                margin-top: 4pt;
+                margin-top: 2pt;
+            }
+
+            .ats-plaintext {
+                display: block !important;
+                font-size: 8.5pt;
+                color: #000;
+                line-height: 1.35;
+                white-space: pre-wrap;
+                margin-top: 8pt;
+                padding-top: 6pt;
+                border-top: 0.5pt solid #ccc;
             }
 
             @page {
@@ -370,7 +401,7 @@
             }
         }
 
-        .ats-keywords {
+        .ats-keywords, .ats-plaintext {
             display: none;
         }
     </style>
@@ -390,30 +421,30 @@
         </svg>
     </button>
 
-    <div class="page">
+    <div class="page h-resume">
 
-        <header>
-            <h1>Ivan Korniienko</h1>
-            <div class="title">Design Engineer · AI Products · Design Systems</div>
+        <header class="h-card p-contact">
+            <h1 class="p-name">Ivan Korniienko</h1>
+            <div class="p-job-title title">Design Engineer · AI Products · Design Systems</div>
             <div class="contact">
-                <span>Kyiv, Ukraine</span>
-                <span><a href="mailto:mrivankorniyenko@gmail.com">mrivankorniyenko@gmail.com</a></span>
-                <span><a href="https://linkedin.com/in/skylixone">linkedin</a></span>
-                <span><a href="https://github.com/skylixone">github</a></span>
-                <span>+38 063 435 42 68</span>
+                <span class="p-locality">Kyiv, Ukraine</span>
+                <span><a class="u-email" href="mailto:mrivankorniyenko@gmail.com">mrivankorniyenko@gmail.com</a></span>
+                <span><a class="u-url" href="https://linkedin.com/in/skylixone">linkedin.com/in/skylixone</a></span>
+                <span><a class="u-url" href="https://github.com/skylixone">github.com/skylixone</a></span>
+                <span><a class="p-tel" href="tel:+380634354268">+38 063 435 42 68</a></span>
             </div>
         </header>
 
         <!-- === EXPERIENCE === -->
         <section>
-            <div class="section-label">Experience</div>
+            <h2 class="section-label">Experience</h2>
 
-            <div class="exp">
+            <div class="exp h-event p-experience">
                 <div class="exp-top">
-                    <span class="exp-company">Luxoft (Halliburton)</span>
-                    <span class="exp-role">Senior Design Engineer</span>
+                    <span class="exp-company p-org h-card">Luxoft (Halliburton)</span>
+                    <span class="exp-role p-job-title">Senior Design Engineer</span>
                 </div>
-                <div class="exp-period">Apr 2025 – Oct 2025 · Remote</div>
+                <div class="exp-period"><time class="dt-start">Apr 2025</time> – <time class="dt-end">Oct 2025</time> · Remote</div>
                 <div class="exp-context">Production design system for industrial monitoring SaaS, integrated with Angular Material.</div>
                 <ul class="exp-bullets">
                     <li>Built real-time data visualization components for mission-critical sensor streams</li>
@@ -421,12 +452,12 @@
                 </ul>
             </div>
 
-            <div class="exp">
+            <div class="exp h-event p-experience">
                 <div class="exp-top">
-                    <span class="exp-company">Hivecell</span>
-                    <span class="exp-role">Senior Design Engineer / Product Designer</span>
+                    <span class="exp-company p-org h-card">Hivecell</span>
+                    <span class="exp-role p-job-title">Senior Design Engineer / Product Designer</span>
                 </div>
-                <div class="exp-period">Jun 2021 – Aug 2023 · Kyiv – Lviv – Remote</div>
+                <div class="exp-period"><time class="dt-start">Jun 2021</time> – <time class="dt-end">Aug 2023</time> · Kyiv – Lviv – Remote</div>
                 <div class="exp-context">Component library spanning a multi-product edge computing ecosystem.</div>
                 <ul class="exp-bullets">
                     <li>Architected interfaces across IDE, cluster orchestration, developer portal, and AR onboarding</li>
@@ -434,12 +465,12 @@
                 </ul>
             </div>
 
-            <div class="exp">
+            <div class="exp h-event p-experience">
                 <div class="exp-top">
-                    <span class="exp-company">Artkai</span>
-                    <span class="exp-role">Lead Designer / Design Technologist</span>
+                    <span class="exp-company p-org h-card">Artkai</span>
+                    <span class="exp-role p-job-title">Lead Designer / Design Technologist</span>
                 </div>
-                <div class="exp-period">Jun 2019 – Jun 2021 · Kyiv</div>
+                <div class="exp-period"><time class="dt-start">Jun 2019</time> – <time class="dt-end">Jun 2021</time> · Kyiv</div>
                 <div class="exp-context">Led design practice across fintech, e-commerce, and enterprise clients.</div>
                 <ul class="exp-bullets">
                     <li>Overhauled internal design infrastructure and ran systematic A/B testing programs</li>
@@ -447,31 +478,31 @@
                 </ul>
             </div>
 
-            <div class="exp">
+            <div class="exp h-event p-experience">
                 <div class="exp-top">
-                    <span class="exp-company">SoftServe</span>
-                    <span class="exp-role">UX Engineer</span>
+                    <span class="exp-company p-org h-card">SoftServe</span>
+                    <span class="exp-role p-job-title">UX Engineer</span>
                 </div>
-                <div class="exp-period">Mar 2017 – Jun 2019 · Kyiv</div>
+                <div class="exp-period"><time class="dt-start">Mar 2017</time> – <time class="dt-end">Jun 2019</time> · Kyiv</div>
                 <div class="exp-context">Data-heavy interfaces for enterprise clients including Prozorro government procurement.</div>
                 <ul class="exp-bullets">
                     <li>Built accessibility-compliant components and data-dense form systems at scale</li>
                 </ul>
             </div>
 
-            <div class="exp">
+            <div class="exp h-event p-experience">
                 <div class="exp-top">
-                    <span class="exp-company">Various agencies & freelance</span>
-                    <span class="exp-role">UI/UX Designer & Front-end Developer</span>
+                    <span class="exp-company p-org h-card">Various agencies & freelance</span>
+                    <span class="exp-role p-job-title">UI/UX Designer & Front-end Developer</span>
                 </div>
-                <div class="exp-period">2012 – 2017 · Kyiv</div>
+                <div class="exp-period"><time class="dt-start">2012</time> – <time class="dt-end">2017</time> · Kyiv</div>
                 <div class="exp-context">Product design with hands-on front-end. Brands: Coca-Cola, Pernod Ricard, Danone. Built a Wix-like site builder.</div>
             </div>
         </section>
 
         <!-- === SKILLS (compressed tags) === -->
         <section>
-            <div class="section-label">Skillset</div>
+            <h2 class="section-label">Skillset</h2>
             <div class="tags">
                 <span class="tag">Figma (advanced)</span>
                 <span class="tag">Design Systems</span>
@@ -509,19 +540,57 @@
             </dl>
         </section>
 
+        <!-- ATS plaintext resume -->
+        <div class="ats-plaintext" aria-hidden="true">
+IVAN KORNIIENKO
+Design Engineer · AI Products · Design Systems
+Kyiv, Ukraine
+Email: mrivankorniyenko@gmail.com
+Phone: +38 063 435 42 68
+LinkedIn: linkedin.com/in/skylixone
+
+EXPERIENCE
+
+Luxoft (Halliburton) — Senior Design Engineer
+Apr 2025 – Oct 2025 | Remote
+Production design system for industrial monitoring SaaS, integrated with Angular Material.
+• Built real-time data visualization components for mission-critical sensor streams
+• Designed offline-first interaction patterns for field conditions with intermittent connectivity
+
+Hivecell — Senior Design Engineer / Product Designer
+Jun 2021 – Aug 2023 | Kyiv – Lviv – Remote
+Component library spanning a multi-product edge computing ecosystem.
+• Architected interfaces across IDE, cluster orchestration, developer portal, and AR onboarding
+• Led micro-interaction system — state transitions, loading patterns, and feedback choreography
+
+Artkai — Lead Designer / Design Technologist
+Jun 2019 – Jun 2021 | Kyiv
+Led design practice across fintech, e-commerce, and enterprise clients.
+• Overhauled internal design infrastructure and ran systematic A/B testing programs
+• Co-restructured the design department (team of 4 + co-owner), built grading and promotion system
+
+SoftServe — UX Engineer
+Mar 2017 – Jun 2019 | Kyiv
+Data-heavy interfaces for enterprise clients including Prozorro government procurement.
+• Built accessibility-compliant components and data-dense form systems at scale
+
+Various agencies & freelance — UI/UX Designer & Front-end Developer
+2012 – 2017 | Kyiv
+Product design with hands-on front-end. Brands: Coca-Cola, Pernod Ricard, Danone. Built a Wix-like site builder.
+
+SKILLS
+Figma, Design Systems, HTML/CSS/JS, Angular Material, React, Figma Plugins, AI/LLM Workflow Tooling, Prompt UI Design, Data Visualization, Motion Design, Prototyping with Code, VS Code, Cursor, Claude, Git
+
+EDUCATION
+International Economics — Kyiv National Linguistics University, 2008–2012
+
+LANGUAGES
+Ukrainian (native), English (fluent), Russian, German (basic)
+        </div>
+
         <!-- ATS keyword block -->
         <div class="ats-keywords" aria-hidden="true">
-            Design Engineer, Product Designer, UX Engineer, Design Technologist,
-            Design Systems, Component Libraries, Angular Material, React, HTML, CSS, JavaScript,
-            Figma, Sketch, Adobe Creative Cloud, Principle, ProtoPie,
-            AI Products, LLM, Human-AI Interaction, Prompt UI, Multimodal Interface Design,
-            Data Visualization, Real-time Dashboards, Industrial SaaS, IoT,
-            Micro-interactions, Motion Design, Interaction Design, Information Architecture,
-            Accessibility, WCAG, Responsive Design, Offline-first,
-            Design Sprints, A/B Testing, User Research, Mentoring,
-            Edge Computing, AR, WebRTC, Figma Plugin Development,
-            VS Code, Cursor, Claude, Git, CI/CD, Agile, Scrum,
-            Fintech, Enterprise, E-commerce, Government, Procurement
+Design Engineer, Product Designer, UX Engineer, Design Technologist, Design Systems, Component Libraries, Angular Material, React, HTML, CSS, JavaScript, Figma, Sketch, Adobe Creative Cloud, Principle, ProtoPie, AI Products, LLM, Human-AI Interaction, Prompt UI, Multimodal Interface Design, Data Visualization, Real-time Dashboards, Industrial SaaS, IoT, Micro-interactions, Motion Design, Interaction Design, Information Architecture, Accessibility, WCAG, Responsive Design, Offline-first, Design Sprints, A/B Testing, User Research, Mentoring, Edge Computing, AR, WebRTC, Figma Plugin Development, VS Code, Cursor, Claude, Git, CI/CD, Agile, Scrum, Fintech, Enterprise, E-commerce, Government, Procurement
         </div>
 
     </div>
