@@ -100,10 +100,15 @@
             align-items: flex-start;
         }
 
-        .header-photo {
+        .header-photo-wrap {
             flex-shrink: 0;
-            width: 88px;
             align-self: stretch;
+        }
+
+        .header-photo {
+            display: block;
+            height: 100%;
+            width: auto;
             border-radius: 6px;
             object-fit: cover;
             object-position: top center;
@@ -460,7 +465,9 @@
 
         <header class="h-card p-contact">
             <div class="header-inner">
-                <img class="header-photo u-photo" src="skl-photo.jpg" alt="Ivan Korniienko" width="88">
+                <div class="header-photo-wrap">
+                    <img class="header-photo u-photo" src="skl-photo.jpg" alt="Ivan Korniienko">
+                </div>
                 <div class="header-text">
                     <h1 class="p-name">Ivan Korniienko</h1>
                     <div class="p-job-title title">Design Engineer · AI Products · Design Systems</div>
