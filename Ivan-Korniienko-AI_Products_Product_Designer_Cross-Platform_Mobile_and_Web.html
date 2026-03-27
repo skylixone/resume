@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ivan Korniienko — Product Designer | AI Products | Mobile & Web</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=TASA+Orbiter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Ivan Korniienko",
+    "jobTitle": "Design Engineer",
+    "description": "Design engineer with 12+ years across design systems, data-dense product UI, and AI interfaces. I build component architectures that ship — in Figma, in code, in production.",
+    "email": "mailto:mrivankorniyenko@gmail.com",
+    "telephone": "+38 063 435 42 68",
+    "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Kyiv",
+        "addressCountry": "Ukraine"
+    },
+    "url": "https://linkedin.com/in/skylixone",
+    "sameAs": [
+        "https://linkedin.com/in/skylixone",
+        "https://github.com/skylixone"
+    ]
+}
+    </script>
+    <style>
+        /* === PROGRAMME: Base Unit === */
+        :root {
+            --unit: 8px;
+            --col: 720px;
+
+            --fg: #111;
+            --fg-secondary: #555;
+            --fg-tertiary: #888;
+            --bg: #fff;
+            --bg-tag: #f0f0f0;
+            --accent: #e74c3c;
+            --border: #e0e0e0;
+            --border-light: #f0f0f0;
+        }
+
+        /* === Dark mode: manual toggle OR system preference === */
+        [data-theme="dark"] {
+            --fg: #e8e8e8;
+            --fg-secondary: #aaa;
+            --fg-tertiary: #777;
+            --bg: #111;
+            --bg-tag: #1e1e1e;
+            --accent: #ff6b5a;
+            --border: #2a2a2a;
+            --border-light: #1e1e1e;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme="light"]) {
+                --fg: #e8e8e8;
+                --fg-secondary: #aaa;
+                --fg-tertiary: #777;
+                --bg: #111;
+                --bg-tag: #1e1e1e;
+                --accent: #ff6b5a;
+                --border: #2a2a2a;
+                --border-light: #1e1e1e;
+            }
+        }
+
+        /* === Reset + Base === */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'TASA Orbiter', -apple-system, system-ui, sans-serif;
+            font-size: 15px;
+            line-height: 1.55;
+            color: var(--fg);
+            background: var(--bg);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* === Single Column Programme === */
+        .page {
+            max-width: var(--col);
+            margin: 0 auto;
+            padding: calc(var(--unit) * 8) calc(var(--unit) * 3);
+        }
+
+        /* === HEADER === */
+        header {
+            margin-bottom: calc(var(--unit) * 6);
+        }
+
+        .header-inner {
+            display: flex;
+            gap: calc(var(--unit) * 4);
+            align-items: flex-start;
+        }
+
+        .header-photo {
+            flex-shrink: 0;
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--border);
+            background: var(--bg-tag);
+        }
+
+        .header-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            line-height: 1.15;
+        }
+
+        .title {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--fg-secondary);
+            margin-top: calc(var(--unit) * 0.5);
+        }
+
+        .intro {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--fg-secondary);
+            margin-top: calc(var(--unit) * 1.5);
+            max-width: 58ch;
+        }
+
+        .contact {
+            display: flex;
+            flex-wrap: wrap;
+            gap: calc(var(--unit) * 2);
+            margin-top: calc(var(--unit) * 2);
+            font-size: 13px;
+            color: var(--fg-tertiary);
+        }
+
+        .contact a, .contact [itemprop="email"], .contact [itemprop="telephone"] {
+            color: var(--fg-tertiary);
+            text-decoration: none;
+            border-bottom: 1px solid var(--border);
+            transition: color 0.15s, border-color 0.15s;
+        }
+
+        .contact a:hover, .contact [itemprop="email"]:hover, .contact [itemprop="telephone"]:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .contact span::before {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 3px;
+            background: var(--fg-tertiary);
+            border-radius: 50%;
+            vertical-align: middle;
+            margin-right: calc(var(--unit) * 2);
+            opacity: 0.5;
+        }
+
+        .contact span:first-child::before {
+            display: none;
+        }
+
+        /* === SECTION === */
+        section {
+            margin-bottom: calc(var(--unit) * 6);
+        }
+
+        .section-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--fg-tertiary);
+            margin-bottom: calc(var(--unit) * 1.5);
+            padding-top: calc(var(--unit) * 1);
+            border-top: 2px solid var(--accent);
+        }
+
+        /* === EXPERIENCE ITEM === */
+        .exp {
+            margin-bottom: calc(var(--unit) * 4);
+            padding-bottom: calc(var(--unit) * 4);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .exp:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .exp-top {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: calc(var(--unit) * 1);
+            margin-bottom: calc(var(--unit) * 0.5);
+        }
+
+        .exp-company {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--fg);
+        }
+
+        .exp-role {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--fg-secondary);
+        }
+
+        .exp-period {
+            font-size: 12px;
+            color: var(--fg-tertiary);
+            margin-bottom: calc(var(--unit) * 1);
+        }
+
+        .exp-context {
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--fg);
+            margin-bottom: calc(var(--unit) * 1);
+        }
+
+        .exp-bullets {
+            list-style: none;
+            margin-bottom: 0;
+        }
+
+        .exp-bullets li {
+            position: relative;
+            padding-left: calc(var(--unit) * 2);
+            margin-bottom: calc(var(--unit) * 0.5);
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--fg);
+        }
+
+        .exp-bullets li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 9px;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--accent);
+            opacity: 0.6;
+        }
+
+        /* === TAGS === */
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .tag {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 500;
+            padding: 2px 8px;
+            background: var(--bg-tag);
+            border-radius: 3px;
+            color: var(--fg-secondary);
+            letter-spacing: 0.2px;
+        }
+
+        /* === FOOTER META === */
+        .meta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: calc(var(--unit) * 4);
+            font-size: 13px;
+            color: var(--fg-tertiary);
+        }
+
+        .meta-row dt {
+            font-weight: 500;
+            color: var(--fg-secondary);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 2px;
+        }
+
+        .meta-row dd {
+            margin: 0;
+        }
+
+        /* === Theme toggle === */
+        .theme-toggle {
+            position: fixed;
+            top: calc(var(--unit) * 3);
+            right: calc(var(--unit) * 3);
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            background: var(--bg);
+            color: var(--fg-tertiary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.15s, color 0.15s;
+            z-index: 10;
+            font-size: 16px;
+            line-height: 1;
+            padding: 0;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--fg-secondary);
+            color: var(--fg);
+        }
+
+        /* === SCALE UP: large displays === */
+        @media (min-width: 1400px) {
+            :root {
+                --unit: 10px;
+                --col: 860px;
+            }
+
+            body { font-size: 17px; }
+            h1 { font-size: 40px; }
+            .exp-company { font-size: 20px; }
+            .exp-context { font-size: 16px; }
+            .exp-bullets li { font-size: 16px; }
+            .tag { font-size: 12px; padding: 3px 10px; }
+        }
+
+        /* === PRINT: Single-page A4 fit === */
+        @media print {
+            :root {
+                --fg: #000;
+                --fg-secondary: #333;
+                --fg-tertiary: #555;
+                --bg: #fff;
+                --bg-tag: transparent;
+                --accent: #c0392b;
+                --border: #bbb;
+                --border-light: #ddd;
+            }
+
+            body {
+                font-size: 10pt;
+                line-height: 1.4;
+            }
+
+            .page {
+                max-width: 100%;
+                padding: 0;
+            }
+
+            .theme-toggle { display: none !important; }
+
+            header { margin-bottom: 14pt; }
+            .header-photo { width: 64pt; height: 64pt; }
+            h1 { font-size: 17pt; }
+            .title { font-size: 9.5pt; margin-top: 2pt; }
+            .intro { font-size: 9pt; margin-top: 4pt; line-height: 1.4; }
+            .contact { font-size: 8.5pt; gap: 10pt; margin-top: 4pt; }
+
+            .section-label {
+                font-size: 7.5pt;
+                margin-bottom: 6pt;
+                margin-top: 0;
+                padding-top: 5pt;
+                border-top-width: 1.5pt;
+                letter-spacing: 1.5pt;
+            }
+
+            section { margin-bottom: 18pt; }
+
+            .exp { margin-bottom: 10pt; padding-bottom: 10pt; }
+            .exp-top { margin-bottom: 1pt; gap: 4pt; }
+            .exp-company { font-size: 10.5pt; }
+            .exp-role { font-size: 8.5pt; }
+            .exp-period { font-size: 7.5pt; margin-bottom: 3pt; }
+            .exp-context { font-size: 9pt; margin-bottom: 3pt; line-height: 1.4; }
+
+            .exp-bullets li { font-size: 9pt; padding-left: 10pt; margin-bottom: 1.5pt; line-height: 1.4; }
+            .exp-bullets li::before { top: 5.5pt; width: 3pt; height: 3pt; }
+
+            .tag {
+                background: none;
+                border: 0.5pt solid var(--border);
+                font-size: 7.5pt;
+                padding: 0.5pt 3pt;
+            }
+            .tags { gap: 3pt; }
+
+            .meta-row { gap: 20pt; font-size: 8.5pt; }
+            .meta-row dt { font-size: 7pt; letter-spacing: 1.5pt; margin-bottom: 1pt; }
+
+            .ats-keywords {
+                display: block !important;
+                font-size: 1pt;
+                color: #fff;
+                line-height: 1;
+                margin-top: 2pt;
+            }
+
+            .ats-plaintext {
+                display: block !important;
+                font-size: 8.5pt;
+                color: #000;
+                line-height: 1.35;
+                white-space: pre-wrap;
+                margin-top: 8pt;
+                padding-top: 6pt;
+                border-top: 0.5pt solid #ccc;
+            }
+
+            @page {
+                size: A4;
+                margin: 14mm 16mm;
+            }
+        }
+
+        .ats-keywords, .ats-plaintext {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" aria-label="Toggle dark mode" id="themeToggle">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <circle cx="8" cy="8" r="3.5"/>
+            <line x1="8" y1="1" x2="8" y2="3"/>
+            <line x1="8" y1="13" x2="8" y2="15"/>
+            <line x1="1" y1="8" x2="3" y2="8"/>
+            <line x1="13" y1="8" x2="15" y2="8"/>
+            <line x1="3.05" y1="3.05" x2="4.46" y2="4.46"/>
+            <line x1="11.54" y1="11.54" x2="12.95" y2="12.95"/>
+            <line x1="3.05" y1="12.95" x2="4.46" y2="11.54"/>
+            <line x1="11.54" y1="4.46" x2="12.95" y2="3.05"/>
+        </svg>
+    </button>
+
+    <div class="page h-resume">
+
+        <header class="h-card p-contact">
+            <div class="header-inner">
+                <img class="header-photo u-photo" src="photo.jpg" alt="Ivan Korniienko" width="88" height="88">
+                <div class="header-text">
+                    <h1 class="p-name">Ivan Korniienko</h1>
+                    <div class="p-job-title title">Design Engineer · AI Products · Design Systems</div>
+                    <p class="intro p-note">Design engineer with 12+ years across design systems, data-dense product UI, and AI interfaces. I build component architectures that ship — in Figma, in code, in production. Background in linguistics and electronics: I think about interfaces as systems with constraints, states, and failure modes. Most at home where design is an engineering problem — typography, data, interaction — not a styling pass.</p>
+                    <div class="contact">
+                        <span class="p-locality">Kyiv, Ukraine</span>
+                        <span><a class="u-email" href="mailto:mrivankorniyenko@gmail.com">mrivankorniyenko@gmail.com</a></span>
+                        <span><a class="u-url" href="https://linkedin.com/in/skylixone">linkedin</a></span>
+                        <span><a class="u-url" href="https://github.com/skylixone">github.com/skylixone</a></span>
+                        <span><a class="p-tel" href="tel:+380634354268">+38 063 435 42 68</a></span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- === EXPERIENCE === -->
+        <section>
+            <h2 class="section-label">Experience</h2>
+
+            <div class="exp h-event p-experience">
+                <div class="exp-top">
+                    <span class="exp-company p-org h-card">Luxoft (Halliburton)</span>
+                    <span class="exp-role p-job-title">Senior Design Engineer</span>
+                </div>
+                <div class="exp-period"><time class="dt-start">Apr 2025</time> – <time class="dt-end">Dec 2025</time> · Remote</div>
+                <div class="exp-context">Designed real-time data interfaces for industrial IoT monitoring, delivering end-to-end solutions from concept to developer handoff.</div>
+                <ul class="exp-bullets">
+                    <li>Built real-time data visualization components for mission-critical sensor streams</li>
+                    <li>Designed offline-first interaction patterns for field conditions with intermittent connectivity</li>
+                </ul>
+            </div>
+
+            <div class="exp h-event p-experience">
+                <div class="exp-top">
+                    <span class="exp-company p-org h-card">Hivecell</span>
+                    <span class="exp-role p-job-title">Senior Design Engineer / Product Designer</span>
+                </div>
+                <div class="exp-period"><time class="dt-start">Jun 2021</time> – <time class="dt-end">Dec 2024</time> · Kyiv – Lviv – Remote</div>
+                <div class="exp-context">Led product design across a multi-platform edge computing ecosystem — web dashboards, mobile-adaptive interfaces, and AR experiences.</div>
+                <ul class="exp-bullets">
+                    <li>Architected interfaces across IDE, cluster orchestration, developer portal, and AR onboarding</li>
+                    <li>Led micro-interaction system — state transitions, loading patterns, and feedback choreography</li>
+                </ul>
+            </div>
+
+            <div class="exp h-event p-experience">
+                <div class="exp-top">
+                    <span class="exp-company p-org h-card">Artkai</span>
+                    <span class="exp-role p-job-title">Lead Designer / Design Technologist</span>
+                </div>
+                <div class="exp-period"><time class="dt-start">Jun 2019</time> – <time class="dt-end">Jun 2021</time> · Kyiv</div>
+                <div class="exp-context">Drove data-informed design practice across fintech, e-commerce, and enterprise clients — balancing user needs with business goals.</div>
+                <ul class="exp-bullets">
+                    <li>Overhauled internal design infrastructure and ran systematic A/B testing programs</li>
+                    <li>Co-restructured the design department (team of 4 + co-owner), built grading and promotion system</li>
+                </ul>
+            </div>
+
+            <div class="exp h-event p-experience">
+                <div class="exp-top">
+                    <span class="exp-company p-org h-card">SoftServe</span>
+                    <span class="exp-role p-job-title">UX Engineer</span>
+                </div>
+                <div class="exp-period"><time class="dt-start">Mar 2017</time> – <time class="dt-end">Jun 2019</time> · Kyiv</div>
+                <div class="exp-context">Delivered complex data-intensive web and mobile interfaces for enterprise and government clients.</div>
+                <ul class="exp-bullets">
+                    <li>Built accessibility-compliant components and data-dense form systems at scale</li>
+                </ul>
+            </div>
+
+            <div class="exp h-event p-experience">
+                <div class="exp-top">
+                    <span class="exp-company p-org h-card">Various agencies & freelance</span>
+                    <span class="exp-role p-job-title">UI/UX Designer & Front-end Developer</span>
+                </div>
+                <div class="exp-period"><time class="dt-start">2012</time> – <time class="dt-end">2017</time> · Kyiv</div>
+                <div class="exp-context">End-to-end product design with hands-on front-end execution. Delivered cross-platform solutions for Coca-Cola, Pernod Ricard, Danone.</div>
+            </div>
+        </section>
+
+        <!-- === SKILLS (compressed tags) === -->
+        <section>
+            <h2 class="section-label">Skillset</h2>
+            <div class="tags">
+                <span class="tag">Product Design (10+ years)</span>
+                <span class="tag">Figma (Advanced)</span>
+                <span class="tag">Mobile & Web Design</span>
+                <span class="tag">Cross-Platform UX</span>
+                <span class="tag">AI-Powered Design Workflow</span>
+                <span class="tag">User Research</span>
+                <span class="tag">Prototyping (Lo-Fi to Hi-Fi)</span>
+                <span class="tag">Design Systems</span>
+                <span class="tag">Data-Driven Design</span>
+                <span class="tag">IoT & Industrial SaaS</span>
+                <span class="tag">Data Visualization</span>
+                <span class="tag">Motion Design</span>
+                <span class="tag">HTML / CSS / JS</span>
+                <span class="tag">React</span>
+                <span class="tag">Angular Material</span>
+            </div>
+        </section>
+
+        <!-- === META === -->
+        <section>
+            <dl class="meta-row">
+                <div>
+                    <dt>Based in</dt>
+                    <dd>Kyiv, Ukraine</dd>
+                </div>
+                <div>
+                    <dt>Languages</dt>
+                    <dd>Ukrainian (native) · English (fluent) · Russian · German (basic)</dd>
+                </div>
+                <div>
+                    <dt>Education</dt>
+                    <dd>International Economics — Kyiv National Linguistics University, 2008–2012</dd>
+                    <dd>Claude Code in Action, AI Fluency: Framework & Foundations — Anthropic Academy, 2026</dd>
+                </div>
+            </dl>
+        </section>
+
+        <!-- ATS plaintext resume -->
+        <div class="ats-plaintext" aria-hidden="true">
+IVAN KORNIIENKO
+Design Engineer · AI Products · Design Systems
+Kyiv, Ukraine
+Email: mrivankorniyenko@gmail.com
+Phone: +38 063 435 42 68
+LinkedIn: linkedin.com/in/skylixone
+
+SUMMARY
+Design engineer with 12+ years across design systems, data-dense product UI, and AI interfaces. I build component architectures that ship — in Figma, in code, in production. Background in linguistics and electronics: I think about interfaces as systems with constraints, states, and failure modes. Most at home where design is an engineering problem — typography, data, interaction — not a styling pass.
+
+EXPERIENCE
+
+Luxoft (Halliburton) — Senior Design Engineer
+Apr 2025 – Dec 2025 | Remote
+Designed real-time data interfaces for industrial IoT monitoring, delivering end-to-end solutions from concept to developer handoff.
+• Built real-time data visualization components for mission-critical sensor streams
+• Designed offline-first interaction patterns for field conditions with intermittent connectivity
+
+Hivecell — Senior Design Engineer / Product Designer
+Jun 2021 – Dec 2024 | Kyiv – Lviv – Remote
+Led product design across a multi-platform edge computing ecosystem — web dashboards, mobile-adaptive interfaces, and AR experiences.
+• Architected interfaces across IDE, cluster orchestration, developer portal, and AR onboarding
+• Led micro-interaction system — state transitions, loading patterns, and feedback choreography
+
+Artkai — Lead Designer / Design Technologist
+Jun 2019 – Jun 2021 | Kyiv
+Drove data-informed design practice across fintech, e-commerce, and enterprise clients — balancing user needs with business goals.
+• Overhauled internal design infrastructure and ran systematic A/B testing programs
+• Co-restructured the design department (team of 4 + co-owner), built grading and promotion system
+
+SoftServe — UX Engineer
+Mar 2017 – Jun 2019 | Kyiv
+Delivered complex data-intensive web and mobile interfaces for enterprise and government clients.
+• Built accessibility-compliant components and data-dense form systems at scale
+
+Various agencies & freelance — UI/UX Designer & Front-end Developer
+2012 – 2017 | Kyiv
+End-to-end product design with hands-on front-end execution. Delivered cross-platform solutions for Coca-Cola, Pernod Ricard, Danone.
+
+SKILLS
+Product Design, Figma (Advanced), Mobile & Web Design, Cross-Platform UX, AI-Powered Design Workflow, User Research, Prototyping, Design Systems, Data-Driven Design, IoT, Data Visualization, Motion Design, HTML/CSS/JS, React, Angular Material
+
+EDUCATION
+International Economics — Kyiv National Linguistics University, 2008–2012
+Claude Code in Action, AI Fluency: Framework & Foundations — Anthropic Academy, 2026
+
+LANGUAGES
+Ukrainian (native), English (fluent), Russian, German (basic)
+        </div>
+
+        <!-- ATS keyword block -->
+        <div class="ats-keywords" aria-hidden="true">
+Product Designer, Senior Product Designer, Design Engineer, UX Engineer, Figma, Advanced Figma, Mobile Design, Web Design, Cross-Platform UX, iOS Design, Android Design, AI Tools, AI Design Workflow, LLM, ChatGPT, Claude, Cursor, AI-Powered Design, User Research, Qualitative Research, Usability Testing, Design Thinking, Data-Driven Design, Prototyping, Wireframing, Interactive Prototypes, Mockups, User Journeys, Design Systems, Component Libraries, Visual Design, UI Design, UX Design, Interaction Design, Motion Design, Micro-interactions, Data Visualization, Real-time Dashboards, Industrial SaaS, IoT, Smart Cameras, AI Products, Edge Computing, AR, HTML, CSS, JavaScript, React, Angular Material, Figma Plugins, Responsive Design, Mobile-First, Accessibility, WCAG, A/B Testing, Design Sprints, Agile, Scrum, Cross-functional Collaboration, Stakeholder Communication, English Fluent, Fintech, Enterprise, E-commerce
+        </div>
+
+    </div>
+
+    <script>
+        const toggle = document.getElementById('themeToggle');
+        const root = document.documentElement;
+        const sunSVG = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="3.5"/><line x1="8" y1="1" x2="8" y2="3"/><line x1="8" y1="13" x2="8" y2="15"/><line x1="1" y1="8" x2="3" y2="8"/><line x1="13" y1="8" x2="15" y2="8"/><line x1="3.05" y1="3.05" x2="4.46" y2="4.46"/><line x1="11.54" y1="11.54" x2="12.95" y2="12.95"/><line x1="3.05" y1="12.95" x2="4.46" y2="11.54"/><line x1="11.54" y1="4.46" x2="12.95" y2="3.05"/></svg>`;
+        const moonSVG = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M13.5 8.5a5.5 5.5 0 0 1-7-7 5.5 5.5 0 1 0 7 7z"/></svg>`;
+
+        function isDark() {
+            const theme = root.getAttribute('data-theme');
+            if (theme) return theme === 'dark';
+            return window.matchMedia('(prefers-color-scheme: dark)').matches;
+        }
+
+        function updateIcon() {
+            toggle.innerHTML = isDark() ? sunSVG : moonSVG;
+        }
+
+        toggle.addEventListener('click', () => {
+            const dark = isDark();
+            root.setAttribute('data-theme', dark ? 'light' : 'dark');
+            updateIcon();
+        });
+
+        updateIcon();
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateIcon);
+    </script>
+</body>
+</html>
