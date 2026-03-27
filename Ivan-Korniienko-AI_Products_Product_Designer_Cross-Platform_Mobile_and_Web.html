@@ -101,9 +101,9 @@
         }
 
         .header-photo {
+            display: block;
             flex-shrink: 0;
-            width: 88px;
-            align-self: stretch;
+            width: auto;
             border-radius: 6px;
             object-fit: cover;
             object-position: top center;
@@ -665,6 +665,18 @@ Product Designer, Senior Product Designer, Design Engineer, UX Engineer, Figma, 
 
         updateIcon();
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateIcon);
+
+        // Sync photo height to name+intro block height
+        function syncPhotoHeight() {
+            const text = document.querySelector('.header-text');
+            const photo = document.querySelector('.header-photo');
+            if (text && photo) {
+                photo.style.height = text.offsetHeight + 'px';
+            }
+        }
+        syncPhotoHeight();
+        window.addEventListener('resize', syncPhotoHeight);
+        window.addEventListener('load', syncPhotoHeight);
     </script>
 </body>
 </html>
