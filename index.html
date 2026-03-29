@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ivan Korniienko — Design Engineer | AI Products | Design Systems</title>
+    <title>Ivan Korniienko — Product Designer | AI Products | Mobile & Web</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=TASA+Orbiter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -13,6 +13,7 @@
     "@type": "Person",
     "name": "Ivan Korniienko",
     "jobTitle": "Design Engineer",
+    "description": "Design engineer with 12+ years across design systems, data-dense product UI, and AI interfaces. I build component architectures that ship — in Figma, in code, in production.",
     "email": "mailto:mrivankorniyenko@gmail.com",
     "telephone": "+38 063 435 42 68",
     "address": {
@@ -92,6 +93,37 @@
             margin-bottom: calc(var(--unit) * 6);
         }
 
+        .header-inner {
+            display: flex;
+            flex-direction: row-reverse;
+            gap: calc(var(--unit) * 4);
+            align-items: flex-start;
+        }
+
+        .header-photo-wrap {
+            flex: 0 0 auto;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-photo {
+            display: block;
+            width: auto;
+            aspect-ratio: 665 / 1182;
+            border-radius: 6px;
+            object-fit: cover;
+            object-position: top center;
+            border: 2px solid var(--border);
+            background: var(--bg-tag);
+        }
+
+        .header-text {
+            flex: 1 1 0;
+            min-width: 0;
+        }
+
         h1 {
             font-size: 32px;
             font-weight: 700;
@@ -106,6 +138,14 @@
             margin-top: calc(var(--unit) * 0.5);
         }
 
+        .intro {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--fg-secondary);
+            margin-top: calc(var(--unit) * 1.5);
+            max-width: 58ch;
+        }
+
         .contact {
             display: flex;
             flex-wrap: wrap;
@@ -113,6 +153,7 @@
             margin-top: calc(var(--unit) * 2);
             font-size: 13px;
             color: var(--fg-tertiary);
+            width: 100%;
         }
 
         .contact a, .contact [itemprop="email"], .contact [itemprop="telephone"] {
@@ -340,8 +381,10 @@
             .theme-toggle { display: none !important; }
 
             header { margin-bottom: 14pt; }
+            .header-photo { width: 64pt; }
             h1 { font-size: 17pt; }
             .title { font-size: 9.5pt; margin-top: 2pt; }
+            .intro { font-size: 9pt; margin-top: 4pt; line-height: 1.4; }
             .contact { font-size: 8.5pt; gap: 10pt; margin-top: 4pt; }
 
             .section-label {
@@ -424,14 +467,22 @@
     <div class="page h-resume">
 
         <header class="h-card p-contact">
-            <h1 class="p-name">Ivan Korniienko</h1>
-            <div class="p-job-title title">Design Engineer · AI Products · Design Systems</div>
+            <div class="header-inner">
+                <div class="header-photo-wrap">
+                    <img class="header-photo u-photo" src="skl-photo.jpg" alt="Ivan Korniienko" width="665" height="1182">
+                </div>
+                <div class="header-text">
+                    <h1 class="p-name">Ivan Korniienko</h1>
+                    <div class="p-job-title title">Design Engineer · AI Products · Design Systems</div>
+                    <p class="intro p-note">Design engineer with 12+ years across design systems, data-dense product UI, and AI interfaces. I build component architectures that ship — in Figma, in code, in production. Background in linguistics and electronics: I think about interfaces as systems with constraints, states, and failure modes. Most at home where design is an engineering problem — typography, data, interaction — not a styling pass.</p>
+                </div>
+            </div>
             <div class="contact">
                 <span class="p-locality">Kyiv, Ukraine</span>
                 <span><a class="u-email" href="mailto:mrivankorniyenko@gmail.com">mrivankorniyenko@gmail.com</a></span>
                 <span><a class="u-url" href="https://linkedin.com/in/skylixone">linkedin</a></span>
                 <span><a class="u-url" href="https://github.com/skylixone">github.com/skylixone</a></span>
-                <span><a class="p-tel" href="tel:+380634354268">+38 063 435 42 68</a></span>
+                <span><a class="p-tel" href="tel:+380****4268">+38 063 435 42 68</a></span>
             </div>
         </header>
 
@@ -444,8 +495,8 @@
                     <span class="exp-company p-org h-card">Luxoft (Halliburton)</span>
                     <span class="exp-role p-job-title">Senior Design Engineer</span>
                 </div>
-                <div class="exp-period"><time class="dt-start">Apr 2025</time> – <time class="dt-end">Oct 2025</time> · Remote</div>
-                <div class="exp-context">Production design system for industrial monitoring SaaS, integrated with Angular Material.</div>
+                <div class="exp-period"><time class="dt-start">Apr 2025</time> – <time class="dt-end">Dec 2025</time> · Remote</div>
+                <div class="exp-context">Designed real-time data interfaces for industrial IoT monitoring, delivering end-to-end solutions from concept to developer handoff.</div>
                 <ul class="exp-bullets">
                     <li>Built real-time data visualization components for mission-critical sensor streams</li>
                     <li>Designed offline-first interaction patterns for field conditions with intermittent connectivity</li>
@@ -457,8 +508,8 @@
                     <span class="exp-company p-org h-card">Hivecell</span>
                     <span class="exp-role p-job-title">Senior Design Engineer / Product Designer</span>
                 </div>
-                <div class="exp-period"><time class="dt-start">Jun 2021</time> – <time class="dt-end">Aug 2023</time> · Kyiv – Lviv – Remote</div>
-                <div class="exp-context">Component library spanning a multi-product edge computing ecosystem.</div>
+                <div class="exp-period"><time class="dt-start">Jun 2021</time> – <time class="dt-end">Dec 2024</time> · Kyiv – Lviv – Remote</div>
+                <div class="exp-context">Led product design across a multi-platform edge computing ecosystem — web dashboards, mobile-adaptive interfaces, and AR experiences.</div>
                 <ul class="exp-bullets">
                     <li>Architected interfaces across IDE, cluster orchestration, developer portal, and AR onboarding</li>
                     <li>Led micro-interaction system — state transitions, loading patterns, and feedback choreography</li>
@@ -471,7 +522,7 @@
                     <span class="exp-role p-job-title">Lead Designer / Design Technologist</span>
                 </div>
                 <div class="exp-period"><time class="dt-start">Jun 2019</time> – <time class="dt-end">Jun 2021</time> · Kyiv</div>
-                <div class="exp-context">Led design practice across fintech, e-commerce, and enterprise clients.</div>
+                <div class="exp-context">Drove data-informed design practice across fintech, e-commerce, and enterprise clients — balancing user needs with business goals.</div>
                 <ul class="exp-bullets">
                     <li>Overhauled internal design infrastructure and ran systematic A/B testing programs</li>
                     <li>Co-restructured the design department (team of 4 + co-owner), built grading and promotion system</li>
@@ -484,7 +535,7 @@
                     <span class="exp-role p-job-title">UX Engineer</span>
                 </div>
                 <div class="exp-period"><time class="dt-start">Mar 2017</time> – <time class="dt-end">Jun 2019</time> · Kyiv</div>
-                <div class="exp-context">Data-heavy interfaces for enterprise clients including Prozorro government procurement.</div>
+                <div class="exp-context">Delivered complex data-intensive web and mobile interfaces for enterprise and government clients.</div>
                 <ul class="exp-bullets">
                     <li>Built accessibility-compliant components and data-dense form systems at scale</li>
                 </ul>
@@ -496,7 +547,7 @@
                     <span class="exp-role p-job-title">UI/UX Designer & Front-end Developer</span>
                 </div>
                 <div class="exp-period"><time class="dt-start">2012</time> – <time class="dt-end">2017</time> · Kyiv</div>
-                <div class="exp-context">Product design with hands-on front-end. Brands: Coca-Cola, Pernod Ricard, Danone. Built a Wix-like site builder.</div>
+                <div class="exp-context">End-to-end product design with hands-on front-end execution. Delivered cross-platform solutions for Coca-Cola, Pernod Ricard, Danone.</div>
             </div>
         </section>
 
@@ -504,21 +555,21 @@
         <section>
             <h2 class="section-label">Skillset</h2>
             <div class="tags">
-                <span class="tag">Figma (advanced)</span>
+                <span class="tag">Product Design (10+ years)</span>
+                <span class="tag">Figma (Advanced)</span>
+                <span class="tag">Mobile & Web Design</span>
+                <span class="tag">Cross-Platform UX</span>
+                <span class="tag">AI-Powered Design Workflow</span>
+                <span class="tag">User Research</span>
+                <span class="tag">Prototyping (Lo-Fi to Hi-Fi)</span>
                 <span class="tag">Design Systems</span>
-                <span class="tag">HTML / CSS / JS</span>
-                <span class="tag">Angular Material</span>
-                <span class="tag">React</span>
-                <span class="tag">Figma Plugins</span>
-                <span class="tag">AI / LLM Workflow Tooling</span>
-                <span class="tag">Prompt UI Design</span>
+                <span class="tag">Data-Driven Design</span>
+                <span class="tag">IoT & Industrial SaaS</span>
                 <span class="tag">Data Visualization</span>
                 <span class="tag">Motion Design</span>
-                <span class="tag">Prototyping with Code</span>
-                <span class="tag">VS Code</span>
-                <span class="tag">Cursor</span>
-                <span class="tag">Claude</span>
-                <span class="tag">Git</span>
+                <span class="tag">HTML / CSS / JS</span>
+                <span class="tag">React</span>
+                <span class="tag">Angular Material</span>
             </div>
         </section>
 
@@ -536,6 +587,7 @@
                 <div>
                     <dt>Education</dt>
                     <dd>International Economics — Kyiv National Linguistics University, 2008–2012</dd>
+                    <dd>Claude Code in Action, AI Fluency: Framework & Foundations — Anthropic Academy, 2026</dd>
                 </div>
             </dl>
         </section>
@@ -549,40 +601,44 @@ Email: mrivankorniyenko@gmail.com
 Phone: +38 063 435 42 68
 LinkedIn: linkedin.com/in/skylixone
 
+SUMMARY
+Design engineer with 12+ years across design systems, data-dense product UI, and AI interfaces. I build component architectures that ship — in Figma, in code, in production. Background in linguistics and electronics: I think about interfaces as systems with constraints, states, and failure modes. Most at home where design is an engineering problem — typography, data, interaction — not a styling pass.
+
 EXPERIENCE
 
 Luxoft (Halliburton) — Senior Design Engineer
-Apr 2025 – Oct 2025 | Remote
-Production design system for industrial monitoring SaaS, integrated with Angular Material.
+Apr 2025 – Dec 2025 | Remote
+Designed real-time data interfaces for industrial IoT monitoring, delivering end-to-end solutions from concept to developer handoff.
 • Built real-time data visualization components for mission-critical sensor streams
 • Designed offline-first interaction patterns for field conditions with intermittent connectivity
 
 Hivecell — Senior Design Engineer / Product Designer
-Jun 2021 – Aug 2023 | Kyiv – Lviv – Remote
-Component library spanning a multi-product edge computing ecosystem.
+Jun 2021 – Dec 2024 | Kyiv – Lviv – Remote
+Led product design across a multi-platform edge computing ecosystem — web dashboards, mobile-adaptive interfaces, and AR experiences.
 • Architected interfaces across IDE, cluster orchestration, developer portal, and AR onboarding
 • Led micro-interaction system — state transitions, loading patterns, and feedback choreography
 
 Artkai — Lead Designer / Design Technologist
 Jun 2019 – Jun 2021 | Kyiv
-Led design practice across fintech, e-commerce, and enterprise clients.
+Drove data-informed design practice across fintech, e-commerce, and enterprise clients — balancing user needs with business goals.
 • Overhauled internal design infrastructure and ran systematic A/B testing programs
 • Co-restructured the design department (team of 4 + co-owner), built grading and promotion system
 
 SoftServe — UX Engineer
 Mar 2017 – Jun 2019 | Kyiv
-Data-heavy interfaces for enterprise clients including Prozorro government procurement.
+Delivered complex data-intensive web and mobile interfaces for enterprise and government clients.
 • Built accessibility-compliant components and data-dense form systems at scale
 
 Various agencies & freelance — UI/UX Designer & Front-end Developer
 2012 – 2017 | Kyiv
-Product design with hands-on front-end. Brands: Coca-Cola, Pernod Ricard, Danone. Built a Wix-like site builder.
+End-to-end product design with hands-on front-end execution. Delivered cross-platform solutions for Coca-Cola, Pernod Ricard, Danone.
 
 SKILLS
-Figma, Design Systems, HTML/CSS/JS, Angular Material, React, Figma Plugins, AI/LLM Workflow Tooling, Prompt UI Design, Data Visualization, Motion Design, Prototyping with Code, VS Code, Cursor, Claude, Git
+Product Design, Figma (Advanced), Mobile & Web Design, Cross-Platform UX, AI-Powered Design Workflow, User Research, Prototyping, Design Systems, Data-Driven Design, IoT, Data Visualization, Motion Design, HTML/CSS/JS, React, Angular Material
 
 EDUCATION
 International Economics — Kyiv National Linguistics University, 2008–2012
+Claude Code in Action, AI Fluency: Framework & Foundations — Anthropic Academy, 2026
 
 LANGUAGES
 Ukrainian (native), English (fluent), Russian, German (basic)
@@ -590,7 +646,7 @@ Ukrainian (native), English (fluent), Russian, German (basic)
 
         <!-- ATS keyword block -->
         <div class="ats-keywords" aria-hidden="true">
-Design Engineer, Product Designer, UX Engineer, Design Technologist, Design Systems, Component Libraries, Angular Material, React, HTML, CSS, JavaScript, Figma, Sketch, Adobe Creative Cloud, Principle, ProtoPie, AI Products, LLM, Human-AI Interaction, Prompt UI, Multimodal Interface Design, Data Visualization, Real-time Dashboards, Industrial SaaS, IoT, Micro-interactions, Motion Design, Interaction Design, Information Architecture, Accessibility, WCAG, Responsive Design, Offline-first, Design Sprints, A/B Testing, User Research, Mentoring, Edge Computing, AR, WebRTC, Figma Plugin Development, VS Code, Cursor, Claude, Git, CI/CD, Agile, Scrum, Fintech, Enterprise, E-commerce, Government, Procurement
+Product Designer, Senior Product Designer, Design Engineer, UX Engineer, Figma, Advanced Figma, Mobile Design, Web Design, Cross-Platform UX, iOS Design, Android Design, AI Tools, AI Design Workflow, LLM, ChatGPT, Claude, Cursor, AI-Powered Design, User Research, Qualitative Research, Usability Testing, Design Thinking, Data-Driven Design, Prototyping, Wireframing, Interactive Prototypes, Mockups, User Journeys, Design Systems, Component Libraries, Visual Design, UI Design, UX Design, Interaction Design, Motion Design, Micro-interactions, Data Visualization, Real-time Dashboards, Industrial SaaS, IoT, Smart Cameras, AI Products, Edge Computing, AR, HTML, CSS, JavaScript, React, Angular Material, Figma Plugins, Responsive Design, Mobile-First, Accessibility, WCAG, A/B Testing, Design Sprints, Agile, Scrum, Cross-functional Collaboration, Stakeholder Communication, English Fluent, Fintech, Enterprise, E-commerce
         </div>
 
     </div>
@@ -619,6 +675,19 @@ Design Engineer, Product Designer, UX Engineer, Design Technologist, Design Syst
 
         updateIcon();
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateIcon);
+
+        // Match photo height to header-text block
+        // Reset photo height first to avoid circular flex dependency
+        function syncPhotoHeight() {
+            const text = document.querySelector('.header-text');
+            const photo = document.querySelector('.header-photo');
+            if (!text || !photo) return;
+            photo.style.height = '0px';          // collapse photo so text measures freely
+            const textH = text.offsetHeight;
+            photo.style.height = textH + 'px';
+        }
+        document.fonts.ready.then(() => { syncPhotoHeight(); });
+        window.addEventListener('resize', syncPhotoHeight);
     </script>
 </body>
 </html>
