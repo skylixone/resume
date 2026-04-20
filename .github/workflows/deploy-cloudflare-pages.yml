@@ -1,0 +1,45 @@
+name: Deploy resume to Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "index.html"
+      - "me.jpg"
+      - ".github/workflows/deploy-cloudflare-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-pages-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Prepare deploy bundle
+        run: |
+          set -euo pipefail
+          mkdir -p .cf-pages-deploy
+          cp index.html .cf-pages-deploy/index.html
+          cp me.jpg .cf-pages-deploy/me.jpg
+
+      - name: Deploy to Cloudflare Pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx wrangler@4 pages deploy .cf-pages-deploy \
+            --project-name resume-3mdash \
+            --branch main
