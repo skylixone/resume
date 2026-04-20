@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ivan Korniienko — Product Designer | AI Products | Mobile & Web</title>
+    <title>Ivan Korniienko — Mobile Variant A (Pretext Right Envelope)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=TASA+Orbiter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -118,6 +118,10 @@
             object-position: top center;
             border: 2px solid var(--border);
             background: var(--bg-tag);
+        }
+
+        .header-photo-inline-mobile {
+            display: none;
         }
 
         .header-text {
@@ -341,6 +345,63 @@
             color: var(--fg);
         }
 
+        /* === MOBILE VARIANT A: photo inline after name === */
+        @media (max-width: 767px) {
+            .page {
+                padding: calc(var(--unit) * 6) calc(var(--unit) * 2);
+            }
+
+            .theme-toggle {
+                top: calc(var(--unit) * 2);
+                right: calc(var(--unit) * 2);
+            }
+
+            .header-inner {
+                display: block;
+            }
+
+            .header-text {
+                display: block;
+            }
+
+            h1 {
+                font-size: 40px;
+                line-height: 1.08;
+            }
+
+            .header-photo-wrap {
+                display: none;
+            }
+
+            .header-photo-inline-mobile {
+                display: inline-block;
+                width: 0.86lh;
+                height: 0.86lh;
+                margin-left: 0.32em;
+                border-radius: 50%;
+                object-fit: cover;
+                object-position: top center;
+                vertical-align: -0.14em;
+                border: 1px solid var(--border);
+                background: var(--bg-tag);
+            }
+
+            .title {
+                font-size: 14px;
+            }
+
+            .intro {
+                max-width: none;
+                font-size: 14px;
+                line-height: 1.55;
+            }
+
+            .contact {
+                margin-top: calc(var(--unit) * 2.5);
+                gap: calc(var(--unit) * 1.5);
+            }
+        }
+
         /* === SCALE UP: large displays === */
         @media (min-width: 1400px) {
             :root {
@@ -473,7 +534,7 @@
                     <img class="header-photo u-photo" src="me.jpg" alt="Ivan Korniienko" width="665" height="1182">
                 </div>
                 <div class="header-text">
-                    <h1 class="p-name">Ivan Korniienko</h1>
+                    <h1 class="p-name">Ivan Korniienko<img class="header-photo-inline-mobile" src="me.jpg" alt="Ivan Korniienko" width="665" height="1182"></h1>
                     <div class="p-job-title title">Design Engineer · AI Products · Design Systems</div>
                     <p class="intro p-note">Design engineer with 12+ years across design systems, data-dense product UI, and AI interfaces. I build component architectures that ship — in Figma, in code, in production. Background in linguistics and electronics: I think about interfaces as systems with constraints, states, and failure modes. Most at home where design is an engineering problem — typography, data, interaction — not a styling pass.</p>
                 </div>
@@ -677,18 +738,76 @@ Product Designer, Senior Product Designer, Design Engineer, UX Engineer, Figma, 
         updateIcon();
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateIcon);
 
-        // Match photo height to header-text block
-        // Reset photo height first to avoid circular flex dependency
+        function isMobileHeader() {
+            return window.matchMedia('(max-width: 767px)').matches;
+        }
+
+        // Desktop: match photo height to header text.
+        // Mobile: never force equal heights.
         function syncPhotoHeight() {
             const text = document.querySelector('.header-text');
             const photo = document.querySelector('.header-photo');
             if (!text || !photo) return;
-            photo.style.height = '0px';          // collapse photo so text measures freely
+
+            if (isMobileHeader()) {
+                photo.style.height = 'auto';
+                return;
+            }
+
+            photo.style.height = '0px';
             const textH = text.offsetHeight;
             photo.style.height = textH + 'px';
         }
-        document.fonts.ready.then(() => { syncPhotoHeight(); });
-        window.addEventListener('resize', syncPhotoHeight);
+
+
+        let _pretextModule = null;
+        let _pretextAttempted = false;
+
+        async function loadPretext() {
+            if (_pretextAttempted) return _pretextModule;
+            _pretextAttempted = true;
+            try {
+                _pretextModule = await import('https://esm.sh/@chenglou/pretext@latest');
+            } catch (err) {
+                _pretextModule = null;
+            }
+            return _pretextModule;
+        }
+
+        async function syncMobilePretextEnvelope() {
+            if (!isMobileHeader()) return;
+
+            const wrap = document.querySelector('.header-photo-wrap');
+            const intro = document.querySelector('.intro');
+            const text = document.querySelector('.header-text');
+            if (!wrap || !intro || !text) return;
+
+            // Baseline fallback even if pretext fails.
+            let size = Math.max(96, Math.min(132, Math.round(window.innerWidth * 0.30)));
+
+            const mod = await loadPretext();
+            if (mod && mod.prepare && mod.layout) {
+                const introStyle = getComputedStyle(intro);
+                const lineHeight = parseFloat(introStyle.lineHeight) || 22;
+                const font = `${introStyle.fontSize} ${introStyle.fontFamily}`;
+                const prepared = mod.prepare(intro.textContent || '', font);
+                const available = Math.max(180, Math.round(text.clientWidth));
+                const laid = mod.layout(prepared, available, lineHeight);
+
+                // Gentle envelope: map measured paragraph height to a conservative circle size.
+                size = Math.max(96, Math.min(140, Math.round((laid.height || 0) * 0.34)));
+            }
+
+            wrap.style.width = `${size}px`;
+        }
+
+        async function syncHeaderLayout() {
+            syncPhotoHeight();
+            await syncMobilePretextEnvelope();
+        }
+
+        document.fonts.ready.then(() => { syncHeaderLayout(); });
+        window.addEventListener('resize', syncHeaderLayout);
     </script>
 </body>
 </html>
