@@ -14,7 +14,7 @@
     "name": "Ivan Korniienko",
     "jobTitle": "Design Engineer",
     "description": "Design engineer with 12+ years across design systems, data-dense product UI, and AI interfaces. I build component architectures that ship — in Figma, in code, in production.",
-    "email": "mailto:mrivankorniyenko@gmail.com",
+    "email": "mailto:ivan@3mdash.net",
     "telephone": "+38 063 435 42 68",
     "address": {
         "@type": "PostalAddress",
@@ -152,13 +152,20 @@
         }
 
         .contact {
-            display: flex;
-            flex-wrap: wrap;
-            gap: calc(var(--unit) * 2);
+            display: grid;
+            grid-template-columns: repeat(6, max-content);
+            column-gap: calc(var(--unit) * 2);
+            row-gap: 0;
             margin-top: calc(var(--unit) * 2);
             font-size: 13px;
             color: var(--fg-tertiary);
             width: 100%;
+            align-items: center;
+        }
+
+        .contact-item {
+            min-width: 0;
+            white-space: nowrap;
         }
 
         .contact a, .contact [itemprop="email"], .contact [itemprop="telephone"] {
@@ -171,22 +178,6 @@
         .contact a:hover, .contact [itemprop="email"]:hover, .contact [itemprop="telephone"]:hover {
             color: var(--accent);
             border-color: var(--accent);
-        }
-
-        .contact span::before {
-            content: '';
-            display: inline-block;
-            width: 3px;
-            height: 3px;
-            background: var(--fg-tertiary);
-            border-radius: 50%;
-            vertical-align: middle;
-            margin-right: calc(var(--unit) * 2);
-            opacity: 0.5;
-        }
-
-        .contact span:first-child::before {
-            display: none;
         }
 
         /* === SECTION === */
@@ -398,7 +389,34 @@
 
             .contact {
                 margin-top: calc(var(--unit) * 2.5);
-                gap: calc(var(--unit) * 1.5);
+                column-gap: calc(var(--unit) * 1.5);
+                row-gap: calc(var(--unit) * 0.75);
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+
+            .contact-item {
+                text-align: left;
+            }
+
+            .contact .p-tel {
+                position: relative;
+                display: inline-block;
+                padding-left: 0;
+                border-bottom: none;
+            }
+
+            .contact .p-tel .tel-core {
+                border-bottom: 1px solid var(--border);
+            }
+
+            .contact .p-tel:hover .tel-core {
+                border-color: var(--accent);
+            }
+
+            .contact .p-tel .hang-plus {
+                position: absolute;
+                left: 0;
+                transform: translateX(-1.5ch);
             }
         }
 
@@ -540,11 +558,15 @@
                 </div>
             </div>
             <div class="contact">
-                <span class="p-locality">Kyiv, Ukraine</span>
-                <span><a class="u-email" href="mailto:mrivankorniyenko@gmail.com">mrivankorniyenko@gmail.com</a></span>
-                <span><a class="u-url" href="https://linkedin.com/in/skylixone">linkedin</a></span>
-                <span><a class="u-url" href="https://github.com/skylixone">github.com/skylixone</a></span>
-                <span><a class="p-tel" href="tel:+380****4268">+38 063 435 42 68</a></span>
+                <span class="contact-item p-locality">Kyiv, Ukraine</span>
+                <span class="contact-item"><a class="p-tel" href="tel:+380****4268"><span class="hang-plus" aria-hidden="true">+</span><span class="tel-core">38 063 435 42 68</span></a></span>
+                <span class="contact-item"><a class="u-url" href="https://linkedin.com/in/skylixone">linked.in</a></span>
+                <span class="contact-item"><a class="u-email" href="mailto:ivan@3mdash.net">ivan@3mdash.net</a></span>            
+                <span class="contact-item"><a class="u-url" href="https://github.com/skylixone">github/skylixone</a></span>
+                
+                <span class="contact-item" aria-hidden="true"></span>
+               
+              
             </div>
         </header>
 
@@ -659,7 +681,7 @@
 IVAN KORNIIENKO
 Design Engineer · AI Products · Design Systems
 Kyiv, Ukraine
-Email: mrivankorniyenko@gmail.com
+Email: ivan@3mdash.net
 Phone: +38 063 435 42 68
 LinkedIn: linkedin.com/in/skylixone
 
