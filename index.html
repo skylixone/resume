@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ivan Korniienko — Mobile Variant A (Pretext Right Envelope)</title>
+    <title>Ivan Korniienko</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=TASA+Orbiter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script type="application/ld+json">
 {
     "@context": "https://schema.org",
@@ -19,12 +19,13 @@
     "address": {
         "@type": "PostalAddress",
         "addressLocality": "Kyiv",
-        "addressCountry": "Ukraine"
+        "addressCountry": " "
     },
     "url": "https://linkedin.com/in/skylixone",
     "sameAs": [
         "https://linkedin.com/in/skylixone",
         "https://github.com/skylixone"
+        "https://3mdash.net/"
     ]
 }
     </script>
@@ -33,6 +34,7 @@
         :root {
             --unit: 8px;
             --col: 720px;
+            --contact-size: 20px;
 
             --fg: #111;
             --fg-secondary: #555;
@@ -42,11 +44,37 @@
             --accent: #e74c3c;
             --border: #e0e0e0;
             --border-light: #f0f0f0;
+
+            /* === Vertical Rhythm Tokens (HTML order) === */
+            /* Global */
+            --page-pad-top: calc(var(--unit) * 8);
+            --page-pad-bottom: calc(var(--unit) * 8);
+            --section-gap: calc(var(--unit) * 6);
+            --header-section-gap: calc(var(--unit) * 6);
+
+            /* Header */
+            --h1-jobtitle-gap: calc(var(--unit) * 1);
+            --jobtitle-intro-gap: calc(var(--unit) * 1.5);
+            --intro-contact-gap: calc(var(--unit) * 2);
+
+            /* Section Label */
+            --section-label-offset-top: calc(var(--unit) * 1.618);
+            --section-label-content-gap: calc(var(--unit) * 3.15);
+
+            /* Experience */
+            --exp-item-gap: calc(var(--unit) * 4);
+            --expTop-expPeriod-gap: calc(var(--unit) * 0.5);
+            --expPeriod-expContext-gap: calc(var(--unit) * 1);
+            --expContext-expBullets-gap: calc(var(--unit) * 1);
+            --exp-bullet-gap: calc(var(--unit) * 0.5);
+
+            /* Meta */
+            --meta-dt-dd-gap: 2px;
         }
 
         /* === Dark mode: manual toggle OR system preference === */
         [data-theme="dark"] {
-            --fg: #e8e8e8;
+            --fg: #FFF;
             --fg-secondary: #aaa;
             --fg-tertiary: #777;
             --bg: #111;
@@ -58,7 +86,7 @@
 
         @media (prefers-color-scheme: dark) {
             :root:not([data-theme="light"]) {
-                --fg: #e8e8e8;
+                --fg: #FFF;
                 --fg-secondary: #aaa;
                 --fg-tertiary: #777;
                 --bg: #111;
@@ -73,9 +101,11 @@
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'TASA Orbiter', -apple-system, system-ui, sans-serif;
-            font-size: 15px;
-            line-height: 1.55;
+            font-family: 'Geist Mono';
+            font-size: 16px;
+            line-height: 1.1618;
+            word-spacing: -15%;
+            letter-spacing:0.5%;
             color: var(--fg);
             background: var(--bg);
             -webkit-font-smoothing: antialiased;
@@ -85,18 +115,20 @@
         .page {
             max-width: var(--col);
             margin: 0 auto;
-            padding: calc(var(--unit) * 8) calc(var(--unit) * 3);
+            padding: var(--page-pad-top) calc(var(--unit) * 3) var(--page-pad-bottom);
         }
 
         /* === HEADER === */
         header {
-            margin-bottom: calc(var(--unit) * 6);
+            margin-bottom: var(--header-section-gap);
         }
 
         .header-inner {
+            --header-photo-size: clamp(148px, 18vw, 210px);
+            --header-photo-gap: calc(var(--unit) * 4);
             display: flex;
             flex-direction: row-reverse;
-            gap: calc(var(--unit) * 4);
+            gap: var(--header-photo-gap);
             align-items: flex-start;
         }
 
@@ -110,7 +142,8 @@
 
         .header-photo {
             display: block;
-            width: auto;
+            width: var(--header-photo-size);
+            height: var(--header-photo-size);
             aspect-ratio: 1 / 1;
             border-radius: 50%;
             clip-path: circle(50%);
@@ -130,25 +163,41 @@
         }
 
         h1 {
-            font-size: 32px;
+            font-size: 56px;
             font-weight: 700;
             letter-spacing: -0.5px;
             line-height: 1.15;
         }
 
         .title {
-            font-size: 15px;
+            font-size:16px;
             font-weight: 500;
             color: var(--fg-secondary);
-            margin-top: calc(var(--unit) * 0.5);
+            margin-top: var(--h1-jobtitle-gap);
         }
 
         .intro {
-            font-size: 14px;
+            font-size: 20px;
             line-height: 1.6;
             color: var(--fg-secondary);
-            margin-top: calc(var(--unit) * 1.5);
+            margin-top: var(--jobtitle-intro-gap);
             max-width: 58ch;
+        }
+
+        .intro.pretext-wrapped {
+            max-width: none;
+        }
+
+        .intro-line {
+            display: block;
+            white-space: nowrap;
+            width: fit-content;
+        }
+
+        @media (min-width: 768px) {
+            .intro.pretext-wrapped {
+                margin-right: calc(-1 * (var(--header-photo-size, 0px) + var(--header-photo-gap, 0px)));
+            }
         }
 
         .contact {
@@ -156,8 +205,8 @@
             grid-template-columns: repeat(6, max-content);
             column-gap: calc(var(--unit) * 2);
             row-gap: 0;
-            margin-top: calc(var(--unit) * 2);
-            font-size: 13px;
+            margin-top: var(--intro-contact-gap);
+            font-size: clamp(13px, 1.6vw, var(--contact-fit-size, var(--contact-size)));
             color: var(--fg-tertiary);
             width: 100%;
             align-items: center;
@@ -169,7 +218,7 @@
         }
 
         .contact a, .contact [itemprop="email"], .contact [itemprop="telephone"] {
-            color: var(--fg-tertiary);
+            color: var(--accent);
             text-decoration: none;
             border-bottom: 1px solid var(--border);
             transition: color 0.15s, border-color 0.15s;
@@ -182,24 +231,27 @@
 
         /* === SECTION === */
         section {
-            margin-bottom: calc(var(--unit) * 6);
+            margin-bottom: var(--section-gap);
         }
 
         .section-label {
-            font-size: 11px;
+            font-size: 16px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 2px;
             color: var(--fg-tertiary);
-            margin-bottom: calc(var(--unit) * 1.5);
-            padding-top: calc(var(--unit) * 1);
+            margin-bottom: var(--section-label-content-gap);
+            padding-top: var(--section-label-offset-top);
             border-top: 2px solid var(--accent);
+            border-right: 2px solid var(--accent);
+            border-top-right-radius: 8px;
+            padding-left:calc(var(--unit) * 1);
         }
 
         /* === EXPERIENCE ITEM === */
         .exp {
-            margin-bottom: calc(var(--unit) * 4);
-            padding-bottom: calc(var(--unit) * 4);
+            margin-bottom: var(--exp-item-gap);
+            padding-bottom: var(--exp-item-gap);
             border-bottom: 1px solid var(--border-light);
         }
 
@@ -213,19 +265,19 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
-            align-items: baseline;
+            align-items: center;
             gap: calc(var(--unit) * 1);
-            margin-bottom: calc(var(--unit) * 0.5);
+            margin-bottom: var(--expTop-expPeriod-gap);
         }
 
         .exp-company {
-            font-size: 17px;
+            font-size: 32px;
             font-weight: 600;
             color: var(--fg);
         }
 
         .exp-role {
-            font-size: 13px;
+            font-size: 16px;
             font-weight: 500;
             color: var(--fg-secondary);
         }
@@ -233,14 +285,14 @@
         .exp-period {
             font-size: 12px;
             color: var(--fg-tertiary);
-            margin-bottom: calc(var(--unit) * 1);
+            margin-bottom: var(--expPeriod-expContext-gap);
         }
 
         .exp-context {
             font-size: 14px;
             line-height: 1.5;
             color: var(--fg);
-            margin-bottom: calc(var(--unit) * 1);
+            margin-bottom: var(--expContext-expBullets-gap);
         }
 
         .exp-bullets {
@@ -251,7 +303,7 @@
         .exp-bullets li {
             position: relative;
             padding-left: calc(var(--unit) * 2);
-            margin-bottom: calc(var(--unit) * 0.5);
+            margin-bottom: var(--exp-bullet-gap);
             font-size: 14px;
             line-height: 1.5;
             color: var(--fg);
@@ -278,7 +330,7 @@
 
         .tag {
             display: inline-block;
-            font-size: 11px;
+            font-size: 16px;
             font-weight: 500;
             padding: 2px 8px;
             background: var(--bg-tag);
@@ -292,17 +344,17 @@
             display: flex;
             flex-wrap: wrap;
             gap: calc(var(--unit) * 4);
-            font-size: 13px;
+            font-size: 16px;
             color: var(--fg-tertiary);
         }
 
         .meta-row dt {
             font-weight: 500;
             color: var(--fg-secondary);
-            font-size: 11px;
+            font-size: 13px;
             text-transform: uppercase;
             letter-spacing: 2px;
-            margin-bottom: 2px;
+            margin-bottom: var(--meta-dt-dd-gap);
         }
 
         .meta-row dd {
@@ -338,8 +390,16 @@
 
         /* === MOBILE VARIANT A: photo inline after name === */
         @media (max-width: 767px) {
+            :root {
+                --page-pad-top: calc(var(--unit) * 6);
+                --page-pad-bottom: calc(var(--unit) * 6);
+                --h1-jobtitle-gap: calc(var(--unit) * 0.5);
+                --jobtitle-intro-gap: calc(var(--unit) * 1.25);
+                --intro-contact-gap: calc(var(--unit) * 2.5);
+            }
+
             .page {
-                padding: calc(var(--unit) * 6) calc(var(--unit) * 2);
+                padding: var(--page-pad-top) calc(var(--unit) * 2) var(--page-pad-bottom);
             }
 
             .theme-toggle {
@@ -388,7 +448,7 @@
             }
 
             .contact {
-                margin-top: calc(var(--unit) * 2.5);
+                font-size: 14px;
                 column-gap: calc(var(--unit) * 1.5);
                 row-gap: calc(var(--unit) * 0.75);
                 grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -403,13 +463,21 @@
                 display: inline-block;
                 padding-left: 0;
                 border-bottom: none;
+                color: inherit;
+                text-decoration: none;
             }
 
             .contact .p-tel .tel-core {
                 border-bottom: 1px solid var(--border);
             }
 
-            .contact .p-tel:hover .tel-core {
+            .contact .p-tel:hover,
+            .contact .p-tel:focus-visible {
+                color: var(--accent);
+            }
+
+            .contact .p-tel:hover .tel-core,
+            .contact .p-tel:focus-visible .tel-core {
                 border-color: var(--accent);
             }
 
@@ -421,18 +489,33 @@
         }
 
         /* === SCALE UP: large displays === */
-        @media (min-width: 1400px) {
+        /* Large layout kicks in when the large column+padding footprint actually fits viewport width. */
+        @media (min-width: 1000px) {
             :root {
                 --unit: 10px;
-                --col: 860px;
+                --col: 920px;
+                --contact-size: 22px;
+
+                --page-pad-top: calc(var(--unit) * 9);
+                --page-pad-bottom: calc(var(--unit) * 9);
+                --header-section-gap: calc(var(--unit) * 7);
+                --section-gap: calc(var(--unit) * 7);
+                --h1-jobtitle-gap: calc(var(--unit) * 0.75);
+                --jobtitle-intro-gap: calc(var(--unit) * 1.75);
+                --intro-contact-gap: calc(var(--unit) * 2.5);
             }
 
-            body { font-size: 17px; }
-            h1 { font-size: 40px; }
-            .exp-company { font-size: 20px; }
-            .exp-context { font-size: 16px; }
-            .exp-bullets li { font-size: 16px; }
-            .tag { font-size: 12px; padding: 3px 10px; }
+            body { font-size: 18px; }
+            .page { padding: var(--page-pad-top) calc(var(--unit) * 4) var(--page-pad-bottom); }
+            h1 { font-size: 64px; }
+            .title { font-size: 18px; }
+            .intro { font-size: 22px; max-width: 64ch; }
+            .exp-company { font-size: 36px; }
+            .exp-role { font-size: 18px; }
+            .exp-period { font-size: 13px; }
+            .exp-context { font-size: 18px; }
+            .exp-bullets li { font-size: 18px; }
+            .tag { font-size: 18px; padding: 8px 12px; }
         }
 
         /* === PRINT: Single-page A4 fit === */
@@ -462,13 +545,19 @@
 
             header { margin-bottom: 14pt; }
             .header-photo { width: 64pt; }
-            h1 { font-size: 17pt; }
+            h1 { font-size: 18pt; }
             .title { font-size: 9.5pt; margin-top: 2pt; }
             .intro { font-size: 9pt; margin-top: 4pt; line-height: 1.4; }
-            .contact { font-size: 8.5pt; gap: 10pt; margin-top: 4pt; }
+            .contact { font-size: 8.5pt; margin-top: 4pt; }
+            .contact {
+                grid-template-columns: repeat(6, max-content);
+                column-gap: 10pt;
+                row-gap: 0;
+            }
+            .contact-item { white-space: nowrap; }
 
             .section-label {
-                font-size: 7.5pt;
+                font-size: 12pt;
                 margin-bottom: 6pt;
                 margin-top: 0;
                 padding-top: 5pt;
@@ -480,12 +569,12 @@
 
             .exp { margin-bottom: 10pt; padding-bottom: 10pt; }
             .exp-top { margin-bottom: 1pt; gap: 4pt; }
-            .exp-company { font-size: 10.5pt; }
+            
             .exp-role { font-size: 8.5pt; }
             .exp-period { font-size: 7.5pt; margin-bottom: 3pt; }
-            .exp-context { font-size: 9pt; margin-bottom: 3pt; line-height: 1.4; }
+            .exp-context { font-size: 9pt; margin-bottom: 3pt; line-height: 1.7; }
 
-            .exp-bullets li { font-size: 9pt; padding-left: 10pt; margin-bottom: 1.5pt; line-height: 1.4; }
+            .exp-bullets li { font-size: 9pt; padding-left: 10pt; margin-bottom: 1.5pt; line-height: 2; }
             .exp-bullets li::before { top: 5.5pt; width: 3pt; height: 3pt; }
 
             .tag {
@@ -518,6 +607,12 @@
                 border-top: 0.5pt solid #ccc;
             }
 
+            .ats-plaintext .ats-link {
+                color: #000;
+                text-decoration: none;
+                border-bottom: none;
+            }
+
             @page {
                 size: A4;
                 margin: 14mm 16mm;
@@ -546,7 +641,7 @@
 
     <div class="page h-resume">
 
-        <header class="h-card p-contact">
+        <header class="h-card">
             <div class="header-inner">
                 <div class="header-photo-wrap">
                     <img class="header-photo u-photo" src="me.jpg" alt="Ivan Korniienko" width="665" height="1182">
@@ -558,17 +653,37 @@
                 </div>
             </div>
             <div class="contact">
-                <span class="contact-item p-locality">Kyiv, Ukraine</span>
                 <span class="contact-item"><a class="p-tel" href="tel:+380****4268"><span class="hang-plus" aria-hidden="true">+</span><span class="tel-core">38 063 435 42 68</span></a></span>
-                <span class="contact-item"><a class="u-url" href="https://linkedin.com/in/skylixone">linked.in</a></span>
-                <span class="contact-item"><a class="u-email" href="mailto:ivan@3mdash.net">ivan@3mdash.net</a></span>            
-                <span class="contact-item"><a class="u-url" href="https://github.com/skylixone">github/skylixone</a></span>
-                
+                <span class="contact-item"><a class="u-url u-uid" rel="me" href="https://linkedin.com/in/skylixone">linked.in</a></span>
+                <span class="contact-item"><a class="u-email" href="mailto:ivan@3mdash.net">ivan@3mdash.net</a></span>
+                <span class="contact-item"><a class="u-url" rel="me" href="https://github.com/skylixone">github/skylixone</a></span>
                 <span class="contact-item" aria-hidden="true"></span>
-               
-              
+                <span class="contact-item" aria-hidden="true"></span>
             </div>
         </header>
+        <!-- === SKILLS (compressed tags) === -->
+        <section>
+            <h2 class="section-label">Skillset</h2>
+            <div class="tags">
+                <span class="tag">Product Design (10+ years)</span>
+                <span class="tag">Figma (Advanced)</span>
+                <span class="tag">Mobile & Web Design</span>
+                <span class="tag">Cross-Platform UX</span>
+                <span class="tag">Human-AI Interaction</span>
+                <span class="tag">User Research</span>
+                <span class="tag">Prototyping</span>
+                <span class="tag">Design Systems</span>
+                <span class="tag">Data-Driven Design</span>
+                <span class="tag">Internet of Things </span>
+                <span class="tag">Industrial SaaS</span>
+                <span class="tag">Data Visualization</span>
+                <span class="tag">HTML / CSS / JS</span>
+                <span class="tag">React</span>
+                <span class="tag">Pretext.JS</span>
+                <span class="tag">Typescript</span>
+                
+            </div>
+        </section>
 
         <!-- === EXPERIENCE === -->
         <section>
@@ -635,27 +750,6 @@
             </div>
         </section>
 
-        <!-- === SKILLS (compressed tags) === -->
-        <section>
-            <h2 class="section-label">Skillset</h2>
-            <div class="tags">
-                <span class="tag">Product Design (10+ years)</span>
-                <span class="tag">Figma (Advanced)</span>
-                <span class="tag">Mobile & Web Design</span>
-                <span class="tag">Cross-Platform UX</span>
-                <span class="tag">AI-Powered Design Workflow</span>
-                <span class="tag">User Research</span>
-                <span class="tag">Prototyping (Lo-Fi to Hi-Fi)</span>
-                <span class="tag">Design Systems</span>
-                <span class="tag">Data-Driven Design</span>
-                <span class="tag">IoT & Industrial SaaS</span>
-                <span class="tag">Data Visualization</span>
-                <span class="tag">Motion Design</span>
-                <span class="tag">HTML / CSS / JS</span>
-                <span class="tag">React</span>
-                <span class="tag">Angular Material</span>
-            </div>
-        </section>
 
         <!-- === META === -->
         <section>
@@ -681,9 +775,10 @@
 IVAN KORNIIENKO
 Design Engineer · AI Products · Design Systems
 Kyiv, Ukraine
-Email: ivan@3mdash.net
-Phone: +38 063 435 42 68
-LinkedIn: linkedin.com/in/skylixone
+Email: <a class="ats-link" href="mailto:ivan@3mdash.net">ivan@3mdash.net</a>
+Phone: <a class="ats-link" href="tel:+380****4268">+38 063 435 42 68</a>
+LinkedIn: <a class="ats-link" href="https://linkedin.com/in/skylixone">linkedin.com/in/skylixone</a>
+GitHub: <a class="ats-link" href="https://github.com/skylixone">github.com/skylixone</a>
 
 SUMMARY
 Design engineer with 12+ years across design systems, data-dense product UI, and AI interfaces. I build component architectures that ship — in Figma, in code, in production. Background in linguistics and electronics: I think about interfaces as systems with constraints, states, and failure modes. Most at home where design is an engineering problem — typography, data, interaction — not a styling pass.
@@ -730,7 +825,7 @@ Ukrainian (native), English (fluent), Russian, German (basic)
 
         <!-- ATS keyword block -->
         <div class="ats-keywords" aria-hidden="true">
-Product Designer, Senior Product Designer, Design Engineer, UX Engineer, Figma, Advanced Figma, Mobile Design, Web Design, Cross-Platform UX, iOS Design, Android Design, AI Tools, AI Design Workflow, LLM, ChatGPT, Claude, Cursor, AI-Powered Design, User Research, Qualitative Research, Usability Testing, Design Thinking, Data-Driven Design, Prototyping, Wireframing, Interactive Prototypes, Mockups, User Journeys, Design Systems, Component Libraries, Visual Design, UI Design, UX Design, Interaction Design, Motion Design, Micro-interactions, Data Visualization, Real-time Dashboards, Industrial SaaS, IoT, Smart Cameras, AI Products, Edge Computing, AR, HTML, CSS, JavaScript, React, Angular Material, Figma Plugins, Responsive Design, Mobile-First, Accessibility, WCAG, A/B Testing, Design Sprints, Agile, Scrum, Cross-functional Collaboration, Stakeholder Communication, English Fluent, Fintech, Enterprise, E-commerce
+Product Designer, Senior Product Designer, Design Engineer, UX Engineer, Design Technologist, Figma, Advanced Figma, Mobile Design, Web Design, Cross-Platform UX, iOS Design, Android Design, AI Tools, AI Design Workflow, LLM, ChatGPT, Claude, Cursor, AI-Powered Design, User Research, Qualitative Research, Usability Testing, Design Thinking, Data-Driven Design, Prototyping, Wireframing, Interactive Prototypes, Mockups, User Journeys, Design Systems, Component Libraries, Visual Design, UI Design, UX Design, Interaction Design, Motion Design, Micro-interactions, Data Visualization, Real-time Dashboards, Industrial SaaS, IoT, Smart Cameras, AI Products, Edge Computing, AR, HTML, CSS, JavaScript, React, Angular Material, Figma Plugins, Responsive Design, Mobile-First, Accessibility, WCAG, A/B Testing, Design Sprints, Agile, Scrum, Cross-functional Collaboration, Stakeholder Communication, English Fluent, Fintech, Enterprise, E-commerce
         </div>
 
     </div>
@@ -764,24 +859,6 @@ Product Designer, Senior Product Designer, Design Engineer, UX Engineer, Figma, 
             return window.matchMedia('(max-width: 767px)').matches;
         }
 
-        // Desktop: match photo height to header text.
-        // Mobile: never force equal heights.
-        function syncPhotoHeight() {
-            const text = document.querySelector('.header-text');
-            const photo = document.querySelector('.header-photo');
-            if (!text || !photo) return;
-
-            if (isMobileHeader()) {
-                photo.style.height = 'auto';
-                return;
-            }
-
-            photo.style.height = '0px';
-            const textH = text.offsetHeight;
-            photo.style.height = textH + 'px';
-        }
-
-
         let _pretextModule = null;
         let _pretextAttempted = false;
 
@@ -796,40 +873,196 @@ Product Designer, Senior Product Designer, Design Engineer, UX Engineer, Figma, 
             return _pretextModule;
         }
 
-        async function syncMobilePretextEnvelope() {
-            if (!isMobileHeader()) return;
+        function escapeHtml(str) {
+            return str
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;');
+        }
 
-            const wrap = document.querySelector('.header-photo-wrap');
+        function restoreIntro(intro) {
+            const raw = intro.dataset.rawText || intro.textContent || '';
+            intro.textContent = raw;
+            intro.classList.remove('pretext-wrapped');
+        }
+
+        async function wrapIntroAroundPhoto() {
             const intro = document.querySelector('.intro');
-            const text = document.querySelector('.header-text');
-            if (!wrap || !intro || !text) return;
+            const headerInner = document.querySelector('.header-inner');
+            const photo = document.querySelector('.header-photo');
+            if (!intro || !headerInner || !photo) return;
 
-            // Baseline fallback even if pretext fails.
-            let size = Math.max(96, Math.min(132, Math.round(window.innerWidth * 0.30)));
-
-            const mod = await loadPretext();
-            if (mod && mod.prepare && mod.layout) {
-                const introStyle = getComputedStyle(intro);
-                const lineHeight = parseFloat(introStyle.lineHeight) || 22;
-                const font = `${introStyle.fontSize} ${introStyle.fontFamily}`;
-                const prepared = mod.prepare(intro.textContent || '', font);
-                const available = Math.max(180, Math.round(text.clientWidth));
-                const laid = mod.layout(prepared, available, lineHeight);
-
-                // Gentle envelope: map measured paragraph height to a conservative circle size.
-                size = Math.max(96, Math.min(140, Math.round((laid.height || 0) * 0.34)));
+            if (!intro.dataset.rawText) {
+                intro.dataset.rawText = intro.textContent || '';
             }
 
-            wrap.style.width = `${size}px`;
+            if (isMobileHeader()) {
+                restoreIntro(intro);
+                return;
+            }
+
+            if (intro.dataset.wrapBusy === '1') {
+                intro.dataset.wrapPending = '1';
+                return;
+            }
+            intro.dataset.wrapBusy = '1';
+
+            const fullWidth = Math.max(200, Math.floor(intro.getBoundingClientRect().width));
+
+            const introStyle = getComputedStyle(intro);
+            const lineHeight = parseFloat(introStyle.lineHeight) || 32;
+            const letterSpacing = parseFloat(introStyle.letterSpacing) || 0;
+            const font = `${introStyle.fontWeight} ${introStyle.fontSize} ${introStyle.fontFamily}`;
+
+            const introRect = intro.getBoundingClientRect();
+            const photoRect = photo.getBoundingClientRect();
+            const radius = photoRect.width / 2;
+            const cx = photoRect.left + radius;
+            const cy = photoRect.top + radius;
+            const introLeft = introRect.left;
+            const contourLift = lineHeight * 3.0;
+            const minShapeWidth = Math.max(88, Math.floor(fullWidth * 0.14));
+            const contourBleed = 52;
+
+            try {
+                const mod = await loadPretext();
+                if (!mod || !mod.prepareWithSegments || !mod.layoutNextLineRange || !mod.materializeLineRange) {
+                    restoreIntro(intro);
+                    return;
+                }
+
+                const prepared = mod.prepareWithSegments(intro.dataset.rawText, font, {
+                    whiteSpace: 'normal',
+                    letterSpacing
+                });
+
+                let cursor = { segmentIndex: 0, graphemeIndex: 0 };
+                let lineIndex = 0;
+                const lines = [];
+
+                while (true) {
+                    const lineCenterY = introRect.top + (lineIndex * lineHeight) + (lineHeight / 2) - contourLift;
+                    const dy = lineCenterY - cy;
+                    let width = fullWidth;
+
+                    if (Math.abs(dy) < radius) {
+                        const halfChord = Math.sqrt((radius * radius) - (dy * dy));
+                        const circleLeftAtY = cx - halfChord;
+                        const shapeWidth = Math.floor(circleLeftAtY - introLeft + contourBleed);
+                        width = Math.min(width, shapeWidth);
+                    }
+
+                    width = Math.max(minShapeWidth, width);
+
+                    const range = mod.layoutNextLineRange(prepared, cursor, width);
+                    if (!range) break;
+                    const line = mod.materializeLineRange(prepared, range);
+                    lines.push(line.text);
+                    cursor = range.end;
+                    lineIndex += 1;
+                }
+
+                if (!lines.length) {
+                    restoreIntro(intro);
+                    return;
+                }
+
+                intro.classList.add('pretext-wrapped');
+                intro.innerHTML = lines
+                    .map((line) => `<span class="intro-line">${escapeHtml(line) || '&nbsp;'}</span>`)
+                    .join('');
+            } finally {
+                intro.dataset.wrapBusy = '0';
+                if (intro.dataset.wrapPending === '1') {
+                    intro.dataset.wrapPending = '0';
+                    queueMicrotask(() => { scheduleSyncHeaderLayout(); });
+                }
+            }
+        }
+
+        function fitContactToColumn() {
+            const contact = document.querySelector('.contact');
+            const page = document.querySelector('.page');
+            const headerInner = document.querySelector('.header-inner');
+            if (!contact || !page || !headerInner) return;
+
+            if (isMobileHeader()) {
+                contact.style.removeProperty('--contact-fit-size');
+                return;
+            }
+
+            const rootStyle = getComputedStyle(document.documentElement);
+            const pageStyle = getComputedStyle(page);
+
+            const base = parseFloat(rootStyle.getPropertyValue('--contact-size')) || 20;
+            const min = 11;
+            const max = base;
+
+            const col = parseFloat(rootStyle.getPropertyValue('--col')) || page.getBoundingClientRect().width;
+            const padL = parseFloat(pageStyle.paddingLeft) || 0;
+            const padR = parseFloat(pageStyle.paddingRight) || 0;
+            const referenceContentWidth = Math.max(220, col - padL - padR);
+            const available = Math.max(220, headerInner.getBoundingClientRect().width);
+
+            // Keep contacts visibly responsive to viewport changes even when header width is capped.
+            // Scale by viewport (desktop range 768..1680) and blend with column ratio.
+            const vw = Math.max(768, Math.min(1680, window.innerWidth || 0));
+            const viewportRatio = (vw - 768) / (1680 - 768);
+            const viewportScaled = min + (base - min) * viewportRatio;
+            const columnScaled = base * (available / referenceContentWidth);
+            const mixed = (viewportScaled * 0.72) + (columnScaled * 0.28);
+
+            let size = Math.max(min, Math.min(max, Math.round(mixed * 100) / 100));
+            contact.style.setProperty('--contact-fit-size', `${size}px`);
+
+            const bounds = headerInner.getBoundingClientRect();
+            let contactRect = contact.getBoundingClientRect();
+            let guard = 0;
+            while ((contactRect.right > bounds.right + 0.5 || contactRect.left < bounds.left - 0.5) && size > min && guard < 60) {
+                size = Math.max(min, size - 0.5);
+                contact.style.setProperty('--contact-fit-size', `${size}px`);
+                contactRect = contact.getBoundingClientRect();
+                guard += 1;
+            }
+
+            while (contactRect.right <= bounds.right - 0.75 && contactRect.left >= bounds.left + 0.75 && size < max && guard < 120) {
+                const next = Math.min(max, size + 0.25);
+                contact.style.setProperty('--contact-fit-size', `${next}px`);
+                const nextRect = contact.getBoundingClientRect();
+                if (nextRect.right > bounds.right + 0.5 || nextRect.left < bounds.left - 0.5) {
+                    contact.style.setProperty('--contact-fit-size', `${size}px`);
+                    break;
+                }
+                size = next;
+                contactRect = nextRect;
+                guard += 1;
+            }
         }
 
         async function syncHeaderLayout() {
-            syncPhotoHeight();
-            await syncMobilePretextEnvelope();
+            await wrapIntroAroundPhoto();
+            fitContactToColumn();
         }
 
-        document.fonts.ready.then(() => { syncHeaderLayout(); });
-        window.addEventListener('resize', syncHeaderLayout);
+        let _layoutRaf = 0;
+        function scheduleSyncHeaderLayout() {
+            if (_layoutRaf) cancelAnimationFrame(_layoutRaf);
+            _layoutRaf = requestAnimationFrame(() => {
+                _layoutRaf = 0;
+                syncHeaderLayout();
+            });
+        }
+
+        document.fonts.ready.then(() => {
+            scheduleSyncHeaderLayout();
+            setTimeout(scheduleSyncHeaderLayout, 0);
+            setTimeout(scheduleSyncHeaderLayout, 120);
+            window.matchMedia('(max-width: 767px)').addEventListener('change', scheduleSyncHeaderLayout);
+            window.visualViewport?.addEventListener('resize', scheduleSyncHeaderLayout);
+        });
+        window.addEventListener('load', scheduleSyncHeaderLayout);
+        window.addEventListener('resize', scheduleSyncHeaderLayout);
+        window.addEventListener('orientationchange', scheduleSyncHeaderLayout);
     </script>
 </body>
 </html>
