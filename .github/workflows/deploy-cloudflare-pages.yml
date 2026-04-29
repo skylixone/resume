@@ -6,9 +6,9 @@ on:
     paths:
       - "index.html"
       - "index-ua.html"
+      - "ua/**"
       - "styles.css"
       - "me.jpg"
-      - "_redirects"
       - ".github/workflows/deploy-cloudflare-pages.yml"
   workflow_dispatch:
 
@@ -34,12 +34,12 @@ jobs:
       - name: Prepare deploy bundle
         run: |
           set -euo pipefail
-          mkdir -p .cf-pages-deploy
+          mkdir -p .cf-pages-deploy/ua
           cp index.html .cf-pages-deploy/index.html
           cp index-ua.html .cf-pages-deploy/index-ua.html
           cp styles.css .cf-pages-deploy/styles.css
           cp me.jpg .cf-pages-deploy/me.jpg
-          cp _redirects .cf-pages-deploy/_redirects
+          cp ua/index.html .cf-pages-deploy/ua/index.html
 
       - name: Deploy to Cloudflare Pages
         env:
