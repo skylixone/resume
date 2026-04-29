@@ -8,6 +8,7 @@ on:
       - "index-ua.html"
       - "styles.css"
       - "me.jpg"
+      - "_redirects"
       - ".github/workflows/deploy-cloudflare-pages.yml"
   workflow_dispatch:
 
@@ -38,6 +39,7 @@ jobs:
           cp index-ua.html .cf-pages-deploy/index-ua.html
           cp styles.css .cf-pages-deploy/styles.css
           cp me.jpg .cf-pages-deploy/me.jpg
+          cp _redirects .cf-pages-deploy/_redirects
 
       - name: Deploy to Cloudflare Pages
         env:
