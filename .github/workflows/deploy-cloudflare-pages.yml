@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - "index.html"
+      - "index-ua.html"
+      - "styles.css"
       - "me.jpg"
       - ".github/workflows/deploy-cloudflare-pages.yml"
   workflow_dispatch:
@@ -33,6 +35,8 @@ jobs:
           set -euo pipefail
           mkdir -p .cf-pages-deploy
           cp index.html .cf-pages-deploy/index.html
+          cp index-ua.html .cf-pages-deploy/index-ua.html
+          cp styles.css .cf-pages-deploy/styles.css
           cp me.jpg .cf-pages-deploy/me.jpg
 
       - name: Deploy to Cloudflare Pages
