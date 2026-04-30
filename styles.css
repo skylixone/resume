@@ -387,23 +387,28 @@
           display: block;
         }
         h1 {
-          font-size: 40px;
+          font-size: 32px;
           line-height: 1.08;
+          display: flex;
+          flex-wrap: nowrap;
+          align-items: center;
+          gap: 0.2em;
+          white-space: nowrap;
         }
         .header-photo-wrap {
           display: none;
         }
         .header-photo-inline-mobile {
-          display: inline-block;
-          width: 0.86lh;
-          height: 0.86lh;
-          margin-left: 0.32em;
+          display: block;
+          width: 0.93em;
+          height: 0.93em;
+          margin-left: 0;
           border-radius: 50%;
           object-fit: cover;
           object-position: top center;
-          vertical-align: -0.14em;
           border: 1px solid var(--border);
           background: var(--bg-tag);
+          flex-shrink: 0;
         }
         .title {
           font-size: 14px;
@@ -417,10 +422,13 @@
           font-size: 14px;
           column-gap: calc(var(--unit) * 1.5);
           row-gap: calc(var(--unit) * 0.75);
-          grid-template-columns: repeat(3, minmax(0, 1fr));
+          grid-template-columns: repeat(2, minmax(0, 1fr));
         }
         .contact-item {
           text-align: left;
+        }
+        .contact-item:empty {
+          display: none;
         }
         .contact .p-tel {
           position: relative;
