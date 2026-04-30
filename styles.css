@@ -376,7 +376,7 @@
             var(--page-pad-bottom);
         }
         .theme-toggle {
-          top: var(--lang-switch-top);
+          top: calc(var(--unit) * 1);
           right: calc(var(--unit) * 2);
         }
         .header-inner {
