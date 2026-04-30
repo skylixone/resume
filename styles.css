@@ -161,7 +161,7 @@
       .intro {
         font-size: 20px;
         line-height: 1.6;
-        color: var(--fg-secondary);
+        color: var(--fg);
         margin-top: var(--jobtitle-intro-gap);
         max-width: 58ch;
       }
