@@ -357,7 +357,7 @@
       @media (max-width: 767px) {
         .lang-switch {
             left: var(--lang-switch-left-mobile);
-            top: var(--lang-switch-top-mobile);
+            top: calc(var(--unit) * 2);
         }
 
         :root {
@@ -376,11 +376,12 @@
             var(--page-pad-bottom);
         }
         .theme-toggle {
-          top: calc(var(--unit) * 1);
+          top: calc(var(--unit) * 2);
           right: calc(var(--unit) * 2);
         }
         .header-inner {
           display: block;
+          margin-top: calc(var(--unit) * 2);
         }
         .header-text {
           display: block;
