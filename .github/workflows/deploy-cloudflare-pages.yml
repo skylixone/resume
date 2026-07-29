@@ -34,7 +34,7 @@ jobs:
       - name: Prepare deploy bundle
         run: |
           set -euo pipefail
-          mkdir -p .cf-pages-deploy/ua .cf-pages-deploy/aerospace-ui
+          mkdir -p .cf-pages-deploy/ua .cf-pages-deploy/aerospace-ui .cf-pages-deploy/nesamovyto
           cp index.html .cf-pages-deploy/index.html
           cp index-ua.html .cf-pages-deploy/index-ua.html
           cp styles.css .cf-pages-deploy/styles.css
@@ -45,6 +45,9 @@ jobs:
             | tar -xz --strip-components=1 -C .cf-pages-deploy/aerospace-ui \
               --exclude='.git*' --exclude='.Codex' --exclude='.claude' --exclude='.planning' \
               --exclude='_backup' --exclude='comments.json' --exclude='*.py' --exclude='*.zip'
+          curl -sL https://github.com/skylixone/nesamovyto/archive/refs/heads/main.tar.gz \
+            | tar -xz --strip-components=1 -C .cf-pages-deploy/nesamovyto \
+              --exclude='.git*' --exclude='*.snap.txt' --exclude='.DS_Store' --exclude='.deploy.json'
 
       - name: Deploy to Cloudflare Pages
         env:
