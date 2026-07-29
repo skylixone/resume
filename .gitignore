@@ -1,0 +1,3 @@
+.secrets/
+.cf-pages-deploy*
+.cf-pages-deploy*/
