@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>di_ther — a DOS-era camera for the web</title>
+<meta name="description" content="di_ther turns your live camera feed into a retro, palette-limited image in real time. Bayer 4×4 ordered dithering. No account. No upload. Just light, dithered.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='black'/><rect x='3' y='3' width='4' height='4' fill='%23ffae00'/><rect x='9' y='9' width='4' height='4' fill='%23ffae00'/><rect x='9' y='3' width='4' height='4' fill='%23333'/><rect x='3' y='9' width='4' height='4' fill='%23333'/></svg>">
+<link rel="preload" as="image" href="assets/shot-skyline.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ══════════ BOOT SEQUENCE ══════════ -->
+<div id="boot" aria-hidden="true">
+  <pre id="boot-text"></pre>
+  <div class="boot-skip">[ CLICK TO SKIP ]</div>
+</div>
+
+<!-- ══════════ CRT LAYERS ══════════ -->
+<div class="scanlines" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+<div id="flash" aria-hidden="true"></div>
+
+<!-- ══════════ CUSTOM CURSOR (REMOVED) ══════════ -->
+
+<!-- ══════════ FIXED HUD ══════════ -->
+<header class="hud hud-top">
+  <a class="hud-link" href="https://skylixone.github.io/doscamera/" target="_blank" rel="noopener">LAUNCH APP</a>
+</header>
+
+<main>
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero" id="hero">
+  <img class="hero-img" src="assets/shot-skyline.jpg" alt="" aria-hidden="true">
+  <canvas id="hero-canvas"></canvas>
+
+  <div class="hero-content">
+    <p class="hero-kicker reveal-line">A REAL-TIME DITHERED CAMERA<br>FOR THE WEB</p>
+    <a class="hero-examples reveal-line" href="#gallery" data-cursor="VIEW">EXAMPLES ↓</a>
+  </div>
+
+  <!-- ══════════ MARQUEE — docked to hero bottom ══════════ -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>NO ACCOUNT ✕ NO UPLOAD ✕ NO FILTERS ✕ JUST LIGHT, DITHERED ✕&nbsp;</span>
+      <span>NO ACCOUNT ✕ NO UPLOAD ✕ NO FILTERS ✕ JUST LIGHT, DITHERED ✕&nbsp;</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ MANIFESTO ══════════ -->
+<section class="manifesto" id="manifesto">
+  <div class="section-tag">// 01 — THE IDEA</div>
+  <h2 class="manifesto-text">
+    <span class="m-line">YOUR CAMERA,</span>
+    <span class="m-line accent">CIRCA 1989.</span>
+  </h2>
+  <div class="manifesto-grid">
+    <p class="manifesto-p">di_ther quantizes your live camera feed through a Bayer 4×4 ordered dithering matrix and a handful of hard-coded palettes. Highlights bloom into dot clusters. Shadows collapse to pure black. The mundane turns monumental.</p>
+    <p class="manifesto-p">It is not a filter. It never touches your old photos. It is a <em>feeling-first camera toy</em> — open the page, point, and watch the street outside render like a lost VGA cutscene. Everything happens on your device. Nothing leaves it.</p>
+  </div>
+  <div class="manifesto-stats">
+    <div class="stat"><span class="stat-num" data-count="4">0</span><span class="stat-label">×4 BAYER MATRIX</span></div>
+    <div class="stat"><span class="stat-num" data-count="60">0</span><span class="stat-label">FPS REAL-TIME</span></div>
+    <div class="stat"><span class="stat-num" data-count="0">0</span><span class="stat-label">BYTES UPLOADED</span></div>
+    <div class="stat"><span class="stat-num" data-count="1989">0</span><span class="stat-label">THE YEAR IT FEELS LIKE</span></div>
+  </div>
+</section>
+
+<!-- ══════════ ENGINE / PLAYGROUND ══════════ -->
+<section class="engine" id="engine">
+  <div class="section-tag">// 02 — THE ENGINE</div>
+  <h2 class="section-title">PICK A <span class="accent">PALETTE.</span><br>WATCH IT BREATHE.</h2>
+  <p class="section-sub">This is the same math the camera runs — a live procedural scene crushed through Bayer 4×4 ordered dithering, right here in your browser. Move your cursor over the frame. Switch palettes. That's the whole trick, and it's enough.</p>
+
+  <div class="engine-stage">
+    <div class="engine-frame">
+      <canvas id="engine-canvas"></canvas>
+      <div class="engine-touch-hint" id="engine-hint">TAP + DRAG</div>
+      <div class="engine-hud">
+        <span id="engine-res">320×180</span>
+        <span id="engine-pal-name">AMBER-4</span>
+      </div>
+    </div>
+    <div class="palette-bar" role="tablist" aria-label="Palettes">
+      <button class="pal-btn is-active" data-pal="amber"  role="tab"><span class="pal-swatches"><i style="--c:#000000"></i><i style="--c:#5a2b00"></i><i style="--c:#ffae00"></i><i style="--c:#ffe6a8"></i></span>AMBER-4</button>
+      <button class="pal-btn" data-pal="dusk"    role="tab"><span class="pal-swatches"><i style="--c:#0a0010"></i><i style="--c:#4a0e5c"></i><i style="--c:#e033c8"></i><i style="--c:#ffb3f2"></i></span>DUSK-4</button>
+      <button class="pal-btn" data-pal="phosphor" role="tab"><span class="pal-swatches"><i style="--c:#000000"></i><i style="--c:#1a3a1a"></i><i style="--c:#33ff66"></i><i style="--c:#d2ffd2"></i></span>PHOSPHOR</button>
+      <button class="pal-btn" data-pal="blood"   role="tab"><span class="pal-swatches"><i style="--c:#000000"></i><i style="--c:#4a0500"></i><i style="--c:#ff2a1f"></i><i style="--c:#ffc9b8"></i></span>BLOOD-4</button>
+      <button class="pal-btn" data-pal="paper"   role="tab"><span class="pal-swatches"><i style="--c:#000000"></i><i style="--c:#5a5a5a"></i><i style="--c:#c8c8c8"></i><i style="--c:#ffffff"></i></span>PAPER-W</button>
+      <button class="pal-btn" data-pal="vga"     role="tab"><span class="pal-swatches"><i style="--c:#000000"></i><i style="--c:#e03a2b"></i><i style="--c:#f5d90a"></i><i style="--c:#8a8a8a"></i></span>VGA-16</button>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ GALLERY ══════════ -->
+<section class="gallery" id="gallery">
+  <div class="section-tag">// 03 — FIELD CAPTURES</div>
+  <h2 class="section-title">SHOT ON <span class="accent">di_ther.</span><br>ZERO EDITS.</h2>
+  <p class="section-sub">Real frames, straight out of the camera. Night streets, flash-lit friends, one good dog.</p>
+
+  <div class="gallery-grid">
+    <figure class="g-item g-wide" data-cursor="SHOT"><img src="assets/shot-skyline.webp" alt="Dithered sunset over city skyline with TV tower" loading="lazy" decoding="async"><figcaption>IMG_3442 — VGA-16 — SUNSET OVER THE PANELÁKY</figcaption></figure>
+    <figure class="g-item" data-cursor="SHOT"><img src="assets/shot-scream.webp" alt="Flash-lit screaming face in amber dither" loading="lazy" decoding="async"><figcaption>IMG_5213 — AMBER-4 — 2:47 AM</figcaption></figure>
+    <figure class="g-item" data-cursor="SHOT"><img src="assets/shot-tunnel.webp" alt="Two figures walking into magenta underpass light" loading="lazy" decoding="async"><figcaption>IMG_4388 — DUSK-4 — UNDERPASS</figcaption></figure>
+    <figure class="g-item g-wide" data-cursor="SHOT"><img src="assets/shot-neon-street.webp" alt="Snowy night street with neon shop window" loading="lazy" decoding="async"><figcaption>IMG_4422 — VGA-16 — KIOSK STILL OPEN</figcaption></figure>
+    <figure class="g-item" data-cursor="SHOT"><img src="assets/shot-flash-portrait.webp" alt="Amber dithered flash portrait" loading="lazy" decoding="async"><figcaption>IMG_3486 — AMBER-4 — DIRECT FLASH</figcaption></figure>
+    <figure class="g-item" data-cursor="SHOT"><img src="assets/shot-arches.webp" alt="Lit arches in magenta dusk snow" loading="lazy" decoding="async"><figcaption>IMG_4417 — DUSK-4 — COURTYARD</figcaption></figure>
+    <figure class="g-item g-wide" data-cursor="SHOT"><img src="assets/shot-roses.webp" alt="Woman with roses and bottle, flash dithered" loading="lazy" decoding="async"><figcaption>IMG_3517 — BLOOD-4 — SHE SAID YES</figcaption></figure>
+    <figure class="g-item" data-cursor="SHOT"><img src="assets/shot-sign.webp" alt="Red dithered pedestrian sign at night" loading="lazy" decoding="async"><figcaption>IMG_4419 — BLOOD-4 — CROSSING</figcaption></figure>
+    <figure class="g-item" data-cursor="SHOT"><img src="assets/shot-kettle.webp" alt="Kettle on gas stove in grayscale dither" loading="lazy" decoding="async"><figcaption>IMG_3523 — PAPER-W — TEA AT DAWN</figcaption></figure>
+    <figure class="g-item g-wide" data-cursor="SHOT"><img src="assets/shot-dog.webp" alt="Dog in living room, grayscale dither with orange accents" loading="lazy" decoding="async"><figcaption>IMG_3452 — PAPER-W — ONE GOOD DOG</figcaption></figure>
+    <figure class="g-item" data-cursor="SHOT"><img src="assets/shot-cheers.webp" alt="Laughing man raising a glass in amber dither" loading="lazy" decoding="async"><figcaption>IMG_5204 — AMBER-4 — NA ZDOROVÍ</figcaption></figure>
+    <figure class="g-item" data-cursor="SHOT"><img src="assets/shot-rent.webp" alt="Apartment block with red RENT neon sign" loading="lazy" decoding="async"><figcaption>IMG_3540 — BLOOD-4 — RENT</figcaption></figure>
+    <figure class="g-item g-wide" data-cursor="SHOT"><img src="assets/shot-streetlamp.webp" alt="Street lamp over snowy park at night" loading="lazy" decoding="async"><figcaption>IMG_3483 — PHOSPHOR — LAMP POST</figcaption></figure>
+  </div>
+</section>
+
+<!-- ══════════ SPECS ══════════ -->
+<section class="specs" id="specs">
+  <div class="section-tag">// 04 — SYSTEM SPEC</div>
+  <div class="specs-wrap">
+    <h2 class="section-title">RUNS ON <span class="accent">ANYTHING.</span></h2>
+    <table class="spec-table">
+      <tr><td>ENGINE</td><td>BAYER 4×4 ORDERED DITHERING</td></tr>
+      <tr><td>INPUT</td><td>YOUR LIVE CAMERA — NOTHING ELSE</td></tr>
+      <tr><td>PALETTES</td><td>LIMITED. ON PURPOSE.</td></tr>
+      <tr><td>OUTPUT</td><td>SHAREABLE STILLS, INSTANTLY</td></tr>
+      <tr><td>LATENCY</td><td>REAL-TIME. SIXTY FRAMES PER SECOND.</td></tr>
+      <tr><td>ACCOUNT</td><td>NONE</td></tr>
+      <tr><td>UPLOAD</td><td>NEVER — ALL ON-DEVICE</td></tr>
+      <tr><td>EDITING SUITE</td><td>ABSOLUTELY NOT</td></tr>
+      <tr><td>PRICE</td><td>FREE, LIKE 1989 SHAREWARE</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ══════════ FINAL CTA ══════════ -->
+<section class="final" id="final">
+  <div class="final-inner">
+    <p class="final-kicker">THE STREET IS ALREADY RENDERING WITHOUT YOU</p>
+    <h2 class="final-title">
+      <span class="ft-line">STOP</span>
+      <span class="ft-line">SCROLLING.</span>
+      <span class="ft-line accent">START</span>
+      <span class="ft-line accent">SHOOTING.</span>
+    </h2>
+    <a class="btn btn-mega" data-cursor="GO" href="https://skylixone.github.io/doscamera/" target="_blank" rel="noopener">
+      LAUNCH di_ther ↗
+    </a>
+    <p class="final-note">NO INSTALL · NO SIGN-UP · WORKS IN YOUR BROWSER · BRING NIGHT</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-left">© 2026 <a href="https://skylixone.github.io/doscamera/" target="_blank" rel="noopener">SKYLIXONE</a> — MADE FOR THE NIGHT</div>
+  <div class="footer-right">BAYER 4×4 // VGA FOREVER // <span id="footer-clock">00:00:00</span></div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
