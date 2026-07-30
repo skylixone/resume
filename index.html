@@ -8,180 +8,80 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
   <style>
-    :root {
-      --bg: #fafafa;
-      --fg: #111;
-      --muted: #666;
-      --line: #ddd;
-    }
-    * { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; height: 100%; }
-    body {
-      font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 15px;
-      line-height: 1.55;
-      color: var(--fg);
-      background: var(--bg);
-      -webkit-font-smoothing: antialiased;
-    }
-    .page {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      height: 100vh;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    .left {
-      padding: 80px 48px 120px;
-      border-right: 1px solid var(--line);
-      overflow-y: auto;
-    }
-    .right {
-      padding: 80px 48px 120px;
-      overflow-y: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    .right h2 {
-      margin-top: 0;
-    }
-    h1 {
-      font-size: clamp(28px, 4vw, 42px);
-      font-weight: 500;
-      letter-spacing: -0.02em;
-      line-height: 1.1;
-      margin: 0 0 10px;
-    }
-    .role {
-      color: var(--muted);
-      margin: 0 0 6px;
-    }
-    .location {
-      color: var(--muted);
-      margin: 0 0 40px;
-    }
-    .profile {
-      max-width: 440px;
-      margin: 0 0 12px;
-    }
-    section { margin-bottom: 64px; }
-    h2 {
-      font-size: 11px;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--muted);
-      margin: 0 0 24px;
-    }
-    .left h2 {
-      border-bottom: 1px solid var(--line);
-      padding-bottom: 10px;
-    }
-    .job { margin-bottom: 28px; }
-    .job:last-child { margin-bottom: 0; }
-    .job-top {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px 16px;
-      justify-content: space-between;
-      margin-bottom: 4px;
-    }
-    .company { font-weight: 500; }
-    .dates { color: var(--muted); white-space: nowrap; font-size: 13px; }
-    .context {
-      color: var(--muted);
-      font-size: 13px;
-      max-width: 420px;
-    }
-    .contact {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px 20px;
-    }
-    .contact a { font-size: 13px; }
-    a {
-      color: var(--fg);
-      text-decoration: none;
-      border-bottom: 1px solid var(--line);
-      transition: border-color 0.15s;
-    }
-    a:hover { border-color: var(--fg); }
-
-    /* ====== Selected Works ====== */
-    .works-list { display: flex; flex-direction: column; gap: 0; }
-    .work-card {
-      border: 1px solid var(--line);
-      border-bottom-width: 0;
-      padding: 20px;
-      display: flex;
-      gap: 16px;
-      align-items: stretch;
-      text-decoration: none;
-      transition: border-color 0.2s;
-    }
-    .work-card:first-child { border-radius: 6px 6px 0 0; }
-    .work-card:last-child {
-      border-bottom-width: 1px;
-      border-radius: 0 0 6px 6px;
-    }
-    .work-card:hover {
-      border-color: var(--fg);
-      z-index: 1;
+    .work-card.dither {
+      display: block;
       position: relative;
-    }
-    .work-img {
-      width: 100px;
-      flex-shrink: 0;
-      background: #eee;
-      border-radius: 3px;
+      background: #050505;
+      color: #fff;
       overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--muted);
-      font-size: 10px;
+      min-height: 0;
     }
-    .work-img img { width: 100%; height: 100%; object-fit: cover; }
-    .work-body { display: flex; flex-direction: column; justify-content: center; }
-    .work-title { font-weight: 500; font-size: 15px; margin-bottom: 4px; }
-    .work-desc { color: var(--muted); font-size: 12px; line-height: 1.45; }
-
-    @media (max-width: 800px) {
-      .page {
-        grid-template-columns: 1fr;
-        height: auto;
-        min-height: 100vh;
-      }
-      .left {
-        padding: 56px 24px 48px;
-        border-right: none;
-        border-bottom: 1px solid var(--line);
-      }
-      .right {
-        padding: 48px 24px 80px;
-      }
-      .profile { max-width: none; }
-      .context { max-width: none; }
+    .work-card.dither:hover { border-color: #ffae00; }
+    .dither-hero {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background: #050505;
+      z-index: 1;
     }
+    .dither-hero-img,
+    .dither-hero canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .dither-hero canvas {
+      image-rendering: pixelated;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .dither-hero::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 50%;
+      background: linear-gradient(to top, rgba(0,0,0,0.65), transparent);
+      z-index: 3;
+      pointer-events: none;
+    }
+    .work-card.dither .work-body {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 0 20px 20px;
+      background: transparent;
+      color: #fff;
+      z-index: 4;
+    }
+    .work-card.dither .work-desc { color: #d7d7d7; }
   </style>
 </head>
 <body>
   <div class="page">
+
     <div class="left">
+    <div>
       <h1>Ivan Korniienko</h1>
       <p class="role">Senior Product Designer · Design Engineer</p>
-      <p class="location">Kyiv, Ukraine</p>
+     
 
       <p class="profile">
-      12 years in design systems, product design, and UX. I build systems from napkin concept to production — from Figma to code. Strongest on complex data-heavy interfaces and human–AI interaction. Design as an engineering problem, not decoration.
+      12 years in design systems, product design, and UX. I build systems from napkin concept to production — from Figma to code. Strongest on complex data-heavy interfaces and human–AI interaction. Design as an engineering problem, not decoration. <a href="resume/resume-en.html" class="full-resume-link">full resume →</a>
       </p>
+    </div>
+     
 
-      <p><a href="resume-full.html" class="full-resume-link">full resume →</a></p>
-
-      <section style="margin-top: 4em"">
-      
+    <div>
+      <h2>Recent Experience</h2> 
 
         <article class="job">
           <div class="job-top">
@@ -206,55 +106,59 @@
           </div>
           <p class="context">Lead Designer / Design Technologist. Fintech, e-commerce, enterprise. Built internal design infrastructure and A/B practice.</p>
         </article>
-      </section>
+      </div>
 
-      <section>
-        <h2>Contact</h2>
+      <div>
+   <!--    <h2>Contact</h2> -->
         <div class="contact">
+          Kyiv, Ukraine
           <a href="mailto:ivan@3mdash.net">ivan@3mdash.net</a>
           <a href="tel:+380634354268">+38 063 435 42 68</a>
-          <a href="https://linkedin.com/in/skylixone">linkedin.com/in/skylixone</a>
-          <a href="https://github.com/skylixone">github.com/skylixone</a>
+          <a href="https://www.linkedin.com/in/ivan-korniienko-124790286/">linkedin</a>
+          <a href="https://github.com/skylixone">github</a>
+          
         </div>
-      </section>
+      </div>
     </div>
 
     <div class="right">
-      <h2>Selected Works</h2>
+  <h2>Selected Works</h2>
       <div class="works-list">
 
-        <a class="work-card" href="https://3mdash.net/nesamovyto/">
+        <a class="work-card featured" href="https://3mdash.net/nesamovyto/">
           <div class="work-img">
-            <img src="img/nesamovyto.png" alt="Nesamovyto" />
+            <img src="img/nsmv.png" alt="Nesamovyto" />
           </div>
           <div class="work-body">
             <div class="work-title">Nesamovyto</div>
-            <div class="work-desc">Editorial platform &amp; identity for a Ukrainian cultural publication.</div>
+            <div class="work-desc">Branding for Ukrainian silk scarf company</div>
           </div>
         </a>
 
-        <a class="work-card" href="https://3mdash.net/aerospace-ui/">
-          <div class="work-img">
-            <img src="img/aerospace.png" alt="Aerospace UI Kit" />
-          </div>
+        <a class="work-card split" href="https://3mdash.net/aerospace-ui/">
           <div class="work-body">
             <div class="work-title">Aerospace UI Kit</div>
             <div class="work-desc">Design system for miltech/aerospace interfaces. Data-dense, mission-critical.</div>
           </div>
+          <div class="work-img">
+            <img src="img/aerospace.png" alt="Aerospace UI Kit" />
+          </div>
         </a>
 
-        <a class="work-card" href="https://3mdash.net/dither/">
-          <div class="work-img">
-            <img src="img/dither.png" alt="Dither / doscamera" />
+        <a class="work-card dither" href="https://3mdash.net/dither/">
+          <div class="dither-hero">
+            <img class="dither-hero-img" src="dither/assets/shot-skyline.jpg" alt="Dither / doscamera" decoding="async" loading="lazy" />
+            <canvas id="dither-hero-canvas"></canvas>
           </div>
           <div class="work-body">
             <div class="work-title">Dither / doscamera</div>
-            <div class="work-desc">Personal xperimental photography tool. Analog-digital hybrid.</div>
+            <div class="work-desc">Experimental photography tool. Analog-digital hybrid.</div>
           </div>
         </a>
 
       </div>
     </div>
   </div>
+  <script src="dither-hero.js"></script>
 </body>
 </html>

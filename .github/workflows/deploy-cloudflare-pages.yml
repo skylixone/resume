@@ -5,12 +5,10 @@ on:
     branches: [main]
     paths:
       - "index.html"
-      - "index-ua.html"
-      - "ua/**"
       - "styles.css"
       - "me.jpg"
-      - "resume-full.html"
       - "img/**"
+      - "resume/**"
       - "dither/**"
       - ".github/workflows/deploy-cloudflare-pages.yml"
   workflow_dispatch:
@@ -37,15 +35,12 @@ jobs:
       - name: Prepare deploy bundle
         run: |
           set -euo pipefail
-          mkdir -p .cf-pages-deploy/ua .cf-pages-deploy/aerospace-ui .cf-pages-deploy/nesamovyto
+          mkdir -p .cf-pages-deploy/aerospace-ui .cf-pages-deploy/nesamovyto
           cp index.html .cf-pages-deploy/index.html
-          cp index-ua.html .cf-pages-deploy/index-ua.html
           cp styles.css .cf-pages-deploy/styles.css
-          cp print.css .cf-pages-deploy/print.css
           cp me.jpg .cf-pages-deploy/me.jpg
-          cp resume-full.html .cf-pages-deploy/resume-full.html
           cp -r img .cf-pages-deploy/img
-          cp ua/index.html .cf-pages-deploy/ua/index.html
+          cp -r resume .cf-pages-deploy/resume
           cp -r dither .cf-pages-deploy/dither
           curl -sL https://github.com/skylixone/aerospace-ui/archive/refs/heads/main.tar.gz \
             | tar -xz --strip-components=1 -C .cf-pages-deploy/aerospace-ui \
