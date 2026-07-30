@@ -125,7 +125,6 @@ a:hover { border-color: var(--fg); }
 .work-img {
   flex: 1;
   min-height: 0;
-  background: #eee;
   display: flex;
   align-items: center;
   justify-content: center;
