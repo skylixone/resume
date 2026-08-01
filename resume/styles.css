@@ -381,7 +381,7 @@
        
         transition: opacity 0.2s ease, color 0.2s ease;
       }
-      .back-link:hover { opacity: 1; color: var(--accent); }
+      .back-link:hover { background: var(--accent); color:#FFF}
       .topbar-links {
         display: flex;
         align-items: center;
