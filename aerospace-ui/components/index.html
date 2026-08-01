@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AEROSPACE UI KIT — Component Reference</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<script defer src="../foundation_tune.js"></script>
+<script defer src="../nav_highlight.js"></script>
+</head>
+<body>
+<!-- scanline removed: repeating-linear-gradient was consuming ~65% of renderer thread per scroll frame -->
+
+<nav class="kit-nav">
+  <div class="nav-heading">Foundation</div>
+  <a href="#typography">Typography</a>
+  <a href="#colors">Colors</a>
+  <a href="#spacing">Spacing</a>
+  <div class="nav-heading">Controls</div>
+  <a href="#buttons">Buttons</a>
+  <a href="#inputs">Form Inputs</a>
+  <a href="#toggles">Toggles & Checks</a>
+  <a href="#tabs">Tabs</a>
+  <a href="#steppers">Steppers</a>
+  <a href="#sliders">Range Sliders</a>
+  <div class="nav-heading">Data</div>
+  <a href="#metrics">Metric Cards</a>
+  <a href="#tables">Tables</a>
+  <a href="#bars">Bars</a>
+  <a href="#progress">Progress</a>
+  <a href="#timeline">Adherence Timeline</a>
+  <div class="nav-heading">Content</div>
+  <a href="#panels">Panels & Cards</a>
+  <a href="#tags">Tags & Badges</a>
+  <a href="#alerts">Alerts</a>
+  <a href="#status">Status Indicators</a>
+  <a href="#lists">Lists</a>
+  <a href="#code">Code</a>
+  <a href="#summary">Summary / Quote</a>
+  <a href="#kv">Key-Value</a>
+  <a href="#empty">Empty State</a>
+  <div class="nav-heading">Overlay</div>
+  <a href="#cmd">Command Palette</a>
+  <a href="#popover">Popover</a>
+  <a href="#toast">Toast</a>
+  <a href="#stepper">Stepper</a>
+  <a href="#hovercard">Hover Card</a>
+  <div class="nav-heading">Layout</div>
+  <a href="#header">Header</a>
+  <a href="#footer">Footer</a>
+  <a href="#modal">Modal</a>
+  <a href="#dividers">Dividers</a>
+  <a href="#skeleton">Skeleton</a>
+  <a href="#tooltip">Tooltip</a>
+
+</nav>
+
+
+<!-- ═══════════════════════════════════════════
+     MAIN CONTENT
+     ═══════════════════════════════════════════ -->
+<main class="kit-main">
+
+  <div class="page-header">
+    <div>
+      <div class="overline">Aerospace UI Kit</div>
+      <h1>Component Reference</h1>
+    </div>
+    <div class="kv-grid">
+      <div class="kv-cell"><span class="kv-label">VERSION</span><span class="kv-value">1.1</span></div>
+      <div class="kv-cell"><span class="kv-label">FONT</span><span class="kv-value">GEIST MONO</span></div>
+      <div class="kv-cell"><span class="kv-label">THEME</span><span class="kv-value">DARK AEROSPACE</span></div>
+      <div class="kv-cell"><span class="kv-label">LICENSE</span><span class="kv-value">PERSONAL USE</span></div>
+    </div>
+  </div>
+
+  <div class="summary" style="margin-bottom: 48px; font-size: 18px; line-height: 1.6; max-width: 65ch; color: var(--text);">
+    Aerospace industrial design system. Amber on black. Geist Mono throughout. All-caps labels with generous letter-spacing. Data first, decoration after. No rounded corners. Borders over shadows. Left-aligned everything. Generous padding. This file is both documentation and live reference — open in a browser or read as source.
+  </div>
+
+  <!-- ── 01. TYPOGRAPHY ── -->
+  <section class="kit-section" id="typography">
+    <div class="kit-section-title">01</div>
+    <h2>Typography</h2>
+    <div class="kit-group">
+      <div class="kit-label">Scale</div>
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div class="type-hero">Hero — 56px 700</div>
+        <div class="type-display">Display — 40px 700</div>
+        <div class="type-heading">Heading — 32px 700</div>
+        <div class="type-subheading">Subheading — 20px 500</div>
+        <div class="type-body" style="background: var(--bg-raised); padding: 10px 14px;">Body — 16px 400 regular text for content</div>
+        <div class="type-small">Small — 14px label text, metadata, captions</div>
+        <div class="type-overline">Overline — 11px uppercase · 0.15em tracking</div>
+        <div class="type-overline bright">Overline Accent — 11px uppercase · 0.5em tracking</div>
+      </div>
+    </div>
+    <div class="kit-group">
+      <div class="kit-label">Classes</div>
+      <div class="code-block typo-class-ref">
+        <div>.type-hero</div><div>.type-display</div><div>.type-heading</div><div>.type-subheading</div>
+        <div>.type-body</div><div>.type-small</div><div>.type-overline</div><div>.type-overline.bright</div>
+      </div>
+    </div>
+  </section>
+
+<section class="kit-section" id="colors">
+    <div class="kit-section-title">02</div>
+    <h2>Colors</h2>
+
+    <div class="kit-label">Core Palette</div>
+    <div class="swatch-grid" style="margin-bottom: 24px;">
+      <div class="swatch"><div class="swatch-color" style="background: #0a0a0a;"></div><div class="swatch-info"><strong>bg</strong>#0a0a0a</div></div>
+      <div class="swatch"><div class="swatch-color" style="background: #111111;"></div><div class="swatch-info"><strong>bg-raised</strong>#111111</div></div>
+      <div class="swatch"><div class="swatch-color" style="background: #0d0d0d;"></div><div class="swatch-info"><strong>bg-surface</strong>#0d0d0d</div></div>
+      <div class="swatch"><div class="swatch-color" style="background: #141414;"></div><div class="swatch-info"><strong>bg-hover</strong>#141414</div></div>
+      <div class="swatch"><div class="swatch-color" style="background: #f59e0b;"></div><div class="swatch-info"><strong>accent</strong>#f59e0b</div></div>
+      <div class="swatch"><div class="swatch-color" style="background: #fbbf24;"></div><div class="swatch-info"><strong>accent-hover</strong>#fbbf24</div></div>
+    </div>
+
+    <div class="kit-label">Text</div>
+    <div class="swatch-grid" style="margin-bottom: 24px;">
+      <div class="swatch"><div class="swatch-color" style="background: #ffffff;"></div><div class="swatch-info"><strong>bright</strong>#ffffff</div></div>
+      <div class="swatch"><div class="swatch-color" style="background: #e8e8e8;"></div><div class="swatch-info"><strong>text</strong>#e8e8e8</div></div>
+      <div class="swatch"><div class="swatch-color" style="background: #888888;"></div><div class="swatch-info"><strong>label</strong>#888888</div></div>
+      <div class="swatch"><div class="swatch-color" style="background: #666666;"></div><div class="swatch-info"><strong>dim</strong>#666666</div></div>
+      <div class="swatch"><div class="swatch-color" style="background: #444444;"></div><div class="swatch-info"><strong>muted</strong>#444444</div></div>
+    </div>
+
+    <div class="kit-label">Semantic</div>
+    <div class="swatch-grid">
+      <div class="swatch"><div class="swatch-color" style="background: #22c55e;"></div><div class="swatch-info"><strong>green</strong>#22c55e</div></div>
+      <div class="swatch"><div class="swatch-color" style="background: #ef4444;"></div><div class="swatch-info"><strong>red</strong>#ef4444</div></div>
+      <div class="swatch"><div class="swatch-color" style="background: #3b82f6;"></div><div class="swatch-info"><strong>blue</strong>#3b82f6</div></div>
+      <div class="swatch"><div class="swatch-color" style="background: #f59e0b;"></div><div class="swatch-info"><strong>yellow</strong>#f59e0b</div></div>
+    </div>
+  </section>
+
+<section class="kit-section" id="spacing">
+    <div class="kit-section-title">03</div>
+    <h2>Spacing</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2xl); align-items: start;">
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div style="display: flex; align-items: center; gap: 20px;"><span class="type-small" style="min-width: 96px; text-align: right;">--space-xs</span><div style="width: 4px; height: 28px; background: var(--accent);"></div><span class="type-small">4px</span></div>
+        <div style="display: flex; align-items: center; gap: 20px;"><span class="type-small" style="min-width: 96px; text-align: right;">--space-sm</span><div style="width: 8px; height: 28px; background: var(--accent);"></div><span class="type-small">8px</span></div>
+        <div style="display: flex; align-items: center; gap: 20px;"><span class="type-small" style="min-width: 96px; text-align: right;">--space-md</span><div style="width: 16px; height: 28px; background: var(--accent);"></div><span class="type-small">16px</span></div>
+        <div style="display: flex; align-items: center; gap: 20px;"><span class="type-small" style="min-width: 96px; text-align: right;">--space-lg</span><div style="width: 24px; height: 28px; background: var(--accent);"></div><span class="type-small">24px</span></div>
+        <div style="display: flex; align-items: center; gap: 20px;"><span class="type-small" style="min-width: 96px; text-align: right;">--space-xl</span><div style="width: 32px; height: 28px; background: var(--accent);"></div><span class="type-small">32px</span></div>
+        <div style="display: flex; align-items: center; gap: 20px;"><span class="type-small" style="min-width: 96px; text-align: right;">--space-2xl</span><div style="width: 48px; height: 28px; background: var(--accent);"></div><span class="type-small">48px</span></div>
+        <div style="display: flex; align-items: center; gap: 20px;"><span class="type-small" style="min-width: 96px; text-align: right;">--space-3xl</span><div style="width: 64px; height: 28px; background: var(--accent);"></div><span class="type-small">64px</span></div>
+      </div>
+      <div style="border: 1px solid var(--border-dim); background: var(--bg-surface); padding: var(--space-xl);">
+        <div style="display: flex; flex-direction: column; gap: var(--space-lg);">
+          <div class="type-overline bright">Spacing in Context</div>
+          <div style="display: flex; gap: var(--space-md); border: 1px solid var(--border); padding: var(--space-md); background: var(--bg-hover);">
+            <div style="width: 48px; height: 32px; background: var(--accent-dim); flex-shrink: 0;"></div>
+            <div>
+              <div class="type-subheading" style="font-size: var(--text-md); margin-bottom: var(--space-xs);">Panel Title</div>
+              <div class="type-small">space-md gap between items, space-lg between rows, space-xl panel padding</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap;">
+            <button class="btn btn-primary btn-sm">Action</button>
+            <button class="btn btn-secondary btn-sm">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<section class="kit-section" id="buttons">
+    <div class="kit-section-title">04</div>
+    <h2>Buttons</h2>
+
+    <div class="kit-group">
+      <div class="kit-label">Matrix — Every Variant × Size × State</div>
+      <div class="btn-matrix">
+        <table class="btn-matrix-table">
+          <thead>
+            <tr>
+              <th style="min-width:140px;">Class</th>
+              <th>Default</th>
+              <th>Hover</th>
+              <th>Active</th>
+              <th>Disabled</th>
+              <th>Loading</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding-right:16px; white-space:nowrap;">
+                <code class="code-inline">.btn-primary .sm</code>
+                <div class="type-small" style="margin-top:2px;">Small filled</div>
+              </td>
+              <td><button class="btn btn-primary btn-sm">Fill</button></td>
+              <td><button class="btn btn-primary btn-sm btn-pseudo-hover">Fill</button></td>
+              <td><button class="btn btn-primary btn-sm btn-pseudo-active">Fill</button></td>
+              <td><button class="btn btn-primary btn-sm"disabled>Fill</button></td>
+              <td><button class="btn btn-primary btn-sm loading">Fill</button></td>
+            </tr>
+            <tr>
+              <td style="padding-right:16px; white-space:nowrap;">
+                <code class="code-inline">.btn-primary</code>
+                <div class="type-small" style="margin-top:2px;">Default filled</div>
+              </td>
+              <td><button class="btn btn-primary">Filled</button></td>
+              <td><button class="btn btn-primary btn-pseudo-hover">Filled</button></td>
+              <td><button class="btn btn-primary btn-pseudo-active">Filled</button></td>
+              <td><button class="btn btn-primary"disabled>Filled</button></td>
+              <td><button class="btn btn-primary loading">Filled</button></td>
+            </tr>
+            <tr>
+              <td style="padding-right:16px; white-space:nowrap;">
+                <code class="code-inline">.btn-primary .lg</code>
+                <div class="type-small" style="margin-top:2px;">Large filled</div>
+              </td>
+              <td><button class="btn btn-primary btn-lg">Fill</button></td>
+              <td><button class="btn btn-primary btn-lg btn-pseudo-hover">Fill</button></td>
+              <td><button class="btn btn-primary btn-lg btn-pseudo-active">Fill</button></td>
+              <td><button class="btn btn-primary btn-lg"disabled>Fill</button></td>
+              <td><button class="btn btn-primary btn-lg loading">Fill</button></td>
+            </tr>
+            <tr>
+              <td style="padding-right:16px; white-space:nowrap;">
+                <code class="code-inline">.btn-secondary .sm</code>
+                <div class="type-small" style="margin-top:2px;">Small outline</div>
+              </td>
+              <td><button class="btn btn-secondary btn-sm">Outl</button></td>
+              <td><button class="btn btn-secondary btn-sm btn-pseudo-hover">Outl</button></td>
+              <td><button class="btn btn-secondary btn-sm btn-pseudo-active">Outl</button></td>
+              <td><button class="btn btn-secondary btn-sm"disabled>Outl</button></td>
+              <td><button class="btn btn-secondary btn-sm loading">Outl</button></td>
+            </tr>
+            <tr>
+              <td style="padding-right:16px; white-space:nowrap;">
+                <code class="code-inline">.btn-secondary</code>
+                <div class="type-small" style="margin-top:2px;">Default outline</div>
+              </td>
+              <td><button class="btn btn-secondary">Outline</button></td>
+              <td><button class="btn btn-secondary btn-pseudo-hover">Outline</button></td>
+              <td><button class="btn btn-secondary btn-pseudo-active">Outline</button></td>
+              <td><button class="btn btn-secondary"disabled>Outline</button></td>
+              <td><button class="btn btn-secondary loading">Outline</button></td>
+            </tr>
+            <tr>
+              <td style="padding-right:16px; white-space:nowrap;">
+                <code class="code-inline">.btn-secondary .lg</code>
+                <div class="type-small" style="margin-top:2px;">Large outline</div>
+              </td>
+              <td><button class="btn btn-secondary btn-lg">Outl</button></td>
+              <td><button class="btn btn-secondary btn-lg btn-pseudo-hover">Outl</button></td>
+              <td><button class="btn btn-secondary btn-lg btn-pseudo-active">Outl</button></td>
+              <td><button class="btn btn-secondary btn-lg"disabled>Outl</button></td>
+              <td><button class="btn btn-secondary btn-lg loading">Outl</button></td>
+            </tr>
+            <tr>
+              <td style="padding-right:16px; white-space:nowrap;">
+                <code class="code-inline">.btn-ghost .sm</code>
+                <div class="type-small" style="margin-top:2px;">Small muted</div>
+              </td>
+              <td><button class="btn btn-ghost btn-sm">Mute</button></td>
+              <td><button class="btn btn-ghost btn-sm btn-pseudo-hover">Mute</button></td>
+              <td><button class="btn btn-ghost btn-sm btn-pseudo-active">Mute</button></td>
+              <td><button class="btn btn-ghost btn-sm"disabled>Mute</button></td>
+              <td><button class="btn btn-ghost btn-sm loading">Mute</button></td>
+            </tr>
+            <tr>
+              <td style="padding-right:16px; white-space:nowrap;">
+                <code class="code-inline">.btn-ghost</code>
+                <div class="type-small" style="margin-top:2px;">Default muted</div>
+              </td>
+              <td><button class="btn btn-ghost">Muted</button></td>
+              <td><button class="btn btn-ghost btn-pseudo-hover">Muted</button></td>
+              <td><button class="btn btn-ghost btn-pseudo-active">Muted</button></td>
+              <td><button class="btn btn-ghost"disabled>Muted</button></td>
+              <td><button class="btn btn-ghost loading">Muted</button></td>
+            </tr>
+            <tr>
+              <td style="padding-right:16px; white-space:nowrap;">
+                <code class="code-inline">.btn-ghost .lg</code>
+                <div class="type-small" style="margin-top:2px;">Large muted</div>
+              </td>
+              <td><button class="btn btn-ghost btn-lg">Mute</button></td>
+              <td><button class="btn btn-ghost btn-lg btn-pseudo-hover">Mute</button></td>
+              <td><button class="btn btn-ghost btn-lg btn-pseudo-active">Mute</button></td>
+              <td><button class="btn btn-ghost btn-lg"disabled>Mute</button></td>
+              <td><button class="btn btn-ghost btn-lg loading">Mute</button></td>
+            </tr>
+            <tr>
+              <td style="padding-right:16px; white-space:nowrap;">
+                <code class="code-inline">.btn-danger .sm</code>
+                <div class="type-small" style="margin-top:2px;">Small destructive</div>
+              </td>
+              <td><button class="btn btn-danger btn-sm">Dest</button></td>
+              <td><button class="btn btn-danger btn-sm btn-pseudo-hover">Dest</button></td>
+              <td><button class="btn btn-danger btn-sm btn-pseudo-active">Dest</button></td>
+              <td><button class="btn btn-danger btn-sm"disabled>Dest</button></td>
+              <td><button class="btn btn-danger btn-sm loading">Dest</button></td>
+            </tr>
+            <tr>
+              <td style="padding-right:16px; white-space:nowrap;">
+                <code class="code-inline">.btn-danger</code>
+                <div class="type-small" style="margin-top:2px;">Default destructive</div>
+              </td>
+              <td><button class="btn btn-danger">Destructive</button></td>
+              <td><button class="btn btn-danger btn-pseudo-hover">Destructive</button></td>
+              <td><button class="btn btn-danger btn-pseudo-active">Destructive</button></td>
+              <td><button class="btn btn-danger"disabled>Destructive</button></td>
+              <td><button class="btn btn-danger loading">Destructive</button></td>
+            </tr>
+            <tr>
+              <td style="padding-right:16px; white-space:nowrap;">
+                <code class="code-inline">.btn-danger .lg</code>
+                <div class="type-small" style="margin-top:2px;">Large destructive</div>
+              </td>
+              <td><button class="btn btn-danger btn-lg">Dest</button></td>
+              <td><button class="btn btn-danger btn-lg btn-pseudo-hover">Dest</button></td>
+              <td><button class="btn btn-danger btn-lg btn-pseudo-active">Dest</button></td>
+              <td><button class="btn btn-danger btn-lg"disabled>Dest</button></td>
+              <td><button class="btn btn-danger btn-lg loading">Dest</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="kit-group">
+      <div class="kit-label">Class Reference</div>
+      <div class="code-block btn-class-ref">
+        <div>.btn</div><div>.btn-primary</div><div>.btn-secondary</div><div>.btn-ghost</div>
+        <div>.btn-danger</div><div>.btn-sm</div><div>.btn-lg</div><div>.btn-icon</div>
+      </div>
+    </div>
+  </section><section class="kit-section" id="inputs">
+    <div class="kit-section-title">05</div>
+    <h2>Form Inputs</h2>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 700px;">
+      <div class="input-group">
+        <label class="input-label">Board Name</label>
+        <input class="input" type="text" placeholder="e.g. aerospace">
+        <span class="input-hint">Lowercase, no spaces</span>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Error State</label>
+        <input class="input error" type="text" value="invalid entry">
+        <span class="input-error">Board name already exists</span>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Category</label>
+        <select class="input">
+          <option>Select category...</option>
+          <option>Aerospace</option>
+          <option>Editorial</option>
+          <option>Brutalist</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Success State</label>
+        <input class="input success" type="text" value="aerospace-v2">
+        <span class="input-success">Board name available</span>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Disabled</label>
+        <input class="input" type="text" value="Read-only value" disabled>
+      </div>
+    </div>
+
+    <div class="input-group" style="max-width: 700px; margin-top: 24px;">
+      <label class="input-label">Description</label>
+      <textarea class="input" placeholder="Describe the design direction for this board..."></textarea>
+    </div>
+  </section>
+
+<section class="kit-section" id="toggles">
+    <div class="kit-section-title">06</div>
+    <h2>Toggles & Checks</h2>
+
+    <div class="kit-group">
+      <div class="kit-label">Toggle Switches</div>
+      <div class="toggles-grid">
+        <label class="toggle toggle-cell">
+          <input type="checkbox" checked>
+          <div class="toggle-track"></div>
+          <span>Auto-analyze on upload</span>
+        </label>
+        <label class="toggle toggle-cell">
+          <input type="checkbox">
+          <div class="toggle-track"></div>
+          <span>Dark mode</span>
+        </label>
+        <label class="toggle toggle-cell disabled">
+          <input type="checkbox" disabled checked>
+          <div class="toggle-track"></div>
+          <span>Locked setting</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="kit-group">
+      <div class="kit-label">Checkboxes</div>
+      <div class="toggles-grid">
+        <label class="check-group toggle-cell"><input type="checkbox" checked> <span>Monospace grid</span></label>
+        <label class="check-group toggle-cell"><input type="checkbox" checked> <span>Amber on black</span></label>
+        <label class="check-group toggle-cell"><input type="checkbox"> <span>Generous whitespace</span></label>
+      </div>
+    </div>
+
+    <div class="kit-group">
+      <div class="kit-label">Radio Buttons</div>
+      <div class="toggles-grid">
+        <label class="check-group toggle-cell"><input type="radio" name="layout" checked> <span>Grid view</span></label>
+        <label class="check-group toggle-cell"><input type="radio" name="layout"> <span>List view</span></label>
+        <label class="check-group toggle-cell"><input type="radio" name="layout"> <span>Detail view</span></label>
+      </div>
+    </div>
+  </section>
+<section class="kit-section" id="tabs">
+    <div class="kit-section-title">07</div>
+    <h2>Tabs</h2>
+
+    <div class="kit-label">Underline</div>
+    <div class="tabs">
+      <button class="tab active">Overview</button>
+      <button class="tab">Sessions</button>
+      <button class="tab">Tools</button>
+      <button class="tab" disabled>Archived</button>
+    </div>
+    <div class="tab-panel active">
+      <span class="type-body">Overview panel — this tab is active with amber underline indicator.</span>
+    </div>
+    <div class="tab-panel">
+      <span class="type-body">Sessions panel — review past interaction sessions and their metrics.</span>
+    </div>
+    <div class="tab-panel">
+      <span class="type-body">Tools panel — manage connected integrations and API endpoints.</span>
+    </div>
+    <div class="tab-panel">
+      <span class="type-body">Archived panel — inactive projects and read-only historical data.</span>
+    </div>
+
+    <div class="kit-label" style="margin-top: var(--space-2xl);">Segmented</div>
+    <div class="tabs tabs-segmented">
+      <button class="tab active">Daily</button>
+      <button class="tab">Weekly</button>
+      <button class="tab">Monthly</button>
+    </div>
+    <div class="tab-panel active" style="margin-top: var(--space-md);">
+      <span class="type-body">Daily metrics panel content.</span>
+    </div>
+    <div class="tab-panel" style="margin-top: var(--space-md);">
+      <span class="type-body">Weekly metrics panel content.</span>
+    </div>
+    <div class="tab-panel" style="margin-top: var(--space-md);">
+      <span class="type-body">Monthly metrics panel content.</span>
+    </div>
+  </section>
+
+<section class="kit-section" id="steppers">
+    <div class="kit-section-title">08</div>
+    <h2>Interactive Steppers</h2>
+
+    <div class="kit-group">
+      <div class="kit-label">State Taxonomy — Horizontal</div>
+      <div class="stepper">
+        <div class="step complete">
+          <div class="step-indicator"></div>
+          <div class="step-label">Complete</div>
+          <div class="step-info">.step.complete</div>
+        </div>
+        <div class="step progress">
+          <div class="step-indicator"></div>
+          <div class="step-label">Progress</div>
+          <div class="step-info">.step.progress</div>
+        </div>
+        <div class="step review">
+          <div class="step-indicator"></div>
+          <div class="step-label">Review</div>
+          <div class="step-info">.step.review</div>
+        </div>
+        <div class="step active">
+          <div class="step-indicator"></div>
+          <div class="step-label">Active</div>
+          <div class="step-info">.step.active</div>
+        </div>
+        <div class="step next">
+          <div class="step-indicator"></div>
+          <div class="step-label">Next Up</div>
+          <div class="step-info">.step.next</div>
+        </div>
+        <div class="step">
+          <div class="step-indicator"></div>
+          <div class="step-label">Queued</div>
+          <div class="step-info">default .step</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="kit-group">
+      <div class="kit-label">Adjacent Mixed Pairs — No Separation Needed</div>
+      <div class="stepper" style="margin-bottom: var(--space-lg);">
+        <div class="step complete">
+          <div class="step-indicator"></div>
+          <div class="step-label">01 Complete</div>
+          <div class="step-info">Verified</div>
+        </div>
+        <div class="step progress">
+          <div class="step-indicator"></div>
+          <div class="step-label">02 Progress</div>
+          <div class="step-info">Started</div>
+        </div>
+        <div class="step review">
+          <div class="step-indicator"></div>
+          <div class="step-label">03 Review</div>
+          <div class="step-info">Pending check</div>
+        </div>
+        <div class="step active">
+          <div class="step-indicator"></div>
+          <div class="step-label">04 Active</div>
+          <div class="step-info">Current</div>
+        </div>
+        <div class="step next">
+          <div class="step-indicator"></div>
+          <div class="step-label">05 Next</div>
+          <div class="step-info">Queued after active</div>
+        </div>
+        <div class="step">
+          <div class="step-indicator"></div>
+          <div class="step-label">06 Queued</div>
+          <div class="step-info">Not started</div>
+        </div>
+      </div>
+      <div class="stepper">
+        <div class="step progress animated">
+          <div class="step-indicator"></div>
+          <div class="step-label">Animated</div>
+          <div class="step-info">.progress.animated</div>
+        </div>
+        <div class="step progress">
+          <div class="step-indicator"></div>
+          <div class="step-label">Static</div>
+          <div class="step-info">.progress</div>
+        </div>
+        <div class="step complete">
+          <div class="step-indicator"></div>
+          <div class="step-label">Complete</div>
+          <div class="step-info">Fused pair accepted</div>
+        </div>
+        <div class="step complete">
+          <div class="step-indicator"></div>
+          <div class="step-label">Complete</div>
+          <div class="step-info">Same hue merges</div>
+        </div>
+        <div class="step next">
+          <div class="step-indicator"></div>
+          <div class="step-label">Next</div>
+          <div class="step-info">After active</div>
+        </div>
+        <div class="step active">
+          <div class="step-indicator"></div>
+          <div class="step-label">Active</div>
+          <div class="step-info">Before next</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="kit-group">
+      <div class="kit-label">Checklist — Vertical Variant</div>
+      <div class="stepper stepper-vertical" style="max-width: 300px;">
+        <div class="step complete">
+          <div class="step-indicator"></div>
+          <div>
+            <div class="step-label">Pre-flight check</div>
+            <div class="step-info">.complete — done, verified</div>
+          </div>
+        </div>
+        <div class="step progress">
+          <div class="step-indicator"></div>
+          <div>
+            <div class="step-label">Fueling</div>
+            <div class="step-info">.progress — started, not finished</div>
+          </div>
+        </div>
+        <div class="step review">
+          <div class="step-indicator"></div>
+          <div>
+            <div class="step-label">Tank seal inspect</div>
+            <div class="step-info">.review — complete, pending verification</div>
+          </div>
+        </div>
+        <div class="step active">
+          <div class="step-indicator"></div>
+          <div>
+            <div class="step-label">Crew Ingress</div>
+            <div class="step-info">.active — current step</div>
+          </div>
+        </div>
+        <div class="step next">
+          <div class="step-indicator"></div>
+          <div>
+            <div class="step-label">Hatch close</div>
+            <div class="step-info">.next — queued immediately after active</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-indicator"></div>
+          <div>
+            <div class="step-label">Launch</div>
+            <div class="step-info">default — not started</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="kit-group">
+      <div class="kit-label">Usage Note</div>
+      <div class="summary" style="font-size: var(--text-sm); color: var(--text-dim); max-width: 65ch;">
+        Pick adjacent states so their fill patterns differ. Two identical states will merge visually — that is accepted only for consecutive <code class="code-inline">.complete</code> steps. Do not add gaps, margins, or dividers between indicators. Use <code class="code-inline">.progress.animated</code> for an opt-in drifting stripe; animation is removed under <code class="code-inline">prefers-reduced-motion</code>.
+      </div>
+    </div>
+
+    <div class="kit-group">
+      <div class="kit-label">Semantic Guidance</div>
+      <div class="summary" style="font-size: var(--text-sm); color: var(--text-dim); max-width: 65ch;">
+        <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: var(--space-sm);">
+          <li><code class="code-inline">.complete</code> — step is done and verified.</li>
+          <li><code class="code-inline">.progress</code> — step is started but not finished.</li>
+          <li><code class="code-inline">.review</code> — step is complete and pending verification.</li>
+          <li><code class="code-inline">.active</code> — the current step in focus.</li>
+          <li><code class="code-inline">.next</code> — the step queued immediately after active.</li>
+          <li><code class="code-inline">.step</code> — a step that has not started.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+<section class="kit-section" id="sliders">
+    <div class="kit-section-title">09</div>
+    <h2>Range Sliders</h2>
+    
+    <div style="max-width: 500px; display: flex; flex-direction: column; gap: 32px;">
+      <div class="input-group">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <label class="input-label">Thrust Intensity</label>
+          <span class="type-small accent">85%</span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" class="slider" min="0" max="100" value="85">
+        </div>
+      </div>
+
+      <div class="input-group">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <label class="input-label">Oxygen Levels</label>
+          <span class="type-small text-green">92%</span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" class="slider slider-green" min="0" max="100" value="92">
+        </div>
+      </div>
+
+      <div class="input-group">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <label class="input-label">Fuel Warning</label>
+          <span class="type-small text-red">12%</span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" class="slider slider-red" min="0" max="100" value="12">
+        </div>
+      </div>
+    </div>
+  </section>
+
+<section class="kit-section" id="metrics">
+    <div class="kit-section-title">10</div>
+    <h2>Metric Cards</h2>
+
+    <div class="metric-grid">
+      <div class="metric" style="background: #0f0f0f;">
+        <div class="metric-label">Chemistry</div>
+        <div class="metric-value green">8.0</div>
+        <div class="metric-trend up">▲ 0.4</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Prompts / Session</div>
+        <div class="metric-value">6.2</div>
+        <div class="metric-trend down">▼ 1.1</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Total Events</div>
+        <div class="metric-value">2,814</div>
+        <div class="metric-detail">across all sessions</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Parallel Rate</div>
+        <div class="metric-value accent">40%</div>
+        <div class="metric-detail">8/20 used subagents</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Entries</div>
+        <div class="metric-value">19<span class="frac">/30</span></div>
+        <div class="metric-detail">principles encoded</div>
+      </div>
+    </div>
+  </section>
+
+<section class="kit-section" id="tables">
+    <div class="kit-section-title">11</div>
+    <h2>Tables</h2>
+
+    <div class="panel">
+      <div class="panel-header">Session History</div>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Prompts</th>
+              <th>Tools</th>
+              <th>Duration</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-bright">2026-02-14 15:29</td>
+              <td>35</td>
+              <td>123</td>
+              <td>40m</td>
+              <td><span class="tag tag-green">Complete</span></td>
+            </tr>
+            <tr>
+              <td class="text-bright">2026-02-09 01:34</td>
+              <td>19</td>
+              <td>335</td>
+              <td>120m</td>
+              <td><span class="tag tag-green">Complete</span></td>
+            </tr>
+            <tr>
+              <td class="text-bright">2026-02-08 01:40</td>
+              <td>15</td>
+              <td>106</td>
+              <td>92m</td>
+              <td><span class="tag tag-accent">Reviewed</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="kit-label" style="margin-top: var(--space-xl);">With Tabs &amp; Filter</div>
+    <div class="panel">
+      <div class="panel-header" style="display: flex; align-items: center; justify-content: space-between;">
+        <span>Filtered Results</span>
+        <div style="display: flex; gap: 1px; background: var(--border-dim);">
+          <button class="tab active" style="font-size:10px; padding:4px 10px; background: var(--bg); text-transform:uppercase;">All</button>
+          <button class="tab" style="font-size:10px; padding:4px 10px; background: var(--bg); text-transform:uppercase;">Complete</button>
+          <button class="tab" style="font-size:10px; padding:4px 10px; background: var(--bg); text-transform:uppercase;">Reviewed</button>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Prompts</th>
+              <th>Tools</th>
+              <th>Duration</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2026-02-14 15:29</td>
+              <td>35</td>
+              <td>123</td>
+              <td>40m</td>
+              <td><span class="tag tag-green">Complete</span></td>
+            </tr>
+            <tr>
+              <td>2026-02-08 01:40</td>
+              <td>15</td>
+              <td>106</td>
+              <td>92m</td>
+              <td><span class="tag tag-accent">Reviewed</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+<section class="kit-section" id="bars">
+    <div class="kit-section-title">12</div>
+    <h2>Bars</h2>
+
+    <div class="kit-group">
+      <div class="kit-label">Standard (value → bar)</div>
+      <div style="max-width: 60%; display: flex; flex-direction: column; gap: 12px;">
+        <div class="bar-wrap"><span class="bar-val">250</span><div class="bar-track"><div class="bar-fill" style="width: 100%;"></div></div></div>
+        <div class="bar-wrap"><span class="bar-val">159</span><div class="bar-track"><div class="bar-fill gradient" style="width: 63.6%;"></div></div></div>
+        <div class="bar-wrap"><span class="bar-val">63</span><div class="bar-track"><div class="bar-fill" style="width: 25.2%;"></div></div></div>
+      </div>
+      <div class="bar-scale" style="margin-left: 84px; margin-top: 8px; display: flex; justify-content: space-between; font-size: var(--text-xs); color: var(--text-dim); position: relative;">
+        <span>0</span><span>50</span><span>100</span><span>150</span><span>200</span><span>250</span>
+        <div style="position: absolute; top: -4px; left: 0; right: 0; height: 4px; background: repeating-linear-gradient(90deg, var(--border-dim) 0 1px, transparent 1px 20.16%);"></div>
+      </div>
+    </div>
+
+    <div class="kit-group">
+      <div class="kit-label">Semantic colors</div>
+      <div style="max-width: 60%; display: flex; flex-direction: column; gap: 12px;">
+        <div class="bar-wrap"><span class="bar-val text-green">92%</span><div class="bar-track"><div class="bar-fill green" style="width: 92%;"></div></div></div>
+        <div class="bar-wrap"><span class="bar-val text-red">18%</span><div class="bar-track"><div class="bar-fill red" style="width: 18%;"></div></div></div>
+        <div class="bar-wrap"><span class="bar-val" style="color: var(--blue);">67%</span><div class="bar-track"><div class="bar-fill blue" style="width: 67%;"></div></div></div>
+      </div>
+    </div>
+
+    <div class="kit-group">
+      <div class="kit-label">Thick / Thin variants</div>
+      <div style="max-width: 60%; display: flex; flex-direction: column; gap: 12px;">
+        <div class="bar-wrap"><span class="bar-val">Thick</span><div class="bar-track thick"><div class="bar-fill" style="width: 75%;"></div></div></div>
+        <div class="bar-wrap"><span class="bar-val">Thin</span><div class="bar-track thin"><div class="bar-fill" style="width: 45%;"></div></div></div>
+      </div>
+    </div>
+  </section>
+
+<section class="kit-section" id="progress">
+    <div class="kit-section-title">13</div>
+    <h2>Progress</h2>
+
+    <div style="max-width: 500px; display: flex; flex-direction: column; gap: 24px;">
+      <div>
+        <div class="kit-label">Default — 72%</div>
+        <div class="progress"><div class="progress-fill" style="width: 72%;"></div></div>
+      </div>
+      <div>
+        <div class="kit-label">Thick — 72%</div>
+        <div class="progress thick"><div class="progress-fill" style="width: 72%;"></div></div>
+      </div>
+      <div>
+        <div class="kit-label">Thin — Complete</div>
+        <div class="progress thin"><div class="progress-fill green" style="width: 100%;"></div></div>
+      </div>
+      <div>
+        <div class="kit-label">Indeterminate</div>
+        <div class="progress progress-indeterminate"><div class="progress-fill"></div></div>
+      </div>
+    </div>
+  </section>
+
+<section class="kit-section" id="timeline">
+    <div class="kit-section-title">14</div>
+    <h2>Adherence Timeline</h2>
+    
+    <div class="panel" style="max-width: 60%;">
+      <div class="panel-header">Mission Schedule vs Actual</div>
+      <div class="panel-body">
+        <div class="timeline">
+          <div class="timeline-row">
+            <div class="timeline-label">Telemetry Sync</div>
+            <div class="timeline-track">
+              <div class="timeline-planned" style="left: 10%; width: 40%;"></div>
+              <div class="timeline-actual" style="left: 12%; width: 35%;"></div>
+            </div>
+            <div class="timeline-status text-green">OK</div>
+          </div>
+          <div class="timeline-row">
+            <div class="timeline-label">Core Stability</div>
+            <div class="timeline-track">
+              <div class="timeline-planned" style="left: 30%; width: 50%;"></div>
+              <div class="timeline-actual" style="left: 35%; width: 60%;"></div>
+            </div>
+            <div class="timeline-status text-accent">LATE</div>
+          </div>
+          <div class="timeline-row">
+            <div class="timeline-label">Uplink Heartbeat</div>
+            <div class="timeline-track">
+              <div class="timeline-planned" style="left: 0%; width: 100%;"></div>
+              <div class="timeline-actual" style="left: 0%; width: 95%;"></div>
+            </div>
+            <div class="timeline-status text-red">FAIL</div>
+          </div>
+        </div>
+      </div>
+      <div class="panel-footer">Legend: <span style="color: var(--text-bright);">░ Planned</span> · <span style="color: var(--accent);">█ Actual</span></div>
+    </div>
+  </section>
+
+<section class="kit-section" id="panels">
+    <div class="kit-section-title">15</div>
+    <h2>Panels & Cards</h2>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+      <div class="panel">
+        <div class="panel-header">Panel Header <span class="badge">8</span></div>
+        <div class="panel-body">
+          <span class="type-body">Panel body content. Used for grouped data like tables, tool distributions, comprehension signals.</span>
+        </div>
+        <div class="panel-footer"><span class="type-small text-dim">Updated 2h ago</span><span style="display:flex;gap:12px;"><a href="#">Edit</a><a href="#">Delete</a></span></div>
+      </div>
+
+      <div class="card">
+        <div class="type-overline" style="margin-bottom: 8px;">Card</div>
+        <div class="type-body">Lighter variant with muted border. Elevates on hover. Use for individual items in grids.</div>
+      </div>
+    </div>
+
+    <div class="card card-accent" style="max-width: 350px;">
+      <div class="type-overline bright" style="margin-bottom: 8px;">Card Accent</div>
+      <div class="type-body">Amber border variant for featured items.</div>
+    </div>
+  </section>
+
+<section class="kit-section" id="tags">
+    <div class="kit-section-title">16</div>
+    <h2>Tags & Badges</h2>
+
+    <div class="kit-group">
+      <div class="kit-label">Tags</div>
+      <div class="tag-group">
+        <span class="tag">Default</span>
+        <span class="tag tag-accent">Accent</span>
+        <span class="tag tag-green">Success</span>
+        <span class="tag tag-red">Error</span>
+        <span class="tag tag-blue">Info</span>
+        <span class="tag tag-accent">Removable <span class="tag-remove">×</span></span>
+      </div>
+    </div>
+
+    <div class="kit-group">
+      <div class="kit-label">Badges — Alert Semantics</div>
+      <div class="tag-group">
+        <span class="badge badge-icon" title="Info">i</span>
+        <span class="badge badge-green badge-icon" title="Success">✓</span>
+        <span class="badge badge-icon" title="Warning" style="background: var(--yellow); color: var(--bg);">!</span>
+        <span class="badge badge-red badge-icon" title="Error">!</span>
+        <span class="badge">8</span>
+        <span class="badge-outline">7</span>
+        <span class="badge badge-dim">0</span>
+      </div>
+    </div>
+  </section>
+
+<section class="kit-section" id="alerts">
+    <div class="kit-section-title">17</div>
+    <h2>Alerts</h2>
+
+    <div style="display: flex; flex-direction: column; gap: 16px; max-width: 700px;">
+      <div class="alert alert-info"><strong>INFO</strong> — Board manifest updated. 12 images indexed across 3 boards.</div>
+      <div class="alert alert-success"><strong>COMPLETE</strong> — Analysis finished. All tags extracted successfully.</div>
+      <div class="alert alert-warning"><strong>ATTENTION</strong> — Gemini API rate limit approaching. 8/10 calls used this minute.</div>
+      <div class="alert alert-danger dismissible"><span><strong>FAILURE</strong> — Image analysis failed for 2 uploads. Retry available.</span><span class="alert-close">✕</span></div>
+    </div>
+  </section>
+
+<section class="kit-section" id="status">
+    <div class="kit-section-title">18</div>
+    <h2>Status Indicators</h2>
+
+    <div class="kit-group">
+      <div class="kit-label">Status Dots</div>
+      <div class="kit-row" style="gap: 32px;">
+        <span class="status"><span class="status-dot online"></span> Online</span>
+        <span class="status"><span class="status-dot away"></span> Away</span>
+        <span class="status"><span class="status-dot busy"></span> Busy</span>
+        <span class="status"><span class="status-dot"></span> Offline</span>
+      </div>
+    </div>
+
+    <div class="kit-group">
+      <div class="kit-label">RAG Status Tags (REQ-MON-02)</div>
+      <div class="tag-group">
+        <span class="tag sg-filled">SG — NOMINAL</span>
+        <span class="tag sa-filled">SA — WARNING</span>
+        <span class="tag sr-filled">SR — CRITICAL</span>
+        <span class="tag sd-filled">SD — INACTIVE</span>
+      </div>
+    </div>
+  </section>
+
+<section class="kit-section" id="lists">
+    <div class="kit-section-title">19</div>
+    <h2>Lists</h2>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; max-width: 700px;">
+      <div>
+        <div class="kit-label">Bullets</div>
+        <ul class="list">
+          <li>Monospace grid</li>
+          <li>Amber on black</li>
+          <li>Data-first hierarchy</li>
+          <li>Generous padding</li>
+        </ul>
+      </div>
+      <div>
+        <div class="kit-label">Numbered</div>
+        <ul class="list list-numbered">
+          <li>Upload image</li>
+          <li>AI analysis runs</li>
+          <li>Tags appear</li>
+          <li>User reviews</li>
+        </ul>
+      </div>
+      <div>
+        <div class="kit-label">Dashed</div>
+        <ul class="list list-dashed">
+          <li>Fork, don't queue</li>
+          <li>Data-first hierarchy</li>
+          <li>Close every loop</li>
+          <li>One scan direction</li>
+        </ul>
+      </div>
+      <div>
+        <div class="kit-label">Triangle</div>
+        <ul class="list list-triangle">
+          <li>Build for today</li>
+          <li>Boring infra, novel value</li>
+          <li>Generous sizing</li>
+          <li>Propose, don't ask</li>
+        </ul>
+      </div>
+      <div>
+        <div class="kit-label">Triple Dash</div>
+        <ul class="list list-triple-dash">
+          <li>First principles always</li>
+          <li>Evidence-based pushback</li>
+          <li>Corrections are data</li>
+          <li>Each session more aligned</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+<section class="kit-section" id="code">
+    <div class="kit-section-title">20</div>
+    <h2>Code</h2>
+
+    <div class="kit-group">
+      <div class="kit-label">Inline</div>
+      <div class="type-body">Run <span class="code-inline">GEMINI_API_KEY=xxx node server.js</span> to start the moodboard.</div>
+    </div>
+
+    <div class="kit-group">
+      <div class="kit-label">Block</div>
+      <pre class="code-block"><span class="keyword">import</span> { readJSON, writeJSON } <span class="keyword">from</span> <span class="string">'./fs'</span>;
+<span class="keyword">import</span> { extractTags, validateSchema } <span class="keyword">from</span> <span class="string">'./pipeline'</span>;
+
+<span class="comment">// ── Load source board ─────────────────────────────────────</span>
+<span class="keyword">const</span> board   = <span class="keyword">await</span> readJSON(<span class="string">'boards/aerospace.json'</span>);
+<span class="keyword">const</span> images  = board.images.filter(i => i.reviewed);
+<span class="keyword">const</span> refs    = images.slice(<span class="number">0</span>, <span class="number">5</span>);
+
+<span class="comment">// ── Run extraction & validation ───────────────────────────</span>
+<span class="keyword">const</span> tags    = <span class="keyword">await</span> extractTags(refs);
+<span class="keyword">const</span> report  = validateSchema(tags, <span class="string">'v2'</span>);
+
+<span class="keyword">await</span> writeJSON(<span class="string">'output/tags.json'</span>,       tags);
+<span class="keyword">await</span> writeJSON(<span class="string">'output/report.json'</span>,     report);
+<span class="keyword">await</span> writeJSON(<span class="string">'output/manifest.json'</span>,   { count: tags.length });
+
+console.log(<span class="string">`Tagged ${tags.length} refs in ${Date.now() - t0}ms`</span>);</pre>
+    </div>
+  </section>
+
+<section class="kit-section" id="summary">
+    <div class="kit-section-title">21</div>
+    <h2>Summary / Quote</h2>
+
+    <div class="kit-group">
+      <div class="kit-label">L — var(--text-2xl)</div>
+      <div class="summary summary-lg">
+        Build for today. Three similar lines beat premature abstraction.
+        No speculative flexibility. Ship what you need now.
+      </div>
+    </div>
+    <div class="kit-group">
+      <div class="kit-label">M — var(--text-xl)</div>
+      <div class="summary summary-md">
+        Boring infra, novel value. Proven tools for plumbing.
+        Innovate only where it creates differentiated value.
+      </div>
+    </div>
+    <div class="kit-group">
+      <div class="kit-label">S — var(--text-lg)</div>
+      <div class="summary summary-sm">
+        Close every loop. Every tool opened gets closed.
+        Every resource freed. No orphans left behind.
+      </div>
+    </div>
+    <div class="kit-group">
+      <div class="kit-label">Hero — clamp(2rem, 4.5vw, 6.5rem)</div>
+      <div class="summary summary-hero">
+        Across 20 sessions, chemistry scores 8.0/10. Parallel execution
+        active in 40%&nbsp;—&nbsp;fork-don't-queue applied.
+      </div>
+    </div>
+  </section>
+
+<section class="kit-section" id="kv">
+    <div class="kit-section-title">22</div>
+    <h2>Key-Value Grid</h2>
+
+    <div class="kv-grid">
+      <div class="kv-cell"><span class="kv-label">REPORT GENERATED</span><span class="kv-value">2026-02-14 16:09</span></div>
+      <div class="kv-cell"><span class="kv-label">EVENT SOURCE</span><span class="kv-value">VIBECRAFT JSONL</span></div>
+      <div class="kv-cell"><span class="kv-label">SESSIONS ANALYZED</span><span class="kv-value">20</span></div>
+      <div class="kv-cell"><span class="kv-label">CLASSIFICATION</span><span class="kv-value">UNCLASSIFIED</span></div>
+      <div class="kv-cell"><span class="kv-label">OPERATOR</span><span class="kv-value">CMDR. SHEPARD</span></div>
+      <div class="kv-cell"><span class="kv-label">SECTOR</span><span class="kv-value">ALPHA-9</span></div>
+      <div class="kv-cell"><span class="kv-label">STATUS</span><span class="kv-value">NOMINAL</span></div>
+      <div class="kv-cell"><span class="kv-label">UPTIME</span><span class="kv-value">47h 12m</span></div>
+    </div>
+  </section>
+
+<section class="kit-section" id="empty">
+    <div class="kit-section-title">23</div>
+    <h2>File Upload</h2>
+
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 900px;">
+      <!-- Empty -->
+      <div class="empty-state-box">
+        <div class="empty-icon">◇</div>
+        <div class="type-subheading" style="color: var(--text-bright);">No files</div>
+        <div class="type-body" style="color: var(--text-dim); text-align: center;">Drag images here<br>PNG, JPG, WEBP</div>
+        <button class="btn btn-secondary btn-sm" style="margin-top: 12px;">Browse</button>
+      </div>
+
+      <!-- Uploading -->
+      <div class="empty-state-box">
+        <div class="empty-icon" style="color: var(--accent); animation: spin 1s linear infinite;">⟳</div>
+        <div class="type-subheading" style="color: var(--text-bright);">Uploading…</div>
+        <div class="type-body" style="color: var(--text-dim); text-align: center;">3 of 12 files<br><span style="color: var(--accent);">34%</span></div>
+        <div class="progress-bar" style="margin-top: 12px; width: 80%;"><div class="progress-fill" style="width: 34%;"></div></div>
+      </div>
+
+      <!-- Uploaded -->
+      <div class="empty-state-box" style="border-style: solid; border-color: var(--green-dim);">
+        <div class="empty-icon" style="color: var(--green);">✓</div>
+        <div class="type-subheading" style="color: var(--text-bright);">Uploaded</div>
+        <div class="type-body" style="color: var(--text-dim); text-align: center;">12 files ready<br><span style="color: var(--green);">100%</span></div>
+        <button class="btn btn-primary btn-sm" style="margin-top: 12px;">Review</button>
+      </div>
+    </div>
+  </section>
+
+<section class="kit-section" id="cmd">
+    <div class="kit-section-title">24</div>
+    <h2>Command Palette</h2>
+    <div class="cmd-hint">Press <kbd class="kbd">⌘K</kbd> to open</div>
+    <div class="demo-cmd">
+      <div class="cmd-dialog">
+        <div class="cmd-header">
+          <div class="cmd-icon">›</div>
+          <input type="text" class="cmd-input" placeholder="Type a command or search...">
+        </div>
+        <div class="cmd-list">
+          <div class="cmd-group-heading">Suggestions</div>
+          <div class="cmd-item selected">
+            <span>Calendar</span>
+            <span class="cmd-shortcut">⌘ C</span>
+          </div>
+          <div class="cmd-item">
+            <span>Search Emoji</span>
+            <span class="cmd-shortcut">⌘ E</span>
+          </div>
+          <div class="cmd-item">
+            <span>Launch Calculator</span>
+          </div>
+          <div class="cmd-group-heading">Settings</div>
+          <div class="cmd-item">
+            <span>Profile</span>
+            <span class="cmd-shortcut">⌘ P</span>
+          </div>
+          <div class="cmd-item">
+            <span>Billing</span>
+            <span class="cmd-shortcut">⌘ B</span>
+          </div>
+          <div class="cmd-item">
+            <span>Settings</span>
+            <span class="cmd-shortcut">⌘ S</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <script>
+    (function() {
+      const list = document.querySelector('.cmd-list');
+      if (!list) return;
+      const items = Array.from(list.querySelectorAll('.cmd-item'));
+      let selected = items.findIndex(i => i.classList.contains('selected'));
+      if (selected < 0) selected = 0;
+      list.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowDown') { e.preventDefault(); selected = (selected + 1) % items.length; update(); }
+        if (e.key === 'ArrowUp') { e.preventDefault(); selected = (selected - 1 + items.length) % items.length; update(); }
+      });
+      list.setAttribute('tabindex', '0');
+      function update() {
+        items.forEach((it, i) => it.classList.toggle('selected', i === selected));
+      }
+    })();
+  </script>
+
+<section class="kit-section" id="popover" style="min-height: 420px;">
+    <div class="kit-section-title">25</div>
+    <h2>Popover</h2>
+    <div class="kit-row">
+      <div style="position: relative; display: inline-block;" class="popover-wrap">
+        <button class="btn btn-secondary" data-popover="pop-dimensions">Open Popover</button>
+        <div class="popover-content popover-hidden" id="pop-dimensions" style="position: absolute; top: 0; left: calc(100% + 8px); width: 220px; z-index: 10; white-space: nowrap;">
+          <div class="input-group" style="margin-bottom: 12px;">
+            <label class="input-label">Width</label>
+            <div style="position: relative;">
+              <input type="text" class="input popover-input" value="100%" data-min="0" data-max="100" data-unit="%" style="width: 100%;">
+              <div class="input-handle" style="left: 75%;"></div>
+            </div>
+          </div>
+          <div class="input-group" style="margin-bottom: 12px;">
+            <label class="input-label">Height</label>
+            <div style="position: relative;">
+              <input type="text" class="input popover-input" value="auto" data-min="0" data-max="500" data-unit="px" style="width: 100%;">
+              <div class="input-handle" style="left: 40%;"></div>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Max. Width</label>
+            <div style="position: relative;">
+              <input type="text" class="input popover-input" value="300px" data-min="0" data-max="500" data-unit="px" style="width: 100%;">
+              <div class="input-handle" style="left: 60%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script>
+        (function() {
+          const wrap = document.querySelector('.popover-wrap');
+          if (!wrap) return;
+          // Drag logic for popover input handles (toggle is handled by interactions.js)
+          wrap.querySelectorAll('.popover-input').forEach(inp => {
+            const handle = inp.parentElement.querySelector('.input-handle');
+            if (!handle) return;
+            function sync() {
+              const v = parseFloat(inp.value) || 0;
+              const min = +inp.dataset.min, max = +inp.dataset.max;
+              const pct = Math.max(0, Math.min(100, (v - min) / (max - min) * 100));
+              handle.style.left = pct + '%';
+            }
+            inp.addEventListener('input', sync);
+            let dragging = false;
+            handle.addEventListener('mousedown', e => { dragging = true; e.preventDefault(); });
+            document.addEventListener('mousemove', e => {
+              if (!dragging) return;
+              const rect = inp.getBoundingClientRect();
+              const pct = Math.max(0, Math.min(100, (e.clientX - rect.left) / rect.width * 100));
+              const min = +inp.dataset.min, max = +inp.dataset.max;
+              const val = Math.round(min + (max - min) * pct / 100);
+              inp.value = val + inp.dataset.unit;
+              handle.style.left = pct + '%';
+            });
+            document.addEventListener('mouseup', () => dragging = false);
+            sync();
+          });
+        })();
+      </script>
+    </div>
+  </section>
+
+<section class="kit-section" id="toast">
+    <div class="kit-section-title">26</div>
+    <h2>Toast</h2>
+    <div class="kit-row" style="margin-bottom: 16px; flex-wrap: wrap;">
+      <button class="btn btn-secondary btn-sm" id="toast-trigger-brief">Trigger Brief</button>
+      <button class="btn btn-secondary btn-sm" id="toast-trigger-indepth">Trigger In-Depth</button>
+      <button class="btn btn-ghost btn-sm" id="toast-trigger-err">Trigger Destructive</button>
+      <button class="btn btn-secondary btn-sm" id="toast-trigger-mini-ok">Trigger Mini OK</button>
+      <button class="btn btn-secondary btn-sm" id="toast-trigger-mini-busy">Trigger Mini Busy</button>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; max-width: 1200px;">
+      <div>
+        <div class="kit-label" style="margin-bottom: 8px;">Brief</div>
+        <div class="toast-viewport" style="position: relative; padding: 0; align-items: start;">
+          <div class="toast" data-state="open">
+            <div class="toast-title">Scheduled: Catch up</div>
+            <div class="toast-desc">Friday, February 10, 2023 at 5:57 PM</div>
+            <button class="toast-action btn btn-sm btn-secondary">Undo</button>
+            <div class="toast-close">✕</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="kit-label" style="margin-bottom: 8px;">In-Depth</div>
+        <div class="toast-viewport" style="position: relative; padding: 0; align-items: start;">
+          <div class="toast" data-state="open">
+            <div class="toast-title">Profile Updated</div>
+            <div class="toast-desc">Your changes have been saved successfully and synced across all devices.</div>
+            <button class="toast-action btn btn-sm btn-secondary">View</button>
+            <div class="toast-close">✕</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="kit-label" style="margin-bottom: 8px;">Mini Success</div>
+        <div class="toast-viewport" style="position: relative; padding: 0; align-items: start;">
+          <div class="mini-toast" style="position: relative; transform: none; opacity: 1; top: auto; left: auto;">
+            <div class="mini-toast-icon">✓</div>
+            <span>Saved</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="kit-label" style="margin-bottom: 8px;">Brief Destructive</div>
+        <div class="toast-viewport" style="position: relative; padding: 0; align-items: start;">
+          <div class="toast destructive" data-state="open">
+            <div class="toast-title">Uh oh! Something went wrong.</div>
+            <div class="toast-desc">There was a problem with your request.</div>
+            <button class="toast-action btn btn-sm btn-danger">Try again</button>
+            <div class="toast-close">✕</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="kit-label" style="margin-bottom: 8px;">In-Depth Destructive</div>
+        <div class="toast-viewport" style="position: relative; padding: 0; align-items: start;">
+          <div class="toast destructive" data-state="open">
+            <div class="toast-title">Upload Failed — ERR_UPLOAD_412</div>
+            <div class="toast-desc">Payload exceeds 25MB limit. Compress or split into multiple uploads. <a href="#" style="color: var(--accent);">Learn more →</a></div>
+            <button class="toast-action btn btn-sm btn-secondary">Retry</button>
+            <div class="toast-close">✕</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="kit-label" style="margin-bottom: 8px;">Mini Updating</div>
+        <div class="toast-viewport" style="position: relative; padding: 0; align-items: start;">
+          <div class="mini-toast updating" style="position: relative; transform: none; opacity: 1; top: auto; left: auto;">
+            <div class="mini-toast-icon">⟳</div>
+            <span>Saving...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<section class="kit-section" id="stepper">
+    <div class="kit-section-title">28</div>
+    <h2>Stepper Control</h2>
+    <div class="kit-group">
+      <div class="kit-label">Bullets</div>
+      <div class="stepper-control">
+        <button class="stepper-btn">−</button>
+        <span class="stepper-val">6.0</span>
+        <button class="stepper-btn">+</button>
+      </div>
+    </div>
+    <div class="kit-group">
+      <div class="kit-label">With Bounds</div>
+      <div class="stepper-control">
+        <button class="stepper-btn" disabled>−</button>
+        <span class="stepper-val">60</span>
+        <button class="stepper-btn">+</button>
+      </div>
+    </div>
+  </section>
+
+<section class="kit-section" id="hovercard" style="min-height: 340px;">
+    <div class="kit-section-title">29</div>
+    <h2>Hover Card</h2>
+    <div class="kit-row">
+      <div style="position: relative; display: inline-block;" data-hovercard-host>
+        <a href="#" data-hovercard style="color: var(--text-bright); text-decoration: none; border-bottom: 1px dotted var(--text-dim);">@nextjs</a>
+        <div class="hover-card-content hovercard-hidden" style="position: absolute; top: calc(100% + 8px); left: 0;">
+          <div style="display: flex; gap: 12px; margin-bottom: 12px;">
+            <div class="avatar">V</div>
+            <div>
+              <div style="font-weight: 600; color: var(--text-bright);">Vercel</div>
+              <div style="font-size: 13px; color: var(--text-dim);">@vercel</div>
+            </div>
+          </div>
+          <div style="font-size: 13px; line-height: 1.5; color: var(--text); margin-bottom: 12px;">
+            The React Framework – created and maintained by @vercel.
+          </div>
+          <div style="display: flex; gap: 16px; font-size: 12px; color: var(--text-dim);">
+            <div style="display: flex; align-items: center; gap: 4px;">
+              <span style="color: var(--text-bright);">270k</span> Followers
+            </div>
+            <div style="display: flex; align-items: center; gap: 4px;">
+              <span style="color: var(--text-bright);">112</span> Following
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<section class="kit-section" id="header">
+    <div class="kit-section-title">30</div>
+    <h2>Page Header</h2>
+
+    <div class="page-header">
+      <div>
+        <div class="overline">System Name</div>
+        <h1>Flight Control Dashboard</h1>
+      </div>
+      <div class="kv-grid" style="grid-template-columns: repeat(2, 1fr);">
+        <div class="kv-cell"><span class="kv-label">META KEY</span><span class="kv-value">META VALUE</span></div>
+        <div class="kv-cell"><span class="kv-label">ANOTHER KEY</span><span class="kv-value">ANOTHER VALUE</span></div>
+      </div>
+    </div>
+  </section>
+
+<section class="kit-section" id="footer">
+    <div class="kit-section-title">31</div>
+    <h2>Page Footer</h2>
+
+    <div class="page-footer">
+      <span>SYSTEM-NAME · MODULE</span>
+      <span><span class="status"><span class="status-dot online"></span> Operational</span><span style="margin-left:16px;">2026-05-29 16:09 UTC</span></span>
+    </div>
+  </section>
+
+<section class="kit-section" id="modal">
+    <div class="kit-section-title">32</div>
+    <h2>Modal</h2>
+
+    <div class="demo-modal">
+      <div class="modal-backdrop">
+        <div class="modal-window">
+          <div style="padding: 16px 24px; border-bottom: 1px solid var(--border-dim); font-weight: 600; color: var(--text-bright); display: flex; justify-content: space-between; align-items: center;">
+            Confirm Action
+            <button class="modal-close">×</button>
+          </div>
+          <div style="padding: 24px;">
+            <div class="type-body" style="margin-bottom: 8px; color: var(--text);">Remove 3 images from the Aerospace board?</div>
+            <div class="type-small" style="color: var(--text-dim);">This action cannot be undone.</div>
+          </div>
+          <div style="padding: 16px 24px; border-top: 1px solid var(--border-dim); display: flex; justify-content: flex-end; gap: 12px; background: var(--bg-surface);">
+            <button class="btn btn-ghost">Cancel</button>
+            <button class="btn btn-danger">Remove</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<section class="kit-section" id="dividers">
+    <div class="kit-section-title">33</div>
+    <h2>Dividers</h2>
+
+    <div style="max-width: 500px; display: flex; flex-direction: column; gap: 24px;">
+      <div>
+        <div class="kit-label">Section Break</div>
+        <div style="padding: 16px 0; color: var(--text-dim); font-size: var(--text-sm);">Content above</div>
+        <hr class="divider divider-accent">
+        <div style="padding: 16px 0; color: var(--text-dim); font-size: var(--text-sm);">Content below</div>
+      </div>
+      <div>
+        <div class="kit-label">List Separator</div>
+        <div style="display: flex; flex-direction: column;">
+          <div style="padding: 8px 0; color: var(--text);">Item one</div>
+          <hr class="divider divider-dashed">
+          <div style="padding: 8px 0; color: var(--text);">Item two</div>
+          <hr class="divider divider-dashed">
+          <div style="padding: 8px 0; color: var(--text);">Item three</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<section class="kit-section" id="skeleton">
+    <div class="kit-section-title">34</div>
+    <h2>Skeleton Loading</h2>
+
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 700px;">
+      <div style="border: 1px solid var(--border-dim); padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+        <div class="skeleton" style="height: 100px; width: 100%;"></div>
+        <div class="skeleton" style="height: 14px; width: 70%;"></div>
+        <div class="skeleton" style="height: 14px; width: 90%;"></div>
+        <div class="skeleton" style="height: 14px; width: 40%;"></div>
+      </div>
+      <div style="border: 1px solid var(--border-dim); padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+        <div class="skeleton" style="height: 100px; width: 100%;"></div>
+        <div class="skeleton" style="height: 14px; width: 60%;"></div>
+        <div class="skeleton" style="height: 14px; width: 85%;"></div>
+        <div class="skeleton" style="height: 14px; width: 30%;"></div>
+      </div>
+      <div style="border: 1px solid var(--border-dim); padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+        <div class="skeleton" style="height: 100px; width: 100%;"></div>
+        <div class="skeleton" style="height: 14px; width: 75%;"></div>
+        <div class="skeleton" style="height: 14px; width: 80%;"></div>
+        <div class="skeleton" style="height: 14px; width: 50%;"></div>
+      </div>
+    </div>
+  </section>
+
+<section class="kit-section" id="tooltip">
+    <div class="kit-section-title">35</div>
+    <h2>Tooltip</h2>
+
+    <div class="kit-row" style="gap: 32px; padding-bottom: 24px;">
+      <span class="tooltip" data-tooltip="This is a tooltip" style="border-bottom: 1px dotted var(--border-bright); color: var(--text-bright);">Hover me (Text)</span>
+      <span class="tag tag-accent tooltip" data-tooltip="12 images · 8 reviewed">Hover me (Tag)</span>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <div class="page-footer" style="margin-top: 48px;">
+    <span>AEROSPACE UI KIT · V1.1</span>
+    <span>33 COMPONENTS</span>
+  </div>
+
+</main>
+
+<!-- Live toast container -->
+<div class="toast-viewport" id="live-toast-viewport" aria-live="polite"></div>
+
+<script defer src="../interactions.js"></script>
+</body>
+</html>

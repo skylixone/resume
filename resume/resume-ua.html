@@ -37,33 +37,44 @@
         <link rel="stylesheet" href="print.css" media="print" />
   </head>
   <body>
-    <button class="theme-toggle" aria-label="Toggle dark mode" id="themeToggle">
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 16 16"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
-      >
-        <circle cx="8" cy="8" r="3.5" />
-        <line x1="8" y1="1" x2="8" y2="3" />
-        <line x1="8" y1="13" x2="8" y2="15" />
-        <line x1="1" y1="8" x2="3" y2="8" />
-        <line x1="13" y1="8" x2="15" y2="8" />
-        <line x1="3.05" y1="3.05" x2="4.46" y2="4.46" />
-        <line x1="11.54" y1="11.54" x2="12.95" y2="12.95" />
-        <line x1="3.05" y1="12.95" x2="4.46" y2="11.54" />
-        <line x1="11.54" y1="4.46" x2="12.95" y2="3.05" />
-      </svg>
-    </button>
-    <div class="page h-resume">
-      
-      <div class="lang-switch">
-        <a href="resume-en.html">English</a> <span class="current">Ukrainian</span>
+    <!-- ── Topbar: near-zero nav. ── -->
+    <header class="page-topbar">
+      <div class="page-topbar-inner">
+        <a class="status back-link" href="https://3mdash.net" rel="noopener">
+          ← Back to 3mdash
+        </a>
+        <nav class="topbar-links" aria-label="Language and theme">
+          <span class="topbar-lang">
+            <a href="resume-en.html">English</a>
+            <span class="current">Ukrainian</span>
+          </span>
+          <button class="theme-toggle" aria-label="Toggle dark mode" id="themeToggle">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            >
+              <circle cx="8" cy="8" r="3.5" />
+              <line x1="8" y1="1" x2="8" y2="3" />
+              <line x1="8" y1="13" x2="8" y2="15" />
+              <line x1="1" y1="8" x2="3" y2="8" />
+              <line x1="13" y1="8" x2="15" y2="8" />
+              <line x1="3.05" y1="3.05" x2="4.46" y2="4.46" />
+              <line x1="11.54" y1="11.54" x2="12.95" y2="12.95" />
+              <line x1="3.05" y1="12.95" x2="4.46" y2="11.54" />
+              <line x1="11.54" y1="4.46" x2="12.95" y2="3.05" />
+            </svg>
+          </button>
+        </nav>
       </div>
-<header class="h-card">
+    </header>
+
+    <div class="page h-resume">
+      <header class="h-card">
         <div class="header-inner">
           <div class="header-photo-wrap">
             <img
@@ -85,17 +96,12 @@
               />
             </h1>
             <div class="p-job-title title">
-              Дизайн-інженер · Продукти з ШІ · Дизайн-системи
+              Senior Product Designer · Дизайн-інжинірінг · UI/UX
             </div>
             <p class="intro p-note">
-            12 років досвіду в дизайні систем, продуктів та користувацького досвіду в 
-             найширшому значенні слова.
-            Будую системи від концепту на серветці до інформаційної архітектури до продакшену, 
-            від дизайну в Figma до реалізації в коді та підтримки в реальному продукті.
-            Спеціалізуюсь на складних продуктових інтерфейсах з великою кількістю даних і AI-інтерфейсах.
-            Виріс з типографіки, лінгвістики та електроніки,
-              тому мислю про інтерфейси як про системи, що балансують між потребами користувача, вимогами бізнесу та практичною естетикою.
-            Найсильніший там, де дизайн — це інженерна задача: типографіка, дані, взаємодія, а не декоративний шар, що прикрашає інтерфейс.
+              12 років досвіду в дизайні систем, продуктів та користувацького досвіду цифрових та фізичних продуктів. 
+              Спеціалізуюсь на складних продуктових інтерфейсах з великою кількістю даних і AI-інтерфейсах.
+              Бекграунд: типографіка, лінгвістика, електроніка. Дизайн — не мистецтво, а ремесло (хоча іноді мистецтво теж). 
             </p>
           </div>
         </div>
@@ -157,8 +163,22 @@
         <h2 class="section-label">Досвід</h2>
         <div class="exp h-event p-experience">
           <div class="exp-top">
+            <span class="exp-company p-org h-card">Консультант</span>
+            <span class="exp-role p-job-title">Дизайн і розробка</span>
+          </div>
+          <div class="exp-period">
+            <time class="dt-start">Січень 2026</time> &mdash;
+            <time class="dt-end">Дотепер</time> · Remote
+          </div>
+          <div class="exp-context">
+            Різноманітні проекти для різних клієнтів, від лендінгів до складних веб- та мобільних додатків. Серед клієнтів: Banda Agency та Британське посольство в Україні.
+
+          </div>
+        </div>
+        <div class="exp h-event p-experience">
+          <div class="exp-top">
             <span class="exp-company p-org h-card">Luxoft (Halliburton)</span>
-            <span class="exp-role p-job-title">Senior Design Engineer</span>
+            <span class="exp-role p-job-title">Senior Designer</span>
           </div>
           <div class="exp-period">
             <time class="dt-start">Квітень 2025</time> &mdash;

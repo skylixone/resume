@@ -3,6 +3,7 @@
   --fg: #111;
   --muted: #666;
   --line: #ddd;
+  --accent: rgb(231, 76, 60);
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; height: 100%; }
@@ -99,12 +100,12 @@ h2 {
 }
 .contact a, .contact { font-size: 14px; }
 a {
-  color: var(--fg);
+  color: var(--accent);
   text-decoration: none;
   border-bottom: 1px solid var(--line);
-  transition: border-color 0.15s;
+  transition: border-color 0.2s ease-in-out;
 }
-a:hover { border-color: var(--fg); }
+a:hover { border-color: var(--accent); }
 
 /* ====== Selected Works ====== */
 .works-list { display: flex; flex-direction: column; gap: 12px; width: 100%; height: 100%; }

@@ -1,4 +1,4 @@
-name: Deploy resume to Cloudflare Pages
+name: Deploy 3mdash.net
 
 on:
   push:
@@ -6,11 +6,12 @@ on:
     paths:
       - "index.html"
       - "styles.css"
-      - "me.jpg"
-      - "img/**"
       - "dither-hero.js"
+      - "img/**"
       - "resume/**"
       - "dither/**"
+      - "aerospace-ui/**"
+      - "nesamovyto/**"
       - ".github/workflows/deploy-cloudflare-pages.yml"
   workflow_dispatch:
 
@@ -36,21 +37,15 @@ jobs:
       - name: Prepare deploy bundle
         run: |
           set -euo pipefail
-          mkdir -p .cf-pages-deploy/aerospace-ui .cf-pages-deploy/nesamovyto
+          mkdir -p .cf-pages-deploy
           cp index.html .cf-pages-deploy/index.html
           cp styles.css .cf-pages-deploy/styles.css
-          cp me.jpg .cf-pages-deploy/me.jpg
-          cp -r img .cf-pages-deploy/img
           cp dither-hero.js .cf-pages-deploy/dither-hero.js
+          cp -r img .cf-pages-deploy/img
           cp -r resume .cf-pages-deploy/resume
           cp -r dither .cf-pages-deploy/dither
-          curl -sL https://github.com/skylixone/aerospace-ui/archive/refs/heads/main.tar.gz \
-            | tar -xz --strip-components=1 -C .cf-pages-deploy/aerospace-ui \
-              --exclude='.git*' --exclude='.Codex' --exclude='.claude' --exclude='.planning' \
-              --exclude='_backup' --exclude='comments.json' --exclude='*.py' --exclude='*.zip'
-          curl -sL https://github.com/skylixone/nesamovyto/archive/refs/heads/main.tar.gz \
-            | tar -xz --strip-components=1 -C .cf-pages-deploy/nesamovyto \
-              --exclude='.git*' --exclude='*.snap.txt' --exclude='.DS_Store' --exclude='.deploy.json'
+          cp -r aerospace-ui .cf-pages-deploy/aerospace-ui
+          cp -r nesamovyto .cf-pages-deploy/nesamovyto
 
       - name: Deploy to Cloudflare Pages
         env:

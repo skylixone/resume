@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aerospace UI Kit — Industrial design system for operational interfaces</title>
+<meta name="description" content="Single-file CSS design system. 30 components. No dependencies, no framework, no build step, no JS required. Amber on black, mono throughout.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  /* ── Page layout only. All components are kit classes. ── */
+  .page-wrap { max-width: 1120px; margin: 0 auto; padding: 0 var(--space-lg); }
+
+  .page-topbar {
+    border-bottom: 1px solid var(--border-dim);
+  }
+  .page-topbar-inner {
+    width: 100%;
+    padding: var(--space-md) var(--space-xl) var(--space-md) var(--space-lg);
+    display: flex; justify-content: space-between; align-items: center; gap: var(--space-md);
+  }
+  .back-link { color: var(--text-dim); text-decoration: none; transition: color var(--transition); }
+  .back-link:hover { color: var(--accent); }
+  .topbar-links { display: flex; align-items: center; gap: var(--space-lg); }
+  .topbar-links a {
+    color: var(--text-dim); text-decoration: none; font-size: var(--text-xs);
+    text-transform: uppercase; letter-spacing: var(--label-spacing);
+  }
+  .topbar-links a:hover { color: var(--accent); }
+  .topbar-links .kbd { cursor: pointer; }
+
+  .page-section { padding: var(--space-3xl) 0; border-bottom: 1px solid var(--border-dim); }
+  .section-head { display: flex; align-items: flex-start; gap: var(--space-md); margin-bottom: var(--space-xl); }
+  .section-index {
+    color: var(--accent); font-size: var(--text-xs); letter-spacing: var(--label-spacing);
+    line-height: 1;
+    transform: translateY(0.05em);
+  }
+  .section-head .type-heading { text-transform: none; }
+
+  .page-hero {
+    width: 100%;
+    height: 100vh;
+    min-height: 600px;
+    max-height: 100vh;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    align-items: center;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border-dim);
+  }
+  .hero-content {
+    padding: var(--space-3xl) var(--space-xl) var(--space-3xl) var(--space-lg);
+  }
+  .hero-eyebrow { display: flex; gap: var(--space-sm); margin-bottom: var(--space-lg); flex-wrap: wrap; }
+  .hero-title { max-width: 18ch; margin: 0 0 var(--space-lg); font-size: calc(var(--text-3xl) * 1.618); }
+  .hero-sub { max-width: 56ch; margin-bottom: var(--space-xl); }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: var(--space-md); align-items: center; }
+  .hero-tags { display: flex; flex-wrap: wrap; gap: var(--space-sm); align-items: center; }
+  .hero-visual {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-surface);
+    border-left: 1px solid var(--border-dim);
+    padding: var(--space-xl);
+  }
+  .hero-visual img { display: block; max-width: 100%; max-height: 56vh; width: auto; height: auto; object-fit: contain; object-position: center; }
+  @media (max-width: 900px) {
+    .page-hero { grid-template-columns: 1fr; height: auto; max-height: none; min-height: auto; }
+    .hero-content { justify-self: start; max-width: 100%; }
+    .hero-visual { min-height: auto; border-left: none; border-top: 1px solid var(--border-dim); }
+    .hero-visual img { max-height: 40vh; }
+  }
+
+  .stack { display: flex; flex-direction: column; gap: var(--space-lg); }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); }
+  .class-label { display: block; margin-bottom: var(--space-sm); }
+
+  pre.code-block { max-width: 100%; margin: 0; }
+  .usage-col:first-child pre.code-block { max-width: 55ch; }
+  .cmd-overlay[hidden] { display: none; }
+
+  .snippet-frame { position: relative; }
+  .snippet-copy { position: absolute; top: 8px; right: 8px; z-index: 1; background: var(--bg); }
+  .step-caption { margin: var(--space-sm) 0 0; }
+  .install-row { display: flex; flex-wrap: wrap; gap: var(--space-md); align-items: center; }
+
+  .principles-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); }
+
+  .usage-table { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-xl); align-items: start; }
+  .usage-col { display: flex; flex-direction: column; gap: var(--space-sm); }
+
+  .footer-sign { padding: var(--space-3xl) 0 var(--space-2xl); text-align: center; }
+  .footer-sign p { margin-left: auto; margin-right: auto; }
+  .footer-sign .type-overline { margin-bottom: var(--space-md); text-transform: none; letter-spacing: normal; }
+  .footer-origin { display: block; max-width: 640px; margin: var(--space-xl) auto 0; }
+  .page-footer { flex-wrap: wrap; gap: var(--space-md); }
+  .page-footer a { color: var(--text-dim); text-decoration: none; }
+  .page-footer a:hover { color: var(--accent); }
+
+  @media (max-width: 720px) {
+    .grid-2, .principles-grid, .usage-table { grid-template-columns: 1fr; }
+    .topbar-links a:not(.keep) { display: none; }
+    .hero-title { font-size: var(--text-xl); }
+    .footer-origin { grid-template-columns: 1fr; }
+    .timeline-row { flex-wrap: wrap; row-gap: 6px; }
+    .timeline-label { width: 100%; }
+    .kv-grid { grid-template-columns: repeat(2, 1fr); }
+    .stepper { flex-direction: column; gap: var(--space-md); }
+    .stepper .step { flex-direction: row; align-items: center; gap: var(--space-md); }
+    .stepper .step-indicator { width: 16px; height: 16px; flex-shrink: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "animejs": "https://cdn.jsdelivr.net/npm/animejs@4.5.0/dist/modules/index.js"
+  }
+}
+</script>
+</head>
+<body>
+
+<!-- ── Topbar: near-zero nav. The command palette is the nav. ── -->
+<header class="page-topbar">
+  <div class="page-topbar-inner">
+    <a class="status back-link" href="https://3mdash.net" rel="noopener">
+      ← Back to 3mdash
+    </a>
+    <nav class="topbar-links" aria-label="Sections">
+      <a href="#showcase">SHOWCASE</a>
+      <a href="#how-to-use">HOW TO USE</a>
+      <a href="#principles">PRINCIPLES</a>
+      <span class="kbd keep" id="topbar-palette-hint" title="Open command palette">⌘K</span>
+    </nav>
+  </div>
+</header>
+
+<!-- ── 01 / Hero ── -->
+<section class="page-hero" id="top">
+    <div class="hero-content">
+      <div class="hero-eyebrow" data-reveal>
+        <span class="tag sd">NO JS REQUIRED</span>
+        <span class="tag sa-filled">FREE</span>
+        <span class="tag">UPDATED MONTHLY</span>
+      </div>
+      <h1 class="type-hero hero-title" data-reveal>Interfaces for high-stakes operations.</h1>
+      <p class="type-subheading hero-sub" data-reveal>
+        UI-kit for high-reliability and mission-critical applications: IoT, industrial SaaS, miltech. Single 62 KB CSS file, zero dependencies, amber on black. Clarity-first.
+      </p>
+      <div class="hero-actions" data-reveal>
+        <a class="btn btn-primary btn-lg" href="https://3mdash.net/aerospace-ui/components" target="_blank" rel="noopener">COMPONENTS</a>
+        <a class="btn btn-secondary btn-lg" href="#how-to-use">HOW TO USE ↓</a>
+      </div>
+    </div>
+
+    <div class="hero-visual" data-reveal>
+      <img src="assets/landingScreenshot.png" alt="Aerospace UI Kit component overview screenshot" loading="eager">
+    </div>
+  </section>
+
+<div class="page-wrap">
+
+  <!-- ── 02 / Live showcase: one operational fragment, rendered from kit classes ── -->
+  <section class="page-section" id="showcase">
+    <div class="section-head">
+      <span class="section-index">02</span>
+      <h2 class="type-heading">Live showcase</h2>
+    </div>
+    <p class="type-body" style="max-width:64ch; margin-bottom: var(--space-xl);">
+      Every component below renders inline from the kit stylesheet. Nothing on this page is a screenshot. Class names are shown — this section doubles as documentation.
+    </p>
+
+    <div class="stack">
+
+      <!-- .timeline -->
+      <div class="panel" data-reveal>
+        <div class="panel-header">
+          <span>RELEASE OPERATIONS</span>
+          <span class="type-overline">.timeline</span>
+        </div>
+        <div class="panel-body">
+          <div class="timeline">
+            <div class="timeline-row">
+              <span class="timeline-label">MONTHLY TRAIN</span>
+              <div class="timeline-track">
+                <div class="timeline-planned" style="left: 0%; width: 100%;"></div>
+                <div class="timeline-actual" style="left: 1%; width: 97%;"></div>
+              </div>
+              <span class="timeline-status sg">NOMINAL</span>
+            </div>
+            <div class="timeline-row">
+              <span class="timeline-label">COMPONENT AUDIT</span>
+              <div class="timeline-track">
+                <div class="timeline-planned" style="left: 10%; width: 70%;"></div>
+                <div class="timeline-actual" style="left: 14%; width: 62%;"></div>
+              </div>
+              <span class="timeline-status sa">LATE</span>
+            </div>
+            <div class="timeline-row">
+              <span class="timeline-label">DOCS PASS</span>
+              <div class="timeline-track">
+                <div class="timeline-planned" style="left: 30%; width: 55%;"></div>
+                <div class="timeline-actual" style="left: 26%; width: 59%;"></div>
+              </div>
+              <span class="timeline-status sg">AHEAD</span>
+            </div>
+            <div class="timeline-row">
+              <span class="timeline-label">NEXT DROP</span>
+              <div class="timeline-track">
+                <div class="timeline-planned" style="left: 70%; width: 30%;"></div>
+              </div>
+              <span class="timeline-status sd">QUEUED</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- .metric-grid — telemetry ticks slowly -->
+      <div data-reveal>
+        <span class="type-overline class-label">.metric-grid</span>
+        <div class="metric-grid">
+          <div class="metric">
+            <div class="metric-label">Stylesheet CDN</div>
+            <div class="metric-value green" id="t-latency">24 ms</div>
+            <div class="metric-detail">3mdash.net/aerospace-ui</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Build</div>
+            <div class="metric-value accent">PASSING</div>
+            <div class="metric-detail">main — <span id="t-build">4</span> min ago</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Uptime</div>
+            <div class="metric-value" id="t-uptime">99.98%</div>
+            <div class="metric-row"><div class="metric-trend up">▲ STEADY</div></div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Bundle weight</div>
+            <div class="metric-value" id="t-weight">62.1<span class="frac"> KB</span></div>
+            <div class="metric-detail">gzipped ~11 KB</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- .list -->
+        <div class="panel" data-reveal>
+          <div class="panel-header">
+            <span>DOCTRINE</span>
+            <span class="type-overline">.list</span>
+          </div>
+          <div class="panel-body">
+            <ul class="list list-dashed">
+              <li>Data first. The interface serves the reading, not the frame.</li>
+              <li>No decoration. An element carries information or it is deleted.</li>
+              <li>Borders not shadows. Structure is drawn with one-pixel lines.</li>
+              <li>Mono throughout. One typeface for labels, values, and prose.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- .btn matrix -->
+        <div class="panel" data-reveal>
+          <div class="panel-header">
+            <span>ACTIONS</span>
+            <span class="type-overline">.btn</span>
+          </div>
+          <div class="panel-body">
+            <div class="stack">
+              <div class="hero-actions" style="margin-bottom: 0;">
+                <button class="btn btn-primary" type="button">DEPLOY</button>
+                <button class="btn btn-secondary" type="button">STAGE</button>
+              </div>
+              <div class="hero-actions" style="margin-bottom: 0;">
+                <button class="btn btn-ghost" type="button">INSPECT</button>
+                <button class="btn btn-danger" type="button">ABORT</button>
+              </div>
+              <div class="hero-actions" style="margin-bottom: 0;">
+                <button class="btn btn-secondary btn-sm" type="button">SMALL</button>
+                <button class="btn btn-secondary" type="button">DEFAULT</button>
+                <button class="btn btn-secondary btn-lg" type="button">LARGE</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- .summary -->
+      <div data-reveal>
+        <span class="type-overline class-label">.summary</span>
+        <blockquote class="summary">
+          Everything on this page is a live kit component. The page is the documentation. The kit is the evidence.
+        </blockquote>
+      </div>
+
+      <!-- .kv-grid — spec sheet -->
+      <div data-reveal>
+        <span class="type-overline class-label">.kv-grid</span>
+        <div class="kv-grid">
+          <div class="kv-cell"><span class="kv-label">Format</span><span class="kv-value">Single CSS file</span></div>
+          <div class="kv-cell"><span class="kv-label">Framework</span><span class="kv-value">None</span></div>
+          <div class="kv-cell"><span class="kv-label">Build step</span><span class="kv-value">None</span></div>
+          <div class="kv-cell"><span class="kv-label">JavaScript</span><span class="kv-value">Not required</span></div>
+          <div class="kv-cell"><span class="kv-label">Typeface</span><span class="kv-value">Geist Mono</span></div>
+          <div class="kv-cell"><span class="kv-label">Accent</span><span class="kv-value text-accent">#F59E0B</span></div>
+          <div class="kv-cell"><span class="kv-label">License</span><span class="kv-value">Free</span></div>
+          <div class="kv-cell"><span class="kv-label">Cadence</span><span class="kv-value">Monthly</span></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CENTERPIECE SLOT: hunter-seeker drone UI — derived from the owner's AUV station UI work (separate project); patterns established by this landing feed into it -->
+
+  <!-- ── 03 / How to use ── -->
+  <section class="page-section" id="how-to-use">
+    <div class="section-head">
+      <span class="section-index">03</span>
+      <h2 class="type-heading">How to use</h2>
+    </div>
+
+    <div class="stack">
+
+      <div class="usage-table" data-reveal>
+        <div class="usage-col">
+          <span class="type-overline class-label">01 — A complete page</span>
+          <div class="snippet-frame">
+            <button class="btn btn-ghost btn-sm snippet-copy" data-copy-for="snippet-page" type="button">COPY</button>
+            <pre class="code-block"><code id="snippet-page"><span class="prop">&lt;!DOCTYPE html&gt;</span>
+<span class="prop">&lt;html&gt;</span>
+<span class="prop">&lt;head&gt;</span>
+  <span class="prop">&lt;link</span> <span class="keyword">rel</span>=<span class="string">"stylesheet"</span> <span class="keyword">href</span>=<span class="string">"https://3mdash.net/aerospace-ui/style.css"</span><span class="prop">&gt;</span>
+<span class="prop">&lt;/head&gt;</span>
+<span class="prop">&lt;body&gt;</span>
+  <span class="prop">&lt;button</span> <span class="keyword">class</span>=<span class="string">"btn btn-primary"</span><span class="prop">&gt;</span>IT WORKS<span class="prop">&lt;/button&gt;</span>
+<span class="prop">&lt;/body&gt;</span>
+<span class="prop">&lt;/html&gt;</span></code></pre>
+          </div>
+          <p class="type-small step-caption">Save as index.html. Open in a browser.</p>
+        </div>
+        <div class="usage-col">
+          <span class="type-overline class-label">02 — Components are classes</span>
+          <div class="snippet-frame">
+            <button class="btn btn-ghost btn-sm snippet-copy" data-copy-for="snippet-component" type="button">COPY</button>
+            <pre class="code-block"><code id="snippet-component"><span class="prop">&lt;div</span> <span class="keyword">class</span>=<span class="string">"panel"</span><span class="prop">&gt;</span>
+  <span class="prop">&lt;div</span> <span class="keyword">class</span>=<span class="string">"panel-header"</span><span class="prop">&gt;&lt;span&gt;</span>STATUS<span class="prop">&lt;/span&gt;&lt;/div&gt;</span>
+  <span class="prop">&lt;div</span> <span class="keyword">class</span>=<span class="string">"panel-body"</span><span class="prop">&gt;</span>
+    <span class="prop">&lt;button</span> <span class="keyword">class</span>=<span class="string">"btn btn-primary"</span><span class="prop">&gt;</span>DEPLOY<span class="prop">&lt;/button&gt;</span>
+    <span class="prop">&lt;button</span> <span class="keyword">class</span>=<span class="string">"btn btn-ghost"</span><span class="prop">&gt;</span>INSPECT<span class="prop">&lt;/button&gt;</span>
+  <span class="prop">&lt;/div&gt;</span>
+<span class="prop">&lt;/div&gt;</span></code></pre>
+          </div>
+          <p class="type-small step-caption">No JavaScript required. Section 02 shows the full set, live.</p>
+        </div>
+      </div>
+
+      <blockquote class="summary" data-reveal>There is no step three. No build, no dependencies, no initialization.</blockquote>
+
+      <div class="panel" data-reveal>
+        <div class="panel-header">
+          <span>Customize — optional</span>
+          <span class="type-overline">:root</span>
+        </div>
+        <div class="panel-body">
+          <div class="stack">
+            <div class="snippet-frame">
+              <button class="btn btn-ghost btn-sm snippet-copy" data-copy-for="snippet-tokens" type="button">COPY</button>
+              <pre class="code-block"><code id="snippet-tokens"><span class="comment">/* your stylesheet, after the kit */</span>
+<span class="keyword">:root</span> { <span class="prop">--accent</span>: <span class="number">#3b82f6</span>; }</code></pre>
+            </div>
+            <p class="type-body" style="margin: 0; max-width: 64ch;">The kit is CSS custom properties all the way down. Override any token in your own stylesheet, after the link tag.</p>
+            <hr class="divider">
+            <p class="type-body" style="margin: 0; max-width: 64ch;">No external dependency: download <span class="code-inline">style.css</span> into your project and link it locally — <span class="code-inline">&lt;link rel="stylesheet" href="./aerospace.css"&gt;</span>. You stop receiving monthly updates; you change when you choose.</p>
+            <div class="install-row">
+              <a class="btn btn-secondary btn-sm" href="https://3mdash.net/aerospace-ui/style.css" id="vendor-download" download>Download style.css</a>
+              <a class="btn btn-ghost btn-sm" href="https://3mdash.net/aerospace-ui/" target="_blank" rel="noopener">Component reference ↗</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="kv-grid" data-reveal>
+        <div class="kv-cell"><span class="kv-label">30</span><span class="kv-value">Components</span></div>
+        <div class="kv-cell"><span class="kv-label">1</span><span class="kv-value">Stylesheet</span></div>
+        <div class="kv-cell"><span class="kv-label">0</span><span class="kv-value">Dependencies</span></div>
+        <div class="kv-cell"><span class="kv-label">0</span><span class="kv-value">Cost</span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── 04 / Command palette ── -->
+  <section class="page-section" id="palette">
+    <div class="section-head">
+      <span class="section-index">04</span>
+      <h2 class="type-heading">Command palette</h2>
+    </div>
+    <div class="panel" data-reveal>
+      <div class="panel-body" style="text-align: left;">
+        <p class="cmd-hint">THE PALETTE IS THE NAV. PRESS <span class="kbd">⌘K</span> — OR <span class="kbd">CTRL K</span> — ANYWHERE ON THIS PAGE.</p>
+        <p class="type-body" style="max-width: 60ch; margin-bottom: var(--space-lg);">
+          Jump to sections, copy the install snippet, toggle reduced motion, open the component reference. Fully keyboard-navigable.
+        </p>
+        <button class="btn btn-secondary" id="open-palette" type="button">OPEN COMMAND PALETTE — ⌘K</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 05 / Principles ── -->
+  <section class="page-section" id="principles">
+    <div class="section-head">
+      <span class="section-index">05</span>
+      <h2 class="type-heading">Principles</h2>
+    </div>
+    <div class="principles-grid">
+      <blockquote class="summary summary-md" data-reveal>DATA FIRST — the interface serves the data. Nothing else is on screen.</blockquote>
+      <blockquote class="summary summary-md" data-reveal>NO DECORATION — if an element carries no information, it is deleted.</blockquote>
+      <blockquote class="summary summary-md" data-reveal>BORDERS NOT SHADOWS — structure is drawn with one-pixel lines, never with blur.</blockquote>
+      <blockquote class="summary summary-md" data-reveal>MONO THROUGHOUT — one typeface for labels, values, and prose. Zero switching.</blockquote>
+    </div>
+  </section>
+
+  <!-- ── 06 / Footer ── -->
+  <footer class="footer-sign" id="kit">
+    <span class="type-overline bright">Status</span>
+    <p class="type-heading" style="max-width: 26ch; margin-top: var(--space-md);">In operational use by Ukrainian defense forces</p>
+    <div class="footer-origin">
+      <span class="type-body">Designed &amp; built in wartime Ukraine</span>
+    </div>
+  </footer>
+
+  <div class="page-footer">
+    <span>AEROSPACE UI KIT — A <a href="https://3mdash.net" target="_blank" rel="noopener">3MDASH.NET</a> PROJECT</span>
+    <span><a href="https://3mdash.net/aerospace-ui/" target="_blank" rel="noopener">GET THE KIT</a> — FREE · UPDATED MONTHLY</span>
+  </div>
+
+</div>
+
+<!-- ── Command palette overlay (progressive enhancement) ── -->
+<div class="cmd-overlay" id="cmd-overlay" hidden>
+  <div class="cmd-dialog" role="dialog" aria-modal="true" aria-label="Command palette">
+    <div class="cmd-header">
+      <span class="cmd-icon">⌘</span>
+      <input class="cmd-input" id="cmd-input" type="text" placeholder="TYPE A COMMAND" aria-label="Command search" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="cmd-list" id="cmd-list" role="listbox" aria-label="Commands">
+      <div class="cmd-group-heading">NAVIGATE</div>
+      <div class="cmd-item" role="option" tabindex="-1" data-action="goto" data-target="#showcase"><span>GO TO SHOWCASE</span><span class="cmd-shortcut">02</span></div>
+      <div class="cmd-item" role="option" tabindex="-1" data-action="goto" data-target="#how-to-use"><span>GO TO HOW TO USE</span><span class="cmd-shortcut">03</span></div>
+      <div class="cmd-item" role="option" tabindex="-1" data-action="goto" data-target="#palette"><span>GO TO COMMAND PALETTE</span><span class="cmd-shortcut">04</span></div>
+      <div class="cmd-item" role="option" tabindex="-1" data-action="goto" data-target="#principles"><span>GO TO PRINCIPLES</span><span class="cmd-shortcut">05</span></div>
+      <div class="cmd-item" role="option" tabindex="-1" data-action="goto" data-target="#top"><span>BACK TO TOP</span><span class="cmd-shortcut">01</span></div>
+      <div class="cmd-group-heading">ACTIONS</div>
+      <div class="cmd-item" role="option" tabindex="-1" data-action="copy"><span>COPY INSTALL SNIPPET</span><span class="cmd-shortcut">⧉</span></div>
+      <div class="cmd-item" role="option" tabindex="-1" data-action="motion"><span>TOGGLE REDUCED MOTION</span><span class="cmd-shortcut" id="cmd-motion-state">OFF</span></div>
+      <div class="cmd-item" role="option" tabindex="-1" data-action="kit"><span>GET THE KIT</span><span class="cmd-shortcut">↗</span></div>
+      <div class="cmd-item" role="option" tabindex="-1" data-action="ref"><span>OPEN COMPONENT REFERENCE</span><span class="cmd-shortcut">↗</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- Mini toast for copy feedback -->
+<div class="mini-toast-container" aria-live="polite">
+  <div class="mini-toast" id="copy-toast"><span class="mini-toast-icon">✓</span> COPIED</div>
+</div>
+
+<script type="module">
+import { animate, stagger } from 'animejs';
+
+const INSTALL_SNIPPET = '<link rel="stylesheet" href="https://3mdash.net/aerospace-ui/style.css">';
+const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+let reducedMotion = motionQuery.matches;
+const motionStateEl = document.getElementById('cmd-motion-state');
+const syncMotionState = () => { if (motionStateEl) motionStateEl.textContent = reducedMotion ? 'ON' : 'OFF'; };
+syncMotionState();
+motionQuery.addEventListener('change', e => { reducedMotion = e.matches; syncMotionState(); });
+
+/* ── Scroll-in reveals: transform/opacity only. Initial state is set by JS,
+      so the page is fully readable with JS disabled. ── */
+const revealEls = document.querySelectorAll('[data-reveal]');
+if (!reducedMotion && 'IntersectionObserver' in window) {
+  const io = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      io.unobserve(entry.target);
+      animate(entry.target, {
+        opacity: [0, 1],
+        translateY: [16, 0],
+        duration: 480,
+        ease: 'outQuad'
+      });
+    }
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+  revealEls.forEach(el => { el.style.opacity = '0'; io.observe(el); });
+}
+
+/* ── Telemetry tick: slow, believable drift (seconds) ── */
+const latencyEl = document.getElementById('t-latency');
+const buildEl = document.getElementById('t-build');
+let latency = 24, buildMin = 4;
+if (latencyEl && !reducedMotion) {
+  setInterval(() => {
+    latency = Math.min(48, Math.max(14, latency + Math.round((Math.random() - 0.5) * 6)));
+    latencyEl.textContent = latency + ' ms';
+  }, 2400);
+  setInterval(() => { buildMin += 1; buildEl.textContent = buildMin; }, 60000);
+}
+
+/* ── Copy: install snippet + code-block copy buttons ── */
+const toast = document.getElementById('copy-toast');
+let toastTimer = null;
+function showToast() {
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+}
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+  }
+  showToast();
+}
+function copyInstall() { copyText(INSTALL_SNIPPET); }
+document.querySelectorAll('[data-copy-for]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const el = document.getElementById(btn.dataset.copyFor);
+    copyText(el ? el.innerText : INSTALL_SNIPPET);
+  });
+});
+
+/* ── Vendor download: fetch the stylesheet and save it as a file.
+      Cross-origin `download` attributes are ignored by browsers, so the
+      file is fetched (CORS is open) and saved via a blob URL. ── */
+document.getElementById('vendor-download').addEventListener('click', async e => {
+  e.preventDefault();
+  try {
+    const res = await fetch('https://3mdash.net/aerospace-ui/style.css');
+    if (!res.ok) throw new Error(res.status);
+    const blob = await res.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'aerospace.css';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  } catch {
+    window.open('https://3mdash.net/aerospace-ui/style.css', '_blank', 'noopener');
+  }
+});
+
+/* ── Command palette ── */
+const overlay = document.getElementById('cmd-overlay');
+const input = document.getElementById('cmd-input');
+const list = document.getElementById('cmd-list');
+const items = Array.from(list.querySelectorAll('.cmd-item'));
+const headings = Array.from(list.querySelectorAll('.cmd-group-heading'));
+let selectedIndex = 0;
+let lastFocus = null;
+
+const visibleItems = () => items.filter(i => !i.hidden);
+
+function openPalette() {
+  lastFocus = document.activeElement;
+  overlay.hidden = false;
+  input.value = '';
+  filterItems('');
+  select(0);
+  input.focus();
+  if (!reducedMotion) {
+    animate('.cmd-dialog', { opacity: [0, 1], translateY: [-12, 0], duration: 180, ease: 'outQuad' });
+  }
+}
+function closePalette() {
+  overlay.hidden = true;
+  if (lastFocus) lastFocus.focus();
+}
+function select(i) {
+  const vis = visibleItems();
+  if (!vis.length) return;
+  selectedIndex = ((i % vis.length) + vis.length) % vis.length;
+  vis.forEach(el => el.classList.remove('selected'));
+  vis[selectedIndex].classList.add('selected');
+  vis[selectedIndex].scrollIntoView({ block: 'nearest' });
+}
+function filterItems(q) {
+  const query = q.trim().toLowerCase();
+  items.forEach(item => {
+    item.hidden = query !== '' && !item.textContent.toLowerCase().includes(query);
+  });
+  headings.forEach(h => {
+    let el = h.nextElementSibling, anyVisible = false;
+    while (el && el.classList.contains('cmd-item')) {
+      if (!el.hidden) anyVisible = true;
+      el = el.nextElementSibling;
+    }
+    h.hidden = !anyVisible;
+  });
+  select(0);
+}
+function run(item) {
+  const action = item.dataset.action;
+  closePalette();
+  switch (action) {
+    case 'goto': {
+      const target = document.querySelector(item.dataset.target);
+      if (target) target.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
+      break;
+    }
+    case 'copy': copyInstall(); break;
+    case 'motion':
+      reducedMotion = !reducedMotion;
+      syncMotionState();
+      break;
+    case 'kit': window.open('https://3mdash.net/aerospace-ui/', '_blank', 'noopener'); break;
+    case 'ref': window.open('https://3mdash.net/aerospace-ui/', '_blank', 'noopener'); break;
+  }
+}
+
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+    e.preventDefault();
+    overlay.hidden ? openPalette() : closePalette();
+    return;
+  }
+  if (overlay.hidden) return;
+  if (e.key === 'Escape') { e.preventDefault(); closePalette(); }
+  else if (e.key === 'ArrowDown') { e.preventDefault(); select(selectedIndex + 1); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); select(selectedIndex - 1); }
+  else if (e.key === 'Enter') { e.preventDefault(); const vis = visibleItems(); if (vis[selectedIndex]) run(vis[selectedIndex]); }
+});
+input.addEventListener('input', () => filterItems(input.value));
+items.forEach(item => {
+  item.addEventListener('click', () => run(item));
+  item.addEventListener('mousemove', () => {
+    const vis = visibleItems();
+    select(vis.indexOf(item));
+  });
+});
+overlay.addEventListener('click', e => { if (e.target === overlay) closePalette(); });
+document.getElementById('open-palette').addEventListener('click', openPalette);
+document.getElementById('topbar-palette-hint').addEventListener('click', openPalette);
+</script>
+
+</body>
+</html>

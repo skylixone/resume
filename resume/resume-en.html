@@ -36,31 +36,43 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <button class="theme-toggle" aria-label="Toggle dark mode" id="themeToggle">
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 16 16"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
-      >
-        <circle cx="8" cy="8" r="3.5" />
-        <line x1="8" y1="1" x2="8" y2="3" />
-        <line x1="8" y1="13" x2="8" y2="15" />
-        <line x1="1" y1="8" x2="3" y2="8" />
-        <line x1="13" y1="8" x2="15" y2="8" />
-        <line x1="3.05" y1="3.05" x2="4.46" y2="4.46" />
-        <line x1="11.54" y1="11.54" x2="12.95" y2="12.95" />
-        <line x1="3.05" y1="12.95" x2="4.46" y2="11.54" />
-        <line x1="11.54" y1="4.46" x2="12.95" y2="3.05" />
-      </svg>
-    </button>
-    <div class="page h-resume">
-      <div class="lang-switch">
-        <span class="current">English</span> <a href="resume-ua.html">Ukrainian</a>
+    <!-- ── Topbar: near-zero nav. ── -->
+    <header class="page-topbar">
+      <div class="page-topbar-inner">
+        <a class="status back-link" href="https://3mdash.net" rel="noopener">
+          ← Back to 3mdash
+        </a>
+        <nav class="topbar-links" aria-label="Language and theme">
+          <span class="topbar-lang">
+            <span class="current">English</span>
+            <a href="resume-ua.html">Ukrainian</a>
+          </span>
+          <button class="theme-toggle" aria-label="Toggle dark mode" id="themeToggle">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            >
+              <circle cx="8" cy="8" r="3.5" />
+              <line x1="8" y1="1" x2="8" y2="3" />
+              <line x1="8" y1="13" x2="8" y2="15" />
+              <line x1="1" y1="8" x2="3" y2="8" />
+              <line x1="13" y1="8" x2="15" y2="8" />
+              <line x1="3.05" y1="3.05" x2="4.46" y2="4.46" />
+              <line x1="11.54" y1="11.54" x2="12.95" y2="12.95" />
+              <line x1="3.05" y1="12.95" x2="4.46" y2="11.54" />
+              <line x1="11.54" y1="4.46" x2="12.95" y2="3.05" />
+            </svg>
+          </button>
+        </nav>
       </div>
+    </header>
+
+    <div class="page h-resume">
       <header class="h-card">
         <div class="header-inner">
           <div class="header-photo-wrap">
@@ -83,20 +95,12 @@
               />
             </h1>
             <div class="p-job-title title">
-              Design Engineer · AI Products · Design Systems
+             Senior Product Designer · Design Engineering · UI/UX
             </div>
             <p class="intro p-note">
-              12 years of experience in design systems, product design, and user
-              experience in the broadest sense. I build systems from napkin
-              concept to information architecture to production — from design in
-              Figma to implementation in code and support in a real product.
-              Specialize in complex product interfaces with large amounts of data
-              and AI interfaces. Grew up from typography, linguistics, and
-              electronics, so I think about interfaces as systems that balance
-              between user needs, business requirements, and practical aesthetics.
-              Strongest where design is an engineering problem: typography, data,
-              interaction — not a decorative layer that adorns the interface.
-            </p>
+              12 years of experience in product, system and user experience design of digital and physical products.
+              UI/UX of complex data-heavy products and AI interfaces. Background in typography, linguistics and electronics. Design is not art, but craft (although sometimes it is art as well).
+      
           </div>
         </div>
         <div class="contact">
@@ -138,6 +142,7 @@
           <span class="tag">Cross-Platform UX</span>
           <span class="tag">Human-AI Interaction</span>
           <span class="tag">User Research</span>
+          <span class="tag">UX Research</span>
           <span class="tag">Prototyping</span>
           <span class="tag">Design Systems</span>
           <span class="tag">Data-Driven Design</span>
@@ -157,8 +162,21 @@
         <h2 class="section-label">Experience</h2>
         <div class="exp h-event p-experience">
           <div class="exp-top">
+            <span class="exp-company p-org h-card">External Consultant</span>
+            <span class="exp-role p-job-title">Design & development</span>
+          </div>
+          <div class="exp-period">
+            <time class="dt-start">January 2026</time> &mdash;
+            <time class="dt-end">Now</time> · Remote
+          </div>
+          <div class="exp-context">
+            Work with a number of clients on various projects, from landings to complex applications. Clients include Banda Agency and British Embassy in Ukraine.
+          </div>
+        </div>
+        <div class="exp h-event p-experience">
+          <div class="exp-top">
             <span class="exp-company p-org h-card">Luxoft (Halliburton)</span>
-            <span class="exp-role p-job-title">Senior Design Engineer</span>
+            <span class="exp-role p-job-title">Senior Designer</span>
           </div>
           <div class="exp-period">
             <time class="dt-start">April 2025</time> &mdash;

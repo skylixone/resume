@@ -148,7 +148,7 @@
       }
       h1 {
         font-size: 56px;
-        font-weight: 700;
+        font-weight: 400;
         letter-spacing: -0.5px;
         line-height: 1.15;
       }
@@ -352,6 +352,65 @@
       .theme-toggle:hover {
         border-color: var(--fg-secondary);
         color: var(--fg);
+      }
+      /* Header adapted from aerospace-ui/landing.html */
+      .page-topbar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        background: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .page-topbar-inner {
+        width: 100%;
+        padding: 20px 72px 16px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+      }
+      .back-link {
+        color: var(--accent);
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 400;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+       
+        transition: opacity 0.2s ease, color 0.2s ease;
+      }
+      .back-link:hover { opacity: 1; color: var(--accent); }
+      .topbar-links {
+        display: flex;
+        align-items: center;
+        gap: calc(var(--unit) * 3);
+      }
+      .topbar-lang {
+        font-size: 10px;
+        font-weight: 400;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      
+      }
+      .topbar-lang a {
+        color: var(--accent);
+        text-decoration: none;
+        border-bottom: 1px solid var(--border);
+        transition: opacity 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+      }
+      .topbar-lang a:hover {
+        opacity: 1;
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+      .topbar-lang .current {
+        color: var(--fg);
+      }
+
+      @media print {
+        .page-topbar { display: none; }
       }
       /* === MOBILE VARIANT A: photo inline after name === */
       @media (max-width: 767px) {

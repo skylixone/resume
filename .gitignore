@@ -1,4 +1,4 @@
-.secrets/
-.cf-pages-deploy*
-.cf-pages-deploy*/
 .DS_Store
+index_old.html
+.cf-pages-deploy*
+.secrets/
