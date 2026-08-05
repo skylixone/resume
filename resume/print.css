@@ -107,6 +107,7 @@
 
   h1 {
     font-size: var(--print-h1-size);
+    font-family:'Geist';
     line-height: var(--print-h1-lh);
     margin: 0;
   }

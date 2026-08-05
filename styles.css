@@ -118,10 +118,11 @@ a:hover { border-color: var(--accent); }
 
   overflow: hidden;
   text-decoration: none;
-  transition: border-color 0.2s;
+  transition: transform ease-in-out 0.11s;
+  transform: scale(1);
 }
 .work-card:hover {
-  border-color: var(--fg);
+  transform: scale(1.05);
 }
 .work-img {
   flex: 1;

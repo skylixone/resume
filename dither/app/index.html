@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>di_ther</title>
+    <meta name="build-ts" content="202607181800">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=202607181800">
+</head>
+<body>
+    <video id="video" autoplay playsinline style="display:none;"></video>
+    <canvas id="canvas" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);"></canvas>
+    
+    <!-- Exposure Compensation Overlay (Vertical) -->
+    <div id="exposureOverlay" class="gesture-overlay hidden">
+        <div class="exposure-bar">
+            <div class="exposure-fill"></div>
+            <div class="exposure-center"></div>
+        </div>
+        <div class="exposure-value">EV: 0.0</div>
+    </div>
+    
+    <!-- Tap color pick indicator -->
+    <div id="tapIndicator" class="tap-indicator hidden"></div>
+
+    <!-- Temperature Overlay (Horizontal) -->
+    <div id="tempOverlay" class="gesture-overlay hidden">
+        <div class="temp-bar">
+            <div class="temp-fill"></div>
+            <div class="temp-center"></div>
+        </div>
+        <div class="temp-value">TEMP: 0%</div>
+    </div>
+    <!--      
+    <div id="fps">FPS: --</div> 
+    <div id="version">Jul 18, 1800</div>
+    -->
+    
+    <!-- Gallery button (upper right) -->
+    <button id="galleryBtn" class="gallery-btn">Gallery</button>
+    
+    <!-- Gallery overlay -->
+    <div id="galleryOverlay" class="gallery-overlay hidden">
+        <div class="gallery-header">
+            <span>Saved</span>
+            <button id="galleryClose" class="gallery-close">×</button>
+        </div>
+        <div id="galleryGrid" class="gallery-grid"></div>
+        <div id="galleryEmpty" class="gallery-empty">No snapshots yet</div>
+    </div>
+
+    <!-- Preview overlay -->
+    <div id="previewOverlay" class="preview-overlay hidden">
+        <button id="previewClose" class="preview-close">×</button>
+        <div class="preview-image-container">
+            <img id="previewImage" src="" alt="Preview">
+        </div>
+        <div class="preview-actions">
+            <button id="shareBtn" class="preview-btn">Share</button>
+            <div class="save-combo">
+                <button id="saveBtn" class="preview-btn save-btn">Save</button>
+                <button id="scaleToggle" class="scale-toggle">▼</button>
+                <div id="scaleDropup" class="scale-dropup hidden">
+                    <button class="scale-option active" data-scale="1">1×</button>
+                    <button class="scale-option" data-scale="2">2×</button>
+                    <button class="scale-option" data-scale="4">4×</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Lens Segmented Control -->
+    <div id="lensSegmented" class="lens-segmented hidden"></div>
+    
+    <!-- Shutter Button -->
+    <button id="shutterBtn" class="shutter-button">
+        <div class="shutter-inner"></div>
+    </button>
+    
+    <!-- Drop-up: Resolution options (anchored left) -->
+    <div id="resolutionDropup" class="dropup dropup-left hidden">
+        <button class="dropup-item resolution-option" data-res="960">960</button>
+        <button class="dropup-item resolution-option" data-res="640">640</button>
+        <button class="dropup-item resolution-option" data-res="480">480</button>
+        <button class="dropup-item resolution-option" data-res="320">320</button>
+    </div>
+    
+    <!-- Drop-up: Palette options (anchored right) -->
+    <div id="paletteDropup" class="dropup dropup-right hidden">
+        <button class="dropup-item palette-btn" data-palette="VGA">VGA 16-bit</button>
+        <button class="dropup-item palette-btn" data-palette="AMBER">Amber</button>
+        <button class="dropup-item palette-btn" data-palette="ANOTHER_WORLD">Another World</button>
+        <button class="dropup-item palette-btn" data-palette="BLADE_RUNNER_NEON">BR Neon</button>
+        <button class="dropup-item palette-btn" data-palette="BLADE_RUNNER">Blade Runner</button>
+        <button class="dropup-item palette-btn" data-palette="CYBERPUNK">Cyberpunk</button>
+        <button class="dropup-item palette-btn" data-palette="NOIR">Noir</button>
+    </div>
+    
+    <!-- Toolbar -->
+    <div id="toolbar">
+        <!-- Resolution trigger -->
+        <button id="resolutionBtn" class="toolbar-btn resolution-btn">640×360</button>
+        
+        <!-- Spacer pushes palette to right -->
+        <div class="toolbar-spacer"></div>
+        
+        <!-- Palette trigger -->
+        <button id="paletteBtn" class="toolbar-btn palette-trigger">VGA 16-bit</button>
+    </div>
+
+    <script src="palette.js?v=202607181800"></script>
+    <script src="dither.js?v=202607181800"></script>
+    <script src="camera.js?v=202607181800"></script>
+</body>
+</html>

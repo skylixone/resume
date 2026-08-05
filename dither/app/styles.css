@@ -1,0 +1,706 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    border: none;
+}
+
+body {
+    background: #000;
+    font-family: 'Courier New', monospace;
+    color: #aaa;
+    overflow: hidden;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+canvas {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    border: none;
+    cursor: crosshair;
+}
+
+/* ===== GESTURE OVERLAYS ===== */
+
+.gesture-overlay {
+    position: fixed;
+    pointer-events: none;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.15s ease;
+}
+
+.gesture-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Exposure Overlay (Vertical) */
+#exposureOverlay {
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 200px;
+}
+
+.exposure-bar {
+    width: 12px;
+    height: 180px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+}
+
+.exposure-fill {
+    position: absolute;
+    bottom: 50%;
+    left: 0;
+    width: 100%;
+    height: 0%;
+    background: #888;
+    transition: height 0.05s ease, bottom 0.05s ease;
+}
+
+.exposure-center {
+    position: absolute;
+    left: -4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.8);
+    z-index: 2;
+}
+
+.exposure-value {
+    margin-top: 12px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.5);
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+/* Temperature Overlay (Horizontal) */
+#tempOverlay {
+    bottom: 140px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 250px;
+}
+
+.temp-bar {
+    width: 200px;
+    height: 12px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+}
+
+.temp-fill {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 0%;
+    height: 100%;
+    background: #888;
+    transition: width 0.05s ease, left 0.05s ease;
+}
+
+.temp-center {
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.8);
+    z-index: 2;
+}
+
+.temp-value {
+    margin-top: 12px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.5);
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+/* Tap color pick indicator */
+.tap-indicator {
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    pointer-events: none;
+    z-index: 50;
+    transform: translate(-50%, -50%);
+}
+
+.tap-indicator.hidden {
+    display: none;
+}
+
+.tap-indicator.fade-out {
+    animation: tap-fade 500ms ease-out forwards;
+}
+
+@keyframes tap-fade {
+    0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); }
+}
+
+/* ===== INFO DISPLAY ===== */
+
+#fps {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    color: #0f0;
+    font-size: 14px;
+    opacity: 0.6;
+    z-index: 20;
+    pointer-events: none;
+    font-family: 'Geist Mono', monospace;
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+}
+
+#version {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    color: #888;
+    font-size: 12px;
+    z-index: 20;
+    pointer-events: none;
+    font-family: 'Geist Mono', monospace;
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+}
+
+/* ===== TOOLBAR ===== */
+
+#toolbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    justify-content: flex-start;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 40%, transparent 100%);
+    padding: 0 12px;
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+    border: none;
+    z-index: 10;
+}
+
+.toolbar-spacer {
+    flex: 1;
+}
+
+/* ===== DROP-UPS ===== */
+
+.dropup {
+    position: fixed;
+    bottom: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    z-index: 15;
+}
+
+.dropup.hidden {
+    display: none;
+}
+
+.dropup-left {
+    left: 12px;
+    align-items: flex-start;
+}
+
+.dropup-right {
+    right: 12px;
+    align-items: flex-end;
+}
+
+.dropup-item {
+    background: transparent;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+    border: none;
+    outline: none;
+    padding: 10px 16px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.1s ease;
+}
+
+.dropup-left .dropup-item {
+    text-align: left;
+    padding-left: 16px;
+}
+
+.dropup-right .dropup-item {
+    text-align: right;
+    padding-right: 16px;
+}
+
+.dropup-item:active {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.dropup-item.active {
+    color: #ffcc00;
+}
+
+/* ===== TOOLBAR BUTTONS ===== */
+
+.toolbar-btn {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.6);
+    border-radius: 0;
+    padding: 8px 16px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 14px;
+    cursor: pointer;
+    flex-shrink: 0;
+    white-space: nowrap;
+    border: none;
+    outline: none;
+    transition: color 0.15s ease, background 0.15s ease, border-radius 0.15s ease;
+}
+
+.toolbar-btn:active {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Trigger buttons - inverted pill when active */
+.toolbar-btn.active {
+    background: #ffcc00;
+    color: #000;
+    border-radius: 100px;
+}
+
+.resolution-btn,
+.palette-trigger {
+    color: rgba(255, 255, 255, 1);
+}
+
+/* ===== LENS SEGMENTED CONTROL ===== */
+
+.lens-segmented {
+    position: fixed;
+    bottom: 130px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 100px;
+    overflow: hidden;
+}
+
+.lens-segmented.hidden {
+    display: none;
+}
+
+.lens-segment {
+    background: rgba(255, 255, 255, 0.5);
+    color: #000;
+    border: none;
+    outline: none;
+    padding: 8px 18px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.3s ease, background 0.3s ease;
+}
+
+.lens-segment:active {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.lens-segment.active {
+    color:#000;
+    background:#ffcc00;
+}
+
+/* ===== SHUTTER BUTTON ===== */
+
+#shutterBtn {
+    position: fixed;
+    bottom: -74px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    padding: 0;
+    cursor: pointer;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.15s ease;
+}
+
+#shutterBtn:active {
+    border-color: rgba(255, 255, 255, 1);
+}
+
+.shutter-inner {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    transition: background 0.15s ease;
+}
+
+#shutterBtn:active .shutter-inner {
+    background: #ff4444;
+}
+
+/* ===== GALLERY ===== */
+
+.gallery-btn {
+    position: fixed;
+    top: 10px;
+    right: 12px;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 1);
+    font-family: 'Geist Mono', monospace;
+    font-size: 14px;
+    padding: 4px 8px;
+    cursor: pointer;
+    z-index: 20;
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+}
+
+.gallery-btn:active {
+    color: #fff;
+}
+
+.gallery-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+}
+
+.gallery-overlay.hidden {
+    display: none;
+}
+
+.gallery-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    color: #fff;
+    font-family: 'Geist Mono', monospace;
+    font-size: 14px;
+}
+
+.gallery-close {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 4px 12px;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 8px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.gallery-thumb {
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.gallery-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.gallery-thumb:active {
+    border-color: #ffcc00;
+}
+
+.gallery-empty {
+    color: rgba(255, 255, 255, 0.4);
+    font-family: 'Geist Mono', monospace;
+    font-size: 14px;
+    text-align: center;
+    margin-top: 40px;
+}
+
+/* ===== PREVIEW OVERLAY ===== */
+
+.preview-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.98);
+    z-index: 300;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.preview-overlay.hidden {
+    display: none;
+}
+
+.preview-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 32px;
+    cursor: pointer;
+    padding: 8px 16px;
+    z-index: 10;
+}
+
+.preview-image-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px 120px 20px;
+    width: 100%;
+}
+
+.preview-image-container img {
+    max-width: 100%;
+    max-height: 100%;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+.preview-actions {
+    position: absolute;
+    bottom: 40px;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.preview-btn {
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    color: #fff;
+    font-family: 'Geist Mono', monospace;
+    font-size: 14px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.preview-btn:active {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #fff;
+}
+
+/* Save combo button */
+.save-combo {
+    display: flex;
+    position: relative;
+}
+
+.save-combo .save-btn {
+    border-radius: 8px 0 0 8px;
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.scale-toggle {
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    border-left: none;
+    color: #fff;
+    font-size: 10px;
+    padding: 12px 10px;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.scale-toggle:active {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.scale-dropup {
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    margin-bottom: 8px;
+    background: rgba(30, 30, 30, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.scale-dropup.hidden {
+    display: none;
+}
+
+.scale-option {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-family: 'Geist Mono', monospace;
+    font-size: 14px;
+    padding: 12px 20px;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.1s ease;
+}
+
+.scale-option:active,
+.scale-option.active {
+    background: rgba(255, 204, 0, 0.3);
+    color: #ffcc00;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 480px) {
+    .toolbar-btn {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+    
+    #exposureOverlay {
+        right: 15px;
+        height: 160px;
+    }
+    
+    .exposure-bar {
+        height: 140px;
+    }
+    
+    #tempOverlay {
+        width: 200px;
+        bottom: 120px;
+    }
+    
+    .temp-bar {
+        width: 160px;
+    }
+    
+    #shutterBtn {
+        width: 70px;
+        height: 70px;
+        bottom: 56px;
+    }
+    
+    #shutterBtn .shutter-inner {
+        width: 48px;
+        height: 48px;
+    }
+}
+
+/* Landscape mode adjustments */
+@media (max-height: 450px) {
+    #toolbar {
+        padding: 8px 10px calc(10px + env(safe-area-inset-bottom, 10px)) 10px;
+    }
+    
+    .toolbar-btn {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+    
+    #exposureOverlay {
+        height: 100px;
+        right: 85px;
+    }
+    
+    .exposure-bar {
+        height: 80px;
+    }
+    
+    #tempOverlay {
+        bottom: 70px;
+    }
+
+    /* Move drop-ups above the right-edge shutter in landscape */
+    .dropup {
+        bottom: auto;
+        top: 60px;
+    }
+
+    .dropup-left {
+        left: 12px;
+    }
+
+    .dropup-right {
+        right: 85px; /* avoid shutter */
+    }
+    
+    /* Shutter button on right edge in landscape */
+    #shutterBtn {
+        bottom: auto;
+        left: auto;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 60px;
+        height: 60px;
+    }
+    
+    #shutterBtn .shutter-inner {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* Safe area adjustments for very tall notches (iPhone 14 Pro Max etc.) */
+@supports (padding: max(0px)) {
+    #toolbar {
+        padding-bottom: max(12px, env(safe-area-inset-bottom, 20px));
+    }
+}
