@@ -3,13 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KHARTIYA — Infinity Mirror v0.2</title>
+<title>KHARTIYA — Infinity Mirror</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
     background: #0a0a0f;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
@@ -18,19 +19,50 @@
     user-select: none;
   }
 
+  .toggle-bar {
+    display: flex;
+    gap: 2px;
+    background: #111;
+    border-radius: 8px;
+    padding: 3px;
+    margin-bottom: 16px;
+    z-index: 10;
+  }
+
+  .toggle-btn {
+    padding: 6px 18px;
+    border: none;
+    background: transparent;
+    color: #555;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .toggle-btn.active {
+    background: #222;
+    color: #ccc;
+  }
+
   .scene {
-    perspective: 800px;                          /* ← tilt depth */
+    perspective: 800px;
     perspective-origin: center center;
   }
 
+  .scene.flat {
+    perspective: none;
+  }
+
   .mirror-wrap {
-    transition: transform 0.08s ease-out;        /* ← tilt smoothing */
+    transition: transform 0.08s ease-out;
     will-change: transform;
   }
 
   .mirror-row {
     display: flex;
-    gap: var(--mirror-gap);                       /* ← adjustable gap */
+    gap: var(--mirror-gap);
     align-items: center;
   }
 
@@ -38,7 +70,7 @@
     width:  var(--panel-size);
     height: var(--panel-size);
     max-width: 90vw;
-    max-height: 90vw;                             /* keep square on narrow viewports */
+    max-height: 90vw;
     flex-shrink: 0;
     position: relative;
   }
@@ -78,20 +110,25 @@
   .portrait-block .icon { font-size: 48px; }
 
   @media (orientation: portrait) and (max-width: 1024px) {
-    .scene, .info { display: none; }
+    .toggle-bar, .scene, .info { display: none; }
     .portrait-block { display: flex; }
   }
 </style>
 </head>
 <body>
 
-<div class="portrait-block" id="portraitBlock">
+<div class="toggle-bar" id="toggleBar">
+  <button class="toggle-btn active" data-mode="row">УСІ</button>
+  <button class="toggle-btn" data-mode="single">ОДИН</button>
+</div>
+
+<div class="portrait-block">
   <div class="icon">📱</div>
   <div>поверни телефон горизонтально</div>
   <div style="font-size:13px;color:#444">rotate to landscape</div>
 </div>
 
-<div class="scene">
+<div class="scene" id="scene">
   <div class="mirror-wrap" id="mirrorWrap">
     <div class="mirror-row" id="mirrorRow"></div>
   </div>
@@ -99,63 +136,118 @@
 <div class="info" id="info">drag to tilt</div>
 
 <script>
-// ─── CONFIG ──────────────────────────────────────────────────────
-const CFG = {
-
-  // Panel — size computed from ROW_MAX_WIDTH_VW + viewport, not fixed
-  BORDER_WIDTH:    5,           // px — LED ring thickness
-  BORDER_RADIUS:   1,            // px — corner rounding on the frame
-
-  // Row
-  GAP_PX:          12,           // horizontal gap between mirrors
-  ROW_MAX_WIDTH_VW: 95,          // max row width % — desktop
-  ROW_MAX_WIDTH_VW_MOBILE: 95,   // max row width % — phone/tablet (≤1024px)
-  MOBILE_BREAKPOINT_PX: 1024,    // screens narrower than this use mobile value
-
-  // LED ring
+// ─── SHARED BASE CONFIG ──────────────────────────────────────────
+const BASE = {
+  BORDER_WIDTH:    5,
+  BORDER_RADIUS:   1,
   LED_COLOR:       '#ED0000',
   LED_GLOW:        '#F81212',
   LED_GLOW_RADIUS: 6,
-
-  // Tunnel
   TUNNEL_DEPTH:    12,
   TUNNEL_SCALE:     0.85,
   TUNNEL_OPACITY:    0.5,
-
-  // Engraving
-  SVG_ORDER: [                    // ← Ha_Logo first, then numbered order
-    { path: 'assets/Ha_Logo.svg' },
-    { path: 'assets/0 h.svg' },
-    { path: 'assets/1 A.svg' },
-    { path: 'assets/2 R.svg' },
-    { path: 'assets/3 t.svg' },
-    { path: 'assets/4 i.svg',   size: 0.38 },   // ← per-letter override
-    { path: 'assets/5 .svg' },
-  ],
-  SVG_SIZE_FRAC:    0.6,         // default symbol size fraction of panel
+  SVG_SIZE_FRAC:    0.6,
   ENGRAVING_OPACITY: 0.5,
   GRAIN_INTENSITY:   0.05,
-
-  // Tilt
   TILT_MAX_DEG:     8,
   TILT_SMOOTH:       0.08,
   TOUCH_SENSITIVITY: 6,
-
-  // Back mirror
   BACK_COLOR:      '#0d0d18',
   BACK_REFLECT:     0.1,
-
+  MOBILE_BREAKPOINT_PX: 1024,
 };
-// ─── END CONFIG ──────────────────────────────────────────────────
 
+// ─── PER-MODE OVERRIDES ──────────────────────────────────────────
+const MODES = {
+  row: {
+    GAP_PX:              12,
+    ROW_MAX_WIDTH_VW:    95,
+    ROW_MAX_WIDTH_VW_MOBILE: 95,
+    perspectiveLocked:   false,
+    SVG_ORDER: [
+      { path: 'assets/Ha_Logo.svg' },
+      { path: 'assets/0 h.svg' },
+      { path: 'assets/1 A.svg' },
+      { path: 'assets/2 R.svg' },
+      { path: 'assets/3 t.svg' },
+      { path: 'assets/4 i.svg', size: 0.38 },
+      { path: 'assets/5 .svg' },
+    ],
+  },
+  single: {
+    GAP_PX:              0,
+    ROW_MAX_WIDTH_VW:    80,
+    ROW_MAX_WIDTH_VW_MOBILE: 80,
+    perspectiveLocked:   true,
+    SVG_ORDER: [
+      { path: 'assets/Ha_Logo_Text.svg' },
+    ],
+  },
+};
 
+// ─── ACTIVE STATE ────────────────────────────────────────────────
+let currentMode = 'row';
+let CFG = Object.assign({}, BASE, MODES[currentMode]);
+let perspectiveUnlocked = false;
+
+// ─── DOM ─────────────────────────────────────────────────────────
 const body   = document.body;
+const scene  = document.getElementById('scene');
 const wrap   = document.getElementById('mirrorWrap');
 const row    = document.getElementById('mirrorRow');
 const info   = document.getElementById('info');
-let   px;  // computed panel size — set by sizeAll()
+let   px;
+let   loadedSVGs = [];
 
-// ── responsive sizing ───────────────────────────────────────────
+// ── mode toggle ─────────────────────────────────────────────────
+document.getElementById('toggleBar').addEventListener('click', e => {
+  const btn = e.target.closest('.toggle-btn');
+  if (!btn || btn.dataset.mode === currentMode) return;
+  switchMode(btn.dataset.mode);
+});
+
+function switchMode(name) {
+  currentMode = name;
+  CFG = Object.assign({}, BASE, MODES[name]);
+
+  // update toggle buttons
+  document.querySelectorAll('.toggle-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.mode === name);
+  });
+
+  // perspective lock per mode
+  if (MODES[name].perspectiveLocked) {
+    perspectiveUnlocked = false;
+    scene.classList.add('flat');
+    info.textContent = 'click to unlock perspective';
+    info.style.color = '#666';
+  } else {
+    perspectiveUnlocked = true;
+    scene.classList.remove('flat');
+    info.textContent = 'drag to tilt';
+    info.style.color = '#666';
+  }
+
+  sizeAll();
+  renderAllPanels();
+}
+
+// ── perspective unlock (single mode) ────────────────────────────
+function unlockPerspective() {
+  if (perspectiveUnlocked || !MODES[currentMode].perspectiveLocked) return;
+  perspectiveUnlocked = true;
+  scene.classList.remove('flat');
+  info.textContent = 'tilt → mouse / drag';
+  info.style.color = '#333';
+}
+
+document.addEventListener('click', e => {
+  // don't fire on toggle bar clicks
+  if (e.target.closest('.toggle-bar')) return;
+  unlockPerspective();
+});
+
+// ── sizing ──────────────────────────────────────────────────────
 function sizeAll() {
   const N = CFG.SVG_ORDER.length;
   const gap = CFG.GAP_PX;
@@ -169,7 +261,7 @@ function sizeAll() {
   wrap.style.setProperty('--mirror-gap',  gap + 'px');
 }
 
-// ── load SVG → Image ────────────────────────────────────────────
+// ── SVG loading ─────────────────────────────────────────────────
 function loadSVG(path) {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -179,7 +271,7 @@ function loadSVG(path) {
   });
 }
 
-// ── background slice (shared — same for all mirrors) ────────────
+// ── background slice ────────────────────────────────────────────
 function makeBackgroundSlice() {
   const w = px;
   const off = document.createElement('canvas');
@@ -223,7 +315,7 @@ function makeBackgroundSlice() {
   return off;
 }
 
-// ── engraving slice (per SVG, per-size) ─────────────────────────
+// ── engraving slice ─────────────────────────────────────────────
 function makeEngravingSlice(svgImg, sizeFrac) {
   const w = px;
   const off = document.createElement('canvas');
@@ -266,7 +358,7 @@ function grainFill(ctx, w, h, intensity) {
   ctx.globalAlpha = 1;
 }
 
-// ── draw tunnel onto a specific canvas ──────────────────────────
+// ── draw tunnel ─────────────────────────────────────────────────
 function drawTunnel(canvas, bgSlice, engravingSlice) {
   const w = px;
   const dpr = window.devicePixelRatio || 1;
@@ -281,7 +373,6 @@ function drawTunnel(canvas, bgSlice, engravingSlice) {
   ct.save();
   ct.translate(w / 2, w / 2);
 
-  // background tunnel
   let scale = 1;
   for (let i = 0; i < CFG.TUNNEL_DEPTH; i++) {
     ct.globalAlpha = Math.pow(CFG.TUNNEL_OPACITY, i);
@@ -289,7 +380,6 @@ function drawTunnel(canvas, bgSlice, engravingSlice) {
     scale *= CFG.TUNNEL_SCALE;
   }
 
-  // engraving reflections (back→front)
   let s = Math.pow(CFG.TUNNEL_SCALE, CFG.TUNNEL_DEPTH - 1);
   for (let i = CFG.TUNNEL_DEPTH - 1; i >= 0; i--) {
     ct.globalAlpha = Math.pow(CFG.TUNNEL_OPACITY, i) * CFG.ENGRAVING_OPACITY;
@@ -297,38 +387,33 @@ function drawTunnel(canvas, bgSlice, engravingSlice) {
     s /= CFG.TUNNEL_SCALE;
   }
 
-  // frontmost engraving
   ct.globalAlpha = CFG.ENGRAVING_OPACITY;
   ct.drawImage(engravingSlice, -w/2, -w/2, w, w);
 
   ct.restore();
 }
 
-// ── tilt ─────────────────────────────────────────────────────────
+// ── tilt ────────────────────────────────────────────────────────
 let currentTiltX = 0, currentTiltY = 0;
 
 function applyTilt(xFrac, yFrac) {
+  if (!perspectiveUnlocked) return;
   currentTiltX = Math.max(-1, Math.min(1, xFrac));
   currentTiltY = Math.max(-1, Math.min(1, yFrac));
   const max = CFG.TILT_MAX_DEG;
   wrap.style.transform = `rotateX(${( currentTiltY * max).toFixed(2)}deg) rotateY(${(-currentTiltX * max).toFixed(2)}deg)`;
 }
 
-function snapToCenter() {
-  currentTiltX = currentTiltY = 0;
-  applyTilt(0, 0);
-}
+function snapToCenter() { currentTiltX = currentTiltY = 0; applyTilt(0, 0); }
 
-// ── desktop mouse ───────────────────────────────────────────────
 document.addEventListener('mousemove', e => {
   applyTilt((e.clientX / innerWidth) * 2 - 1, (e.clientY / innerHeight) * 2 - 1);
 });
 
-// ── mobile touch-drag ───────────────────────────────────────────
 let touchOriginX, touchOriginY, tiltStartX, tiltStartY, dragging = false;
 
 wrap.addEventListener('touchstart', e => {
-  if (e.touches.length !== 1) return;
+  if (!perspectiveUnlocked || e.touches.length !== 1) return;
   e.preventDefault();
   dragging = true;
   touchOriginX = e.touches[0].clientX;
@@ -356,51 +441,6 @@ wrap.addEventListener('touchend', () => {
   snapToCenter();
 });
 
-// ── device orientation ──────────────────────────────────────────
-let orientationNeedsPermission = false;
-
-function setupOrientation() {
-  if (typeof DeviceOrientationEvent !== 'undefined' &&
-      typeof DeviceOrientationEvent.requestPermission === 'function') {
-    orientationNeedsPermission = true;
-    info.textContent = 'drag to tilt   ·   tap for motion access';
-    info.style.color = '#666';
-
-    const requestAndEnable = async () => {
-      try {
-        const perm = await DeviceOrientationEvent.requestPermission();
-        if (perm === 'granted') {
-          orientationNeedsPermission = false;
-          window.addEventListener('deviceorientation', handleOrientation);
-          info.textContent = `tilt → device   ·   ${CFG.TUNNEL_DEPTH} layers`;
-          info.style.color = '#333';
-        }
-      } catch (_) {}
-    };
-
-    document.addEventListener('click', requestAndEnable, { once: true });
-    document.addEventListener('touchend', e => { if (!dragging) requestAndEnable(); }, { once: true });
-
-  } else if (window.DeviceOrientationEvent) {
-    window.addEventListener('deviceorientation', handleOrientation);
-    setTimeout(() => {
-      if (!handleOrientation._hasFired) {
-        info.textContent = 'drag to tilt';
-        info.style.color = '#666';
-      }
-    }, 2000);
-  }
-}
-
-function handleOrientation(e) {
-  if (e.gamma === null) return;
-  handleOrientation._hasFired = true;
-  applyTilt(
-    Math.max(-1, Math.min(1, (e.gamma || 0) / 45)),
-    Math.max(-1, Math.min(1, (e.beta  || 0) / 45))
-  );
-}
-
 // ── helpers ─────────────────────────────────────────────────────
 function roundRect(ct, x, y, w, h, r) {
   ct.beginPath();
@@ -421,49 +461,36 @@ function createPanel() {
   return cvs;
 }
 
-// ── boot ─────────────────────────────────────────────────────────
-setupOrientation();
+// ── render ──────────────────────────────────────────────────────
+function renderAllPanels() {
+  row.innerHTML = '';
+  // preload SVGs for current mode
+  const defs = CFG.SVG_ORDER;
+  Promise.allSettled(defs.map(d => loadSVG(d.path)))
+    .then(results => {
+      loadedSVGs = results.map((r, i) => ({
+        img:  r.status === 'fulfilled' ? r.value.img : null,
+        size: defs[i].size,
+      }));
+      const bg = makeBackgroundSlice();
+      for (const sv of loadedSVGs) {
+        const cvs  = createPanel();
+        const engr = makeEngravingSlice(sv.img, sv.size);
+        drawTunnel(cvs, bg, engr);
+      }
+    });
+}
+
+// ── boot ────────────────────────────────────────────────────────
 wrap.style.transition = `transform ${CFG.TILT_SMOOTH}s ease-out`;
 sizeAll();
 
-// re-render on resize
 window.addEventListener('resize', () => {
   sizeAll();
-  const dpr = window.devicePixelRatio || 1;
-  for (const cvs of row.querySelectorAll('canvas')) {
-    cvs.width  = px * dpr;
-    cvs.height = px * dpr;
-    cvs.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-  // re-render all panels
   renderAllPanels();
 });
 
-const bgSlice = makeBackgroundSlice();
-let loadedSVGs = [];  // populated after first render; used for resize re-render
-
-function renderAllPanels() {
-  // clear existing panels
-  row.innerHTML = '';
-  const bg = makeBackgroundSlice();  // fresh at new size
-  for (const svgImg of loadedSVGs) {
-    const cvs  = createPanel();
-    const engr = makeEngravingSlice(svgImg.img, svgImg.size);
-    drawTunnel(cvs, bg, engr);
-  }
-  if (!orientationNeedsPermission) {
-    info.textContent = `tilt → mouse / drag   ·   ${loadedSVGs.length} panels   ·   ${px}px`;
-  }
-}
-
-const svgDefs = CFG.SVG_ORDER;
-Promise.allSettled(svgDefs.map(d => loadSVG(d.path)))
-  .then(results => {
-    loadedSVGs = results.map((r, i) => ({
-      img:  r.status === 'fulfilled' ? r.value.img : null,
-      size: svgDefs[i].size
-    }));
-    renderAllPanels();
-  });</script>
+renderAllPanels();
+</script>
 </body>
 </html>
