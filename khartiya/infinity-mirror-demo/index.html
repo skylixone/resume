@@ -17,16 +17,20 @@
     font-family: system-ui, sans-serif;
     overflow-x: auto;
     user-select: none;
+    scroll-snap-type: none;
   }
 
   .toggle-bar {
+    position: fixed;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     gap: 2px;
     background: #111;
     border-radius: 8px;
     padding: 3px;
-    margin-bottom: 16px;
-    z-index: 10;
+    z-index: 100;
   }
 
   .toggle-btn {
@@ -176,9 +180,9 @@ const MODES = {
   },
   single: {
     GAP_PX:              0,
-    ROW_MAX_WIDTH_VW:    80,
-    ROW_MAX_WIDTH_VW_MOBILE: 80,
-    perspectiveLocked:   true,
+    ROW_MAX_WIDTH_VW:    60,
+    ROW_MAX_WIDTH_VW_MOBILE: 60,
+    perspectiveLocked:   false,
     SVG_ORDER: [
       { path: 'assets/Ha_Logo_Text.svg' },
     ],
@@ -483,14 +487,12 @@ function renderAllPanels() {
 
 // ── boot ────────────────────────────────────────────────────────
 wrap.style.transition = `transform ${CFG.TILT_SMOOTH}s ease-out`;
-sizeAll();
+switchMode('row');  // proper init — calls sizeAll + renderAllPanels
 
 window.addEventListener('resize', () => {
   sizeAll();
   renderAllPanels();
 });
-
-renderAllPanels();
 </script>
 </body>
 </html>
