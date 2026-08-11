@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KHARTIYA — Infinity Mirror v0.2</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0a0a0f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: system-ui, sans-serif;
+    overflow-x: auto;
+    user-select: none;
+  }
+
+  .scene {
+    perspective: 800px;                          /* ← tilt depth */
+    perspective-origin: center center;
+  }
+
+  .mirror-wrap {
+    transition: transform 0.08s ease-out;        /* ← tilt smoothing */
+    will-change: transform;
+  }
+
+  .mirror-row {
+    display: flex;
+    gap: var(--mirror-gap);                       /* ← adjustable gap */
+    align-items: center;
+  }
+
+  .mirror-panel {
+    width:  var(--panel-size);
+    height: var(--panel-size);
+    max-width: 90vw;
+    max-height: 90vw;                             /* keep square on narrow viewports */
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .mirror-panel canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+  }
+
+  .info {
+    position: fixed;
+    bottom: 12px;
+    right: 16px;
+    color: #333;
+    font-size: 11px;
+    pointer-events: none;
+  }
+
+  /* portrait lock on mobile */
+  .portrait-block {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #0a0a0f;
+    z-index: 1000;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    color: #555;
+    font-size: 18px;
+    text-align: center;
+    padding: 24px;
+  }
+  .portrait-block .icon { font-size: 48px; }
+
+  @media (orientation: portrait) and (max-width: 1024px) {
+    .scene, .info { display: none; }
+    .portrait-block { display: flex; }
+  }
+</style>
+</head>
+<body>
+
+<div class="portrait-block" id="portraitBlock">
+  <div class="icon">📱</div>
+  <div>поверни телефон горизонтально</div>
+  <div style="font-size:13px;color:#444">rotate to landscape</div>
+</div>
+
+<div class="scene">
+  <div class="mirror-wrap" id="mirrorWrap">
+    <div class="mirror-row" id="mirrorRow"></div>
+  </div>
+</div>
+<div class="info" id="info">drag to tilt</div>
+
+<script>
+// ─── CONFIG ──────────────────────────────────────────────────────
+const CFG = {
+
+  // Panel — size computed from ROW_MAX_WIDTH_VW + viewport, not fixed
+  BORDER_WIDTH:    5,           // px — LED ring thickness
+  BORDER_RADIUS:   1,            // px — corner rounding on the frame
+
+  // Row
+  GAP_PX:          12,           // horizontal gap between mirrors
+  ROW_MAX_WIDTH_VW: 95,          // max row width % — desktop
+  ROW_MAX_WIDTH_VW_MOBILE: 95,   // max row width % — phone/tablet (≤1024px)
+  MOBILE_BREAKPOINT_PX: 1024,    // screens narrower than this use mobile value
+
+  // LED ring
+  LED_COLOR:       '#ED0000',
+  LED_GLOW:        '#F81212',
+  LED_GLOW_RADIUS: 6,
+
+  // Tunnel
+  TUNNEL_DEPTH:    12,
+  TUNNEL_SCALE:     0.85,
+  TUNNEL_OPACITY:    0.5,
+
+  // Engraving
+  SVG_ORDER: [                    // ← Ha_Logo first, then numbered order
+    { path: 'assets/Ha_Logo.svg' },
+    { path: 'assets/0 h.svg' },
+    { path: 'assets/1 A.svg' },
+    { path: 'assets/2 R.svg' },
+    { path: 'assets/3 t.svg' },
+    { path: 'assets/4 i.svg',   size: 0.38 },   // ← per-letter override
+    { path: 'assets/5 .svg' },
+  ],
+  SVG_SIZE_FRAC:    0.6,         // default symbol size fraction of panel
+  ENGRAVING_OPACITY: 0.5,
+  GRAIN_INTENSITY:   0.05,
+
+  // Tilt
+  TILT_MAX_DEG:     8,
+  TILT_SMOOTH:       0.08,
+  TOUCH_SENSITIVITY: 6,
+
+  // Back mirror
+  BACK_COLOR:      '#0d0d18',
+  BACK_REFLECT:     0.1,
+
+};
+// ─── END CONFIG ──────────────────────────────────────────────────
+
+
+const body   = document.body;
+const wrap   = document.getElementById('mirrorWrap');
+const row    = document.getElementById('mirrorRow');
+const info   = document.getElementById('info');
+let   px;  // computed panel size — set by sizeAll()
+
+// ── responsive sizing ───────────────────────────────────────────
+function sizeAll() {
+  const N = CFG.SVG_ORDER.length;
+  const gap = CFG.GAP_PX;
+  const isMobile = window.innerWidth <= CFG.MOBILE_BREAKPOINT_PX;
+  const vwPct = isMobile ? CFG.ROW_MAX_WIDTH_VW_MOBILE : CFG.ROW_MAX_WIDTH_VW;
+  const maxW = (window.innerWidth  * vwPct) / 100;
+  const maxH = (window.innerHeight * 90) / 100;
+  const fromW = (maxW - (N - 1) * gap) / N;
+  px = Math.floor(Math.min(fromW, maxH));
+  wrap.style.setProperty('--panel-size',  px + 'px');
+  wrap.style.setProperty('--mirror-gap',  gap + 'px');
+}
+
+// ── load SVG → Image ────────────────────────────────────────────
+function loadSVG(path) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload  = () => resolve({ path, img });
+    img.onerror = () => reject(new Error(`Failed to load: ${path}`));
+    img.src = path;
+  });
+}
+
+// ── background slice (shared — same for all mirrors) ────────────
+function makeBackgroundSlice() {
+  const w = px;
+  const off = document.createElement('canvas');
+  off.width = w; off.height = w;
+  const oc = off.getContext('2d');
+
+  oc.fillStyle = CFG.BACK_COLOR;
+  roundRect(oc, 0, 0, w, w, CFG.BORDER_RADIUS);
+  oc.fill();
+
+  const grd = oc.createLinearGradient(0, 0, w * 0.4, w * 0.4);
+  grd.addColorStop(0, 'rgba(255,255,255,0.06)');
+  grd.addColorStop(1, 'rgba(255,255,255,0)');
+  oc.fillStyle = grd;
+  roundRect(oc, 0, 0, w, w, CFG.BORDER_RADIUS);
+  oc.fill();
+
+  oc.strokeStyle = CFG.LED_COLOR;
+  oc.lineWidth   = CFG.BORDER_WIDTH;
+  oc.shadowColor = CFG.LED_GLOW;
+  oc.shadowBlur  = CFG.LED_GLOW_RADIUS;
+  roundRect(oc, CFG.BORDER_WIDTH/2, CFG.BORDER_WIDTH/2,
+    w - CFG.BORDER_WIDTH, w - CFG.BORDER_WIDTH, CFG.BORDER_RADIUS);
+  oc.stroke();
+  oc.shadowBlur = CFG.LED_GLOW_RADIUS * 1.8;
+  oc.stroke();
+  oc.shadowBlur = 0;
+
+  oc.save();
+  oc.globalCompositeOperation = 'lighter';
+  const inner = CFG.BORDER_WIDTH * 1.8;
+  oc.strokeStyle = 'rgba(255,255,255,0.15)';
+  oc.lineWidth = 1.5;
+  oc.shadowColor = CFG.LED_GLOW;
+  oc.shadowBlur = 6;
+  roundRect(oc, inner, inner, w - inner*2, w - inner*2, CFG.BORDER_RADIUS - 1);
+  oc.stroke();
+  oc.shadowBlur = 0;
+  oc.restore();
+
+  return off;
+}
+
+// ── engraving slice (per SVG, per-size) ─────────────────────────
+function makeEngravingSlice(svgImg, sizeFrac) {
+  const w = px;
+  const off = document.createElement('canvas');
+  off.width = w; off.height = w;
+  if (!svgImg) return off;
+  const oc = off.getContext('2d');
+
+  const engraveW = w * (sizeFrac ?? CFG.SVG_SIZE_FRAC);
+  const svgAspect = svgImg.naturalWidth / svgImg.naturalHeight;
+  let ew = engraveW, eh = engraveW / svgAspect;
+  if (eh > engraveW) { eh = engraveW; ew = engraveW * svgAspect; }
+  oc.drawImage(svgImg, (w - ew) / 2, (w - eh) / 2, ew, eh);
+
+  if (CFG.GRAIN_INTENSITY > 0) {
+    oc.save();
+    oc.globalCompositeOperation = 'source-atop';
+    grainFill(oc, w, w, CFG.GRAIN_INTENSITY);
+    oc.restore();
+  }
+  return off;
+}
+
+// ── grain noise ─────────────────────────────────────────────────
+function grainFill(ctx, w, h, intensity) {
+  if (!grainFill._cache || grainFill._cache.width !== w || grainFill._cache.height !== h) {
+    const gc = document.createElement('canvas');
+    gc.width = w; gc.height = h;
+    const gctx = gc.getContext('2d');
+    const img = gctx.createImageData(w, h);
+    const data = img.data;
+    for (let i = 0; i < data.length; i += 4) {
+      const v = Math.random() * 255;
+      data[i] = v; data[i+1] = v; data[i+2] = v; data[i+3] = 255;
+    }
+    gctx.putImageData(img, 0, 0);
+    grainFill._cache = gc;
+  }
+  ctx.globalAlpha = intensity;
+  ctx.drawImage(grainFill._cache, 0, 0);
+  ctx.globalAlpha = 1;
+}
+
+// ── draw tunnel onto a specific canvas ──────────────────────────
+function drawTunnel(canvas, bgSlice, engravingSlice) {
+  const w = px;
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width  = w * dpr;
+  canvas.height = w * dpr;
+  const ct = canvas.getContext('2d');
+  ct.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  ct.fillStyle = '#050508';
+  ct.fillRect(0, 0, w, w);
+
+  ct.save();
+  ct.translate(w / 2, w / 2);
+
+  // background tunnel
+  let scale = 1;
+  for (let i = 0; i < CFG.TUNNEL_DEPTH; i++) {
+    ct.globalAlpha = Math.pow(CFG.TUNNEL_OPACITY, i);
+    ct.drawImage(bgSlice, -w/2 * scale, -w/2 * scale, w * scale, w * scale);
+    scale *= CFG.TUNNEL_SCALE;
+  }
+
+  // engraving reflections (back→front)
+  let s = Math.pow(CFG.TUNNEL_SCALE, CFG.TUNNEL_DEPTH - 1);
+  for (let i = CFG.TUNNEL_DEPTH - 1; i >= 0; i--) {
+    ct.globalAlpha = Math.pow(CFG.TUNNEL_OPACITY, i) * CFG.ENGRAVING_OPACITY;
+    ct.drawImage(engravingSlice, -w/2 * s, -w/2 * s, w * s, w * s);
+    s /= CFG.TUNNEL_SCALE;
+  }
+
+  // frontmost engraving
+  ct.globalAlpha = CFG.ENGRAVING_OPACITY;
+  ct.drawImage(engravingSlice, -w/2, -w/2, w, w);
+
+  ct.restore();
+}
+
+// ── tilt ─────────────────────────────────────────────────────────
+let currentTiltX = 0, currentTiltY = 0;
+
+function applyTilt(xFrac, yFrac) {
+  currentTiltX = Math.max(-1, Math.min(1, xFrac));
+  currentTiltY = Math.max(-1, Math.min(1, yFrac));
+  const max = CFG.TILT_MAX_DEG;
+  wrap.style.transform = `rotateX(${( currentTiltY * max).toFixed(2)}deg) rotateY(${(-currentTiltX * max).toFixed(2)}deg)`;
+}
+
+function snapToCenter() {
+  currentTiltX = currentTiltY = 0;
+  applyTilt(0, 0);
+}
+
+// ── desktop mouse ───────────────────────────────────────────────
+document.addEventListener('mousemove', e => {
+  applyTilt((e.clientX / innerWidth) * 2 - 1, (e.clientY / innerHeight) * 2 - 1);
+});
+
+// ── mobile touch-drag ───────────────────────────────────────────
+let touchOriginX, touchOriginY, tiltStartX, tiltStartY, dragging = false;
+
+wrap.addEventListener('touchstart', e => {
+  if (e.touches.length !== 1) return;
+  e.preventDefault();
+  dragging = true;
+  touchOriginX = e.touches[0].clientX;
+  touchOriginY = e.touches[0].clientY;
+  tiltStartX = currentTiltX;
+  tiltStartY = currentTiltY;
+  wrap.style.transition = 'none';
+}, { passive: false });
+
+wrap.addEventListener('touchmove', e => {
+  if (!dragging || e.touches.length !== 1) return;
+  e.preventDefault();
+  const sens = CFG.TOUCH_SENSITIVITY;
+  const max  = CFG.TILT_MAX_DEG;
+  applyTilt(
+    tiltStartX + (e.touches[0].clientX - touchOriginX) / sens / max,
+    tiltStartY + (e.touches[0].clientY - touchOriginY) / sens / max
+  );
+}, { passive: false });
+
+wrap.addEventListener('touchend', () => {
+  if (!dragging) return;
+  dragging = false;
+  wrap.style.transition = `transform ${CFG.TILT_SMOOTH}s ease-out`;
+  snapToCenter();
+});
+
+// ── device orientation ──────────────────────────────────────────
+let orientationNeedsPermission = false;
+
+function setupOrientation() {
+  if (typeof DeviceOrientationEvent !== 'undefined' &&
+      typeof DeviceOrientationEvent.requestPermission === 'function') {
+    orientationNeedsPermission = true;
+    info.textContent = 'drag to tilt   ·   tap for motion access';
+    info.style.color = '#666';
+
+    const requestAndEnable = async () => {
+      try {
+        const perm = await DeviceOrientationEvent.requestPermission();
+        if (perm === 'granted') {
+          orientationNeedsPermission = false;
+          window.addEventListener('deviceorientation', handleOrientation);
+          info.textContent = `tilt → device   ·   ${CFG.TUNNEL_DEPTH} layers`;
+          info.style.color = '#333';
+        }
+      } catch (_) {}
+    };
+
+    document.addEventListener('click', requestAndEnable, { once: true });
+    document.addEventListener('touchend', e => { if (!dragging) requestAndEnable(); }, { once: true });
+
+  } else if (window.DeviceOrientationEvent) {
+    window.addEventListener('deviceorientation', handleOrientation);
+    setTimeout(() => {
+      if (!handleOrientation._hasFired) {
+        info.textContent = 'drag to tilt';
+        info.style.color = '#666';
+      }
+    }, 2000);
+  }
+}
+
+function handleOrientation(e) {
+  if (e.gamma === null) return;
+  handleOrientation._hasFired = true;
+  applyTilt(
+    Math.max(-1, Math.min(1, (e.gamma || 0) / 45)),
+    Math.max(-1, Math.min(1, (e.beta  || 0) / 45))
+  );
+}
+
+// ── helpers ─────────────────────────────────────────────────────
+function roundRect(ct, x, y, w, h, r) {
+  ct.beginPath();
+  ct.moveTo(x + r, y);
+  ct.lineTo(x + w - r, y); ct.arcTo(x + w, y, x + w, y + r, r);
+  ct.lineTo(x + w, y + h - r); ct.arcTo(x + w, y + h, x + w - r, y + h, r);
+  ct.lineTo(x + r, y + h); ct.arcTo(x, y + h, x, y + h - r, r);
+  ct.lineTo(x, y + r); ct.arcTo(x, y, x + r, y, r);
+  ct.closePath();
+}
+
+function createPanel() {
+  const div = document.createElement('div');
+  div.className = 'mirror-panel';
+  const cvs = document.createElement('canvas');
+  div.appendChild(cvs);
+  row.appendChild(div);
+  return cvs;
+}
+
+// ── boot ─────────────────────────────────────────────────────────
+setupOrientation();
+wrap.style.transition = `transform ${CFG.TILT_SMOOTH}s ease-out`;
+sizeAll();
+
+// re-render on resize
+window.addEventListener('resize', () => {
+  sizeAll();
+  const dpr = window.devicePixelRatio || 1;
+  for (const cvs of row.querySelectorAll('canvas')) {
+    cvs.width  = px * dpr;
+    cvs.height = px * dpr;
+    cvs.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  // re-render all panels
+  renderAllPanels();
+});
+
+const bgSlice = makeBackgroundSlice();
+let loadedSVGs = [];  // populated after first render; used for resize re-render
+
+function renderAllPanels() {
+  // clear existing panels
+  row.innerHTML = '';
+  const bg = makeBackgroundSlice();  // fresh at new size
+  for (const svgImg of loadedSVGs) {
+    const cvs  = createPanel();
+    const engr = makeEngravingSlice(svgImg.img, svgImg.size);
+    drawTunnel(cvs, bg, engr);
+  }
+  if (!orientationNeedsPermission) {
+    info.textContent = `tilt → mouse / drag   ·   ${loadedSVGs.length} panels   ·   ${px}px`;
+  }
+}
+
+const svgDefs = CFG.SVG_ORDER;
+Promise.allSettled(svgDefs.map(d => loadSVG(d.path)))
+  .then(results => {
+    loadedSVGs = results.map((r, i) => ({
+      img:  r.status === 'fulfilled' ? r.value.img : null,
+      size: svgDefs[i].size
+    }));
+    renderAllPanels();
+  });</script>
+</body>
+</html>
