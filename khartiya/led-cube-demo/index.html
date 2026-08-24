@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KHARTIYA — LED Cube POC</title>
+<style>
+  html,body{margin:0;padding:0;background:#050505;color:#666;font:12px/1.5 -apple-system,Helvetica,Arial,sans-serif}
+  #stage{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:16px}
+  canvas{max-width:96vw;max-height:88vh;height:auto;image-rendering:auto;border-radius:6px;box-shadow:0 0 60px rgba(237,0,0,.06)}
+  #meta{margin-top:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.5;text-align:center}
+  /* web (desktop): canvas fills the full viewport height */
+  @media (min-width:768px){
+    #stage{min-height:0;height:100vh;padding:0;position:relative}
+    canvas{height:100vh;max-height:none;width:auto;max-width:100vw;object-fit:contain}
+    #meta{position:absolute;bottom:10px;left:0;right:0;margin-top:0}
+  }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="c"></canvas>
+  <div id="meta">KHARTIYA · LED cube POC · iso · <span id="metaN"></span></div>
+</div>
+
+<script>
+/* =====================================================================
+   KHARTIYA — LED cube POC
+   Isometric projection of N stacked 2D LED surfaces. Static, no rotation.
+   Each surface = LED grid (dots), glyph LED-ized from SVG.
+   ===================================================================== */
+const CFG = {
+  /* ---- cube geometry (visual scale, cm only for ratio) ---- */
+  N_SURFACES:  7,        // surfaces in the stack (D11: 6–8 ok)
+  CUBE_CM:     120,      // cube side
+  GAP_CM:      20,       // gap between surfaces = CUBE_CM/(N-1) at 7
+  SURFACE_PX:  330,      // surface size in canvas px
+  CANVAS_W:    1000,
+  CANVAS_H:    720,
+
+  /* ---- LED surface ---- */
+  GRID_PER_EDGE: 72,     // LEDs per edge (real: 72–108; preview subsampled)
+  LED_COLOR:   "#ED0000",
+  LED_GLOW:    "#F81212",
+  EDGE_BASE:   0.08,     // edge LEDs always lit this much (surface silhouette)
+  GLYPH_MIN:   0.65,     // glyph intensity floor (keeps letters readable)
+
+  /* ---- animation flow ---- */
+  MODE:          "drag",  // "drag" (letters drag through → finale frozen on all) | "uniform"
+  UNIFORM_INDEX: 0,       // SVG index for uniform mode (0 = Ha_Logo)
+  DRAG_ORDER:    [1,2,3,4,5,6],  // letters drag through the stack one at a time, in this order (SVGS indices)
+  FINALE_INDEX:  0,       // final symbol, frozen across all planes (0 = Ha_Logo)
+  PLANE_OPACITY: [1,1,1,1,1,1,1], // per-plane symbol opacity, index 0 = back-most plane
+  DRAG_SPEED:    5,     // planes per second during the drag
+  DRAG_DIR:      "in",    // "in" = front→back (dims with depth), "out" = back→front (brightens)
+  FALL_DIM:      0.45,    // symbol brightness at back-most plane vs front (drag phase)
+  BUILD_SPEED:   0.75,    // planes per second for the finale drag (slow backpropagation through the trails)
+  BUILD_DIR:     "in",    // "in" = front→back, "out" = back→front (finale)
+  TRAIL_AMOUNT:  0.35,    // letters: trail brightness right after the symbol passes
+  TRAIL_FADE_SEC: 1.0,    // letters: eased (Apple) fade-out time of the trail, flame-like
+  BUILD_TRAIL_AMOUNT: 0.5,  // finale: trail brightness right after the symbol passes
+  BUILD_TRAIL_FADE_SEC: 2.0, // finale: eased fade-out time of the trail
+  FREEZE_SEC:    3.5,     // hold time for the frozen finale across all planes
+  FREEZE_FALL_DIM: 0.1,  // depth dimming while frozen (0 = flat, full brightness)
+  TRANSITION_SEC: 0.8,   // eased (Apple) crossfade window at phase boundaries
+
+  /* ---- look ---- */
+  FOG_BACK:    0.40,     // alpha multiplier, back-most surface
+  FOG_FRONT:   1.00,     // alpha multiplier, front-most surface
+  CAGE_ALPHA:  0.10,     // faint connector edges between surfaces (0 = off)
+  BG:          "#050505",
+};
+
+/* ---- SVG sequence: per-svg scale relative to the plane ---- */
+const SVGS = [
+  {src:"Ha_Logo.svg", scale:0.60},
+  {src:"0 h.svg",     scale:0.50},
+  {src:"1 A.svg",     scale:0.50},
+  {src:"2 R.svg",     scale:0.50},
+  {src:"3 t.svg",     scale:0.50},
+  {src:"4 i.svg",     scale:0.40},
+  {src:"5 .svg",      scale:0.50},
+];
+
+const cv = document.getElementById('c');
+const ctx = cv.getContext('2d');
+cv.width  = CFG.CANVAS_W;
+cv.height = CFG.CANVAS_H;
+
+const N = CFG.N_SURFACES;
+const S = CFG.SURFACE_PX;
+const G = CFG.GRID_PER_EDGE;
+const gapPx = S * (CFG.GAP_CM / CFG.CUBE_CM);       // gap in px
+const gx = gapPx * 0.866, gy = gapPx * 0.5;          // iso depth axis (30°)
+const CELL = S / G;
+
+/* iso transform: vertical surface — width along floor axis (30°), height straight up */
+function iso(ox, oy) {
+  ctx.setTransform(0.866, 0.5, 0, 1, ox, oy);
+}
+
+/* ---- LED-ize: rasterize SVG to a GxG intensity grid ---- */
+function rasterize(svgPath, scale) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const off = document.createElement('canvas');
+      off.width = off.height = G;
+      const o = off.getContext('2d');
+      o.fillStyle = '#000'; o.fillRect(0, 0, G, G);
+      const s = G * scale;
+      o.drawImage(img, (G - s)/2, (G - s)/2, s, s);   // per-SVG scale vs plane
+      const d = o.getImageData(0, 0, G, G).data;
+      const grid = new Float32Array(G * G);
+      for (let i = 0; i < G * G; i++) {
+        const a = d[i*4+3] / 255;
+        const l = Math.max(d[i*4], d[i*4+1], d[i*4+2]) / 255;
+        grid[i] = a * Math.pow(l, 1.6);
+      }
+      resolve(grid);
+    };
+    img.onerror = () => resolve(new Float32Array(G * G));
+    img.src = 'assets/' + encodeURIComponent(svgPath);
+  });
+}
+
+/* ---- render one surface (glyph grid) to an offscreen square ---- */
+function paintSurface(grid) {
+  const off = document.createElement('canvas');
+  off.width = off.height = S;
+  const o = off.getContext('2d');
+  // transparent panel: no body fill — back surfaces stay visible through the stack
+
+  const grad = (x, y, r, c) => {
+    const g = o.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0, c); g.addColorStop(1, 'rgba(0,0,0,0)');
+    return g;
+  };
+
+  o.globalCompositeOperation = 'lighter';
+  for (let j = 0; j < G; j++) {
+    for (let i = 0; i < G; i++) {
+      let v = grid[j*G + i];
+      v = v > 0.02 ? Math.max(v, CFG.GLYPH_MIN) : v;
+      if (v <= 0.02) continue;
+      const x = (i + 0.5) * CELL, y = (j + 0.5) * CELL;
+      const r = CELL * 0.42;
+      o.fillStyle = grad(x, y, r * 2.6, CFG.LED_GLOW);
+      o.fillRect(x - r*2.6, y - r*2.6, r*5.2, r*5.2);
+      o.fillStyle = grad(x, y, r, CFG.LED_COLOR);
+      o.beginPath(); o.arc(x, y, r, 0, 6.283); o.fill();
+    }
+  }
+  // no fog overlay — depth fade applied via globalAlpha at composite time
+  return off;
+}
+
+/* ---- edge ring: constant LED frame per plane (silhouette visible through all phases) ---- */
+function paintEdges() {
+  const off = document.createElement('canvas');
+  off.width = off.height = S;
+  const o = off.getContext('2d');
+  o.globalCompositeOperation = 'lighter';
+  o.globalAlpha = CFG.EDGE_BASE;
+  const dot = (x, y) => {
+    const r = CELL * 0.42;
+    const g = o.createRadialGradient(x, y, 0, x, y, r*2.6);
+    g.addColorStop(0, CFG.LED_GLOW); g.addColorStop(1, 'rgba(0,0,0,0)');
+    o.fillStyle = g; o.fillRect(x - r*2.6, y - r*2.6, r*5.2, r*5.2);
+    o.fillStyle = CFG.LED_COLOR;
+    o.beginPath(); o.arc(x, y, r, 0, 6.283); o.fill();
+  };
+  for (let k = 0; k < G; k++) {
+    dot((k + 0.5)*CELL, CELL*0.5);
+    dot((k + 0.5)*CELL, S - CELL*0.5);
+    dot(CELL*0.5, (k + 0.5)*CELL);
+    dot(S - CELL*0.5, (k + 0.5)*CELL);
+  }
+  return off;
+}
+const edgeSurf = paintEdges();
+
+/* ---- compositing ---- */
+const glyphSurfs = SVGS.map(() => null);   // cached per-glyph canvases
+const glyphSurfs2 = SVGS.map(() => null);  // second layer for phase crossfades
+const cacheKey = SVGS.map(() => -1);
+const cacheKey2 = SVGS.map(() => -1);
+
+/* per-plane content: which symbol + how bright
+   flow: 1) letters drag through one at a time, leaving a fading trail
+         2) finale symbol drags the same way, separate settings
+         3) frozen finale across all planes
+   all motion is eased (Apple cubic-bezier(0.25,0.1,0.25,1));
+   phase boundaries crossfade over TRANSITION_SEC */
+
+function cubicBezier(p1x, p1y, p2x, p2y) {
+  const cx = 3*p1x, bx = 3*(p2x - p1x) - cx, ax = 1 - cx - bx;
+  const cy = 3*p1y, by = 3*(p2y - p1y) - cy, ay = 1 - cy - by;
+  return (t) => {
+    t = Math.max(0, Math.min(1, t));
+    let lo = 0, hi = 1, u = 0.5;
+    for (let i = 0; i < 14; i++) {
+      const x = ((ax*u + bx)*u + cx)*u;
+      if (Math.abs(x - t) < 1e-5) break;
+      if (x < t) lo = u; else hi = u;
+      u = (lo + hi) / 2;
+    }
+    return ((ay*u + by)*u + cy)*u;
+  };
+}
+const easeApple = cubicBezier(0.25, 0.1, 0.25, 1);   // iOS system ease-in-out
+
+/* inverse of easeApple (binary search) — maps a value back to its normalized time */
+function easeAppleInv(y) {
+  let lo = 0, hi = 1, u = 0.5;
+  for (let i = 0; i < 24; i++) {
+    const x = easeApple(u);
+    if (Math.abs(x - y) < 1e-6) break;
+    if (x < y) lo = u; else hi = u;
+    u = (lo + hi) / 2;
+  }
+  return u;
+}
+
+/* brightness of a drag with trail: active window + time-based faded tail
+   the tail ignites as the symbol passes a plane, then fades out over fadeSec
+   with the Apple ease (flame-like); tau = normalized progress within the drag */
+function dragBrightness(i, a, trailAmt, fadeSec, dur, tau) {
+  const d = Math.abs(a - i);
+  const window = Math.max(0, 1 - d);
+  let trail = 0;
+  if (i < a) {                                  // deep side = behind the symbol
+    const tauPass = easeAppleInv(i / (N-1));    // when the symbol passed this plane
+    const age = (tau - tauPass) * dur;          // seconds since the pass
+    if (age > 0) trail = trailAmt * (1 - easeApple(Math.min(1, age / fadeSec)));
+  }
+  return Math.max(window, trail);
+}
+
+/* ---- per-phase content ---- */
+function letterContent(i, k, p, tau) {
+  const a = CFG.DRAG_DIR === 'out' ? (N-1)*(1 - p) : (N-1)*p;
+  const spatial = 1 - CFG.FALL_DIM * ((N-1-i)/(N-1));   // back dims, front full
+  const b = dragBrightness(i, a, CFG.TRAIL_AMOUNT, CFG.TRAIL_FADE_SEC, (N-1)/CFG.DRAG_SPEED, tau);
+  return { idx: CFG.DRAG_ORDER[k], intensity: b * spatial };
+}
+function finaleContent(i, p, tau) {
+  const a = CFG.BUILD_DIR === 'out' ? (N-1)*(1 - p) : (N-1)*p;
+  const spatial = 1 - CFG.FALL_DIM * ((N-1-i)/(N-1));
+  const b = dragBrightness(i, a, CFG.BUILD_TRAIL_AMOUNT, CFG.BUILD_TRAIL_FADE_SEC, (N-1)/CFG.BUILD_SPEED, tau);
+  return { idx: CFG.FINALE_INDEX, intensity: b * spatial };
+}
+function frozenContent(i) {
+  return { idx: CFG.FINALE_INDEX, intensity: 1 - CFG.FREEZE_FALL_DIM*((N-1-i)/(N-1)) };
+}
+function mixContent(a, b, w) {
+  if (a.idx === b.idx) return { idx: a.idx, intensity: a.intensity*(1-w) + b.intensity*w };
+  return { idx: a.idx, intensity: a.intensity*(1-w),
+           idx2: b.idx, intensity2: b.intensity*w };
+}
+
+/* cycle timeline (all motion eased, crossfades get their own dedicated windows):
+   [letters ×L] [×TR blend] [finale drag] [×TR blend] [frozen] [×TR blend] → loop */
+function planeContent(i, t) {
+  const plane = CFG.PLANE_OPACITY[i] !== undefined ? CFG.PLANE_OPACITY[i] : 1;
+  if (CFG.MODE === 'uniform') {
+    return { idx: CFG.UNIFORM_INDEX, intensity: (1 - CFG.FREEZE_FALL_DIM*((N-1-i)/(N-1))) * plane };
+  }
+  const DUR = (N-1) / CFG.DRAG_SPEED;
+  const BUILD_DUR = (N-1) / CFG.BUILD_SPEED;
+  const L = CFG.DRAG_ORDER.length;
+  const TR = CFG.TRANSITION_SEC;
+  const cycLen = DUR*L + BUILD_DUR + CFG.FREEZE_SEC + 3*TR;
+  const tp = ((t / cycLen) % 1) * cycLen;
+
+  const b1 = DUR*L;            // letters end
+  const b2 = b1 + TR;          // finale drag start
+  const b3 = b2 + BUILD_DUR;   // finale drag end
+  const b4 = b3 + TR;          // frozen start
+  const b5 = b4 + CFG.FREEZE_SEC;
+
+  const out = (c) => { c.intensity *= plane; if (c.intensity2 !== undefined) c.intensity2 *= plane; return c; };
+
+  if (tp < b1) {                                // letters drag (clean, no overlap)
+    const k = Math.min(Math.floor(tp / DUR), L-1);
+    const tau = tp / DUR - k;
+    const p = easeApple(tau);
+    return out(letterContent(i, k, p, tau));
+  }
+  if (tp < b2) {                                // blend: last letter rests & fades, logo fades in
+    const w = easeApple((tp - b1) / TR);
+    return out(mixContent(letterContent(i, L-1, 1, 1), finaleContent(i, 0, 0), w));
+  }
+  if (tp < b3) {                                // finale drag
+    const tau = (tp - b2) / BUILD_DUR;
+    const p = easeApple(tau);
+    return out(finaleContent(i, p, tau));
+  }
+  if (tp < b4) {                                // blend: finale settles into full frozen
+    const w = easeApple((tp - b3) / TR);
+    return out(mixContent(finaleContent(i, 1, 1), frozenContent(i), w));
+  }
+  if (tp < b5) {                                // frozen finale
+    return out(frozenContent(i));
+  }
+  const w = easeApple((tp - b5) / TR);          // blend: frozen fades, first letter fades in
+  return out(mixContent(frozenContent(i), letterContent(i, 0, 0, 0), w));
+}
+
+function draw() {
+  const t = performance.now() / 1000;
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.fillStyle = CFG.BG; ctx.fillRect(0, 0, cv.width, cv.height);
+
+  const cxf = cv.width/2  - (N-1)*gx/2;   // front surface center
+  const cyf = cv.height/2 + (N-1)*gy/2;
+
+  for (let i = 0; i < N; i++) {           // back -> front
+    const c = planeContent(i, t);
+    if (cacheKey[i] !== c.idx) {
+      cacheKey[i] = c.idx;
+      glyphSurfs[i] = paintSurface(awaitGrids[c.idx]);
+    }
+    let s2 = null;
+    if (c.idx2 !== undefined && c.idx2 !== c.idx) {
+      if (cacheKey2[i] !== c.idx2) {
+        cacheKey2[i] = c.idx2;
+        glyphSurfs2[i] = paintSurface(awaitGrids[c.idx2]);
+      }
+      s2 = glyphSurfs2[i];
+    }
+    const fog = CFG.FOG_BACK + (CFG.FOG_FRONT - CFG.FOG_BACK) * (i / (N-1));
+    const ox = cxf + (N-1-i)*gx, oy = cyf - (N-1-i)*gy;
+    iso(ox, oy);
+    ctx.globalCompositeOperation = 'lighter';   // LED light adds through the stack
+    ctx.globalAlpha = fog;                      // edge ring always visible
+    ctx.drawImage(edgeSurf, -S/2, -S/2);
+    if (c.intensity > 0.02) {                   // symbol layer, brightness-scaled
+      ctx.globalAlpha = fog * c.intensity;
+      ctx.drawImage(glyphSurfs[i], -S/2, -S/2);
+    }
+    if (s2 && c.intensity2 !== undefined && c.intensity2 > 0.02) {  // crossfade layer
+      ctx.globalAlpha = fog * c.intensity2;
+      ctx.drawImage(s2, -S/2, -S/2);
+    }
+  }
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.globalAlpha = 1;
+
+  /* faint cage: connectors between corresponding corners of back..front */
+  if (CFG.CAGE_ALPHA > 0) {
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.strokeStyle = `rgba(237,0,0,${CFG.CAGE_ALPHA})`;
+    ctx.lineWidth = 1;
+    const corners = [[-0.5,-0.5],[0.5,-0.5],[0.5,0.5],[-0.5,0.5]].map(([u,v]) => {
+      const x = u*0.866, y = u*0.5 + v;   // vertical-panel corner offsets (unit)
+      return [x*S, y*S];
+    });
+    const back  = [cxf + (N-1)*gx, cyf - (N-1)*gy];
+    const front = [cxf, cyf];
+    for (const [x,y] of corners) {
+      ctx.beginPath();
+      ctx.moveTo(front[0]+x, front[1]+y);
+      ctx.lineTo(back[0]+x, back[1]+y);
+      ctx.stroke();
+    }
+  }
+}
+
+/* ---- boot: rasterize all SVGs, then loop ---- */
+const grids = [];
+const awaitGrids = [];
+(async () => {
+  for (const s of SVGS) awaitGrids.push(await rasterize(s.src, s.scale));
+  document.getElementById('metaN').textContent =
+    `${N} surfaces · gap ${CFG.GAP_CM} cm · ${CFG.MODE}`;
+  (function loop() { draw(); requestAnimationFrame(loop); })();
+})();
+</script>
+</body>
+</html>

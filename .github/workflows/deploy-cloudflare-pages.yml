@@ -12,6 +12,7 @@ on:
       - "dither/**"
       - "aerospace-ui/**"
       - "nesamovyto/**"
+      - "khartiya/**"
       - ".github/workflows/deploy-cloudflare-pages.yml"
   workflow_dispatch:
 
@@ -46,6 +47,7 @@ jobs:
           cp -r dither .cf-pages-deploy/dither
           cp -r aerospace-ui .cf-pages-deploy/aerospace-ui
           cp -r nesamovyto .cf-pages-deploy/nesamovyto
+          cp -r khartiya .cf-pages-deploy/khartiya
 
       - name: Deploy to Cloudflare Pages
         env:
