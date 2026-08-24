@@ -1,0 +1,102 @@
+/* ================================================================
+   CONTROLS — sliders, color wells, preset buttons, action buttons,
+   and the note text. Consumes tokens from theme.css.
+   ================================================================ */
+
+input[type=range] {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: var(--slider-height);
+  border-radius: var(--slider-radius);
+  background: var(--slider-track);
+  outline: none;
+  cursor: pointer;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: var(--thumb-size);
+  height: var(--thumb-size);
+  border-radius: 50%;
+  background: var(--thumb-color);
+  border: none;
+}
+
+input[type=range]::-moz-range-thumb {
+  width: var(--thumb-size);
+  height: var(--thumb-size);
+  border-radius: 50%;
+  background: var(--thumb-color);
+  border: none;
+}
+
+input[type=color] {
+  width: var(--swatch-width);
+  height: var(--swatch-height);
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.preset-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--grid-gap);
+}
+
+.preset {
+  font: inherit;
+  font-size: var(--button-size);
+  padding: var(--cell-padding);
+  text-align: center;
+  background: var(--surface-fill);
+  color: var(--color-text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  letter-spacing: var(--cell-tracking);
+  transition: all var(--speed);
+}
+
+.preset:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-hover);
+}
+
+.preset.active {
+  background: var(--surface-active);
+  border-color: var(--color-accent);
+  color: var(--color-heading);
+}
+
+.btn {
+  font: inherit;
+  font-size: var(--button-size);
+  width: 100%;
+  padding: var(--button-padding);
+  text-align: center;
+  background: var(--surface-fill);
+  color: var(--color-heading);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  letter-spacing: var(--button-tracking);
+  text-transform: uppercase;
+  transition: all var(--speed);
+  margin-bottom: var(--button-gap);
+}
+
+.btn:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-hover);
+}
+
+.note {
+  font-size: var(--note-size);
+  color: var(--color-text-xfaint);
+  line-height: 1.5;
+  margin-top: var(--note-margin-top);
+}

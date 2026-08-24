@@ -1,0 +1,109 @@
+/* ================================================================
+   DESIGN TOKENS — every adjustable UI value lives here.
+   Two tiers: PRIMITIVES (raw scale, top) feed the SEMANTIC tokens
+   (component-facing, bottom). Component stylesheets (base.css,
+   sidebar.css, controls.css) only reference these tokens — no raw
+   values. Restyle the whole UI from this file only.
+
+   Uses color-mix() for accent tints (all evergreen browsers 2023+);
+   swap to literal rgba() if older support is needed.
+   ================================================================ */
+:root {
+  /* ---------- PRIMITIVES ---------- */
+
+  /* spacing scale — 4px base unit */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+
+  /* type scale — 10px base */
+  --fs-base: 12px;
+  --fs-sm:    10px;   /* fine print */
+  --fs-md:   16px;   /* title / error */
+  --fs-lg:   18px;   /* tab glyph */
+
+  /* radius */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+
+  /* ---------- COLOR ---------- */
+  --color-bg:            #050508;   /* page / canvas backdrop */
+  --color-text:          #cfd6e4;   /* primary text */
+  --color-text-dim:      #9aa3b8;   /* slider labels */
+  --color-text-faint:    #6b7385;   /* subtitles */
+  --color-text-xfaint:   #5b6373;   /* notes */
+  --color-heading:       #ffffff;
+  --color-accent:        #7fd4ff;   /* values, thumbs, active states */
+  --color-danger:        #ff7b7b;   /* error overlay text */
+
+  /* ---------- SURFACES & BORDERS ---------- */
+  --surface-panel:   rgba(10,12,18,.82);
+  --surface-fill:    rgba(255,255,255,.06);   /* preset/button fill */
+  --surface-hover:   color-mix(in srgb, var(--color-accent) 16%, transparent);
+  --surface-active:  color-mix(in srgb, var(--color-accent) 20%, transparent);
+  --border-panel:    rgba(255,255,255,.08);
+  --border:          rgba(255,255,255,.10);
+  --border-hover:    color-mix(in srgb, var(--color-accent) 45%, transparent);
+  --bg-error:        #0a0a10;
+
+  /* ---------- TYPOGRAPHY ---------- */
+  --font-sans:  "Geist", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono:  "Geist Mono", ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+
+  /* font sizes */
+  --sidebar-font-size: var(--fs-base);   /* base font size for the sidebar */
+  --title-size:        var(--fs-md);
+  --section-size:      var(--sidebar-font-size);
+  --label-size:        var(--sidebar-font-size);
+  --value-size:        var(--sidebar-font-size);
+  --button-size:       var(--sidebar-font-size);
+  --note-size:         var(--fs-sm);
+  --tab-font-size:     var(--fs-lg);
+  --error-size:        var(--fs-md);
+
+  /* letter-spacing (tracking) */
+  --title-tracking:    .18em;
+  --section-tracking:  .14em;
+  --sub-tracking:      .05em;
+  --cell-tracking:     .04em;
+  --button-tracking:   .08em;
+
+  /* ---------- LAYOUT ---------- */
+  --sidebar-width: 300px;
+  --sidebar-blur:  14px;
+  --label-width:   92px;
+  --value-width:   44px;
+  --error-padding: 40px;
+
+  /* ---------- SPACING — margins / paddings / gaps ---------- */
+  --sidebar-padding:    18px 16px 24px;
+  --cell-padding:       7px 4px;          /* base cell padding (presets) */
+  --button-padding:     var(--space-2);   /* action button padding */
+  --button-gap:         6px;              /* between stacked buttons */
+  --row-gap:            var(--space-2);
+  --row-margin:         7px;
+  --grid-gap:           6px;
+  --section-gap:        18px;
+  --title-gap:          2px;
+  --section-title-gap:  var(--space-2);
+  --section-title-pad:  var(--space-1);
+  --sub-gap:            var(--space-4);
+  --note-margin-top:    var(--space-1);
+
+  /* ---------- CONTROLS ---------- */
+  --slider-height:   3px;
+  --slider-radius:   2px;
+  --slider-track:    rgba(255,255,255,.14);
+  --thumb-size:      11px;
+  --thumb-color:     var(--color-accent);
+  --swatch-width:    26px;
+  --swatch-height:   20px;
+  --tab-size:        34px;
+  --tab-offset:      14px;
+
+  /* ---------- MOTION ---------- */
+  --speed:        .15s;    /* hover transitions */
+  --speed-panel:  .35s;    /* panel slide */
+  --ease-panel:   cubic-bezier(.4,0,.2,1);
+}

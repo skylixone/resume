@@ -1,0 +1,86 @@
+/* ================================================================
+   SIDEBAR — the control panel (#panel) and its toggle tab (#tab).
+   Layout, section headers, and rows live here; widget styling
+   (sliders, swatches, buttons) is in controls.css.
+   ================================================================ */
+
+/* ---------- control panel ---------- */
+#panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: var(--sidebar-width);
+  background: var(--surface-panel);
+  backdrop-filter: blur(var(--sidebar-blur));
+  border-left: 1px solid var(--border-panel);
+  padding: var(--sidebar-padding);
+  overflow-y: auto;
+  transition: transform var(--speed-panel) var(--ease-panel);
+  z-index: 10;
+}
+
+#panel.hidden {
+  transform: translateX(var(--sidebar-width));
+}
+
+.sec {
+  margin-bottom: var(--section-gap);
+}
+
+.sec-title {
+  font-size: var(--section-size);
+  letter-spacing: var(--section-tracking);
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+  margin-bottom: var(--section-title-gap);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: var(--section-title-pad);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--row-gap);
+  margin-bottom: var(--row-margin);
+}
+
+.row label {
+  flex: 0 0 var(--label-width);
+  font-size: var(--label-size);
+  color: var(--color-text-dim);
+}
+
+.row output {
+  flex: 0 0 var(--value-width);
+  font-size: var(--value-size);
+  text-align: right;
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+}
+
+/* ---------- toggle tab ---------- */
+#tab {
+  position: fixed;
+  top: var(--tab-offset);
+  right: var(--tab-offset);
+  z-index: 11;
+  width: var(--tab-size);
+  height: var(--tab-size);
+  border-radius: var(--radius-md);
+  background: var(--surface-panel);
+  border: 1px solid var(--border);
+  color: var(--color-text);
+  cursor: pointer;
+  font-size: var(--tab-font-size);
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(var(--sidebar-blur));
+}
+
+#tab:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}

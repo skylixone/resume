@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>True size — 256 × 128 mm</title>
+<style>
+  :root{
+    --bg:#0e0f12; --fg:#e8e6e1; --dim:#8a8f98; --accent:#ff4d00; --line:#2a2d34; --ok:#4dff88;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:var(--bg); color:var(--fg);
+    font:12.5px/1.55 ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    -webkit-font-smoothing:antialiased;
+  }
+  .stage{
+    min-height:100vh; display:flex; flex-direction:column; align-items:center;
+    padding:26px 20px; overflow:auto;
+  }
+  .measure{ margin:auto 0; display:flex; flex-direction:column; align-items:center; gap:10px; }
+
+  h1{
+    font-size:12px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--dim); text-align:center;
+  }
+  h1 b{ color:var(--fg); font-weight:600 }
+
+  .dims{ display:flex; align-items:center; gap:8px; color:var(--dim); font-size:13px }
+  .dims input{
+    width:84px; background:#14161b; color:var(--fg); border:1px solid var(--line);
+    border-radius:3px; padding:5px 8px; font:inherit; text-align:right;
+  }
+  .dims input:focus{ outline:none; border-color:var(--accent) }
+  .presets{ display:flex; gap:6px; flex-wrap:wrap; justify-content:center }
+  .presets button{ font-size:11px; padding:3px 10px }
+  #swap{ font-size:14px; padding:4px 10px }
+
+  .ruler-wrap{ position:relative }
+  #ruler{ display:block }
+
+  #rect{
+    position:relative; border:1px solid var(--accent);
+    background-color:rgba(255,255,255,.035);
+    box-sizing:border-box;
+  }
+  #grid{ position:absolute; inset:0; background-image:radial-gradient(circle, rgba(255,255,255,.09) 1px, transparent 1.5px); }
+  #label{
+    position:absolute; left:0; right:0; bottom:7px; text-align:center;
+    color:var(--dim); font-size:11px; letter-spacing:.1em; pointer-events:none;
+  }
+  .corners{ position:absolute; inset:-7px; pointer-events:none }
+  .corners i{ position:absolute; width:9px; height:9px; border-color:var(--accent); border-style:solid; border-width:0 }
+  .corners i:nth-child(1){ top:0; left:0; border-top-width:1px; border-left-width:1px }
+  .corners i:nth-child(2){ top:0; right:0; border-top-width:1px; border-right-width:1px }
+  .corners i:nth-child(3){ bottom:0; left:0; border-bottom-width:1px; border-left-width:1px }
+  .corners i:nth-child(4){ bottom:0; right:0; border-bottom-width:1px; border-right-width:1px }
+
+  .refs{ display:flex; gap:26px; flex-wrap:wrap; justify-content:center; align-items:center; margin-top:6px }
+  .ref{ display:flex; flex-direction:column; align-items:center; gap:4px; color:var(--dim); font-size:10.5px }
+  #bar100{ height:3px; background:var(--accent) }
+  #card{ border:1px solid var(--dim); background:rgba(255,255,255,.03) }
+
+  .panel{
+    margin-top:16px; max-width:680px; width:100%;
+    border:1px solid var(--line); border-radius:4px; padding:10px 14px;
+    font-size:11.5px; line-height:1.7; color:var(--dim);
+  }
+  .panel .row{ display:flex; gap:8px }
+  .panel .k{ min-width:88px; color:#5a5f6a }
+  .panel .v{ color:var(--fg) }
+  .panel .warn{ color:var(--accent) }
+  .panel .ok{ color:var(--ok) }
+
+  .btns{ margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; justify-content:center }
+  button{
+    background:transparent; color:var(--dim); border:1px solid var(--line);
+    border-radius:3px; padding:5px 12px; font:inherit; cursor:pointer;
+  }
+  button:hover{ color:var(--fg); border-color:#454a55 }
+  button.on{ color:var(--accent); border-color:var(--accent) }
+  .foot{ margin-top:14px; color:#565b66; font-size:10.5px; text-align:center }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="measure">
+    <h1>True size · <b id="h1dims">256 × 128&nbsp;mm</b> · screen 1:1</h1>
+
+    <div class="dims">
+      <input id="w" type="number" value="256" min="1" max="3000" step="0.5">
+      <span>×</span>
+      <input id="h" type="number" value="128" min="1" max="3000" step="0.5">
+      <span>mm</span>
+      <button id="swap" title="swap dimensions (⇄)">⇄</button>
+    </div>
+    <div class="presets">
+      <button data-w="256" data-h="128">256×128</button>
+      <button data-w="148" data-h="210">A5</button>
+      <button data-w="210" data-h="297">A4</button>
+      <button data-w="90" data-h="50">90×50</button>
+      <button data-w="85.6" data-h="54">card 85.6×54</button>
+    </div>
+
+    <div class="ruler-wrap">
+      <svg id="ruler" height="30" width="1"></svg>
+    </div>
+
+    <div id="rect">
+      <div id="grid"></div>
+      <div id="label">256 × 128 mm</div>
+      <div class="corners"><i></i><i></i><i></i><i></i></div>
+    </div>
+
+    <div class="refs">
+      <div class="ref"><div id="bar100"></div>100 mm</div>
+      <div class="ref"><div id="card"></div>credit card 85.6×54</div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel">
+    <div class="row"><span class="k">display</span><span class="v" id="r-display">—</span></div>
+    <div class="row"><span class="k">screen</span><span class="v" id="r-screen">—</span></div>
+    <div class="row"><span class="k">scale</span><span class="v" id="r-scale">—</span></div>
+    <div class="row"><span class="k">rect</span><span class="v" id="r-rect">—</span></div>
+    <div class="row"><span class="k">status</span><span class="v" id="r-status">—</span></div>
+  </div>
+
+  <div class="btns">
+    <button id="b13" title="key 1">13″ MBP 2016</button>
+    <button id="b15" title="key 2">15″ MBP 2016</button>
+    <button id="bcard" title="key c">toggle card ref</button>
+  </div>
+
+  <div class="foot">1 / 2 — pick model · c — card ref · ⇄ — swap · browser zoom must be 100% (⌘0) · verify with a physical ruler against the screen</div>
+</div>
+
+<script>
+const MODELS = {
+  '15': { name:'MacBook Pro 15-inch (2016)', native:2880, panelMm:331.76, label:'15″' },
+  '13': { name:'MacBook Pro 13-inch (2016)', native:2560, panelMm:286.47, label:'13″' },
+};
+let dims = { w:256, h:128 };
+
+const $ = id => document.getElementById(id);
+const rectEl = $('rect'), gridEl = $('grid'), rulerEl = $('ruler'),
+      barEl = $('bar100'), cardEl = $('card');
+
+let manual = null;   // '13' | '15' | null
+
+/*
+ * True physical size math.
+ *
+ * macOS Retina always backs at 2× the *looks-like* resolution, then the OS
+ * scales the framebuffer to the native panel resolution. So the browser's
+ * devicePixelRatio stays ~2 in every display mode (Default, More Space,
+ * Larger Text) and CANNOT be used to infer physical size.
+ *
+ * The mapping the OS actually applies is: native_panel_px = css_px × native/logical.
+ * Hence:  css px per mm = screen.width / panel_width_mm   (always, zoom aside)
+ *
+ * devicePixelRatio is only a browser-zoom signal when it clearly exceeds
+ * the 2× Retina backing (dpr > 2.06 ≈ zoom > 103%). Fractional dpr values
+ * below that (Chrome quirk in scaled modes: 1.5 / 1.714 / 2.25 = native/logical)
+ * are display modes, not zoom.
+ */
+function guessModel(w){
+  if (w === 1680) return MODELS['15'];      // 15″ More Space
+  if (w === 1440) return MODELS['15'];      // 15″ Default (or 13″ scaled — ambiguous, prefer 15″)
+  if (w === 1280) return MODELS['15'];      // 13″ Default (or 15″ Larger Text) — ambiguous, prefer 15″
+  if (w === 1024) return MODELS['13'];
+  return null;
+}
+function detect(w, dpr, vvScale = 1){
+  const phys = w * dpr;
+  const out = { model:null, zoom:1, pinch:1, scaled:false, zoomed:false, unknown:false, phys };
+  let m = null;
+  for (const k in MODELS){
+    if (Math.abs(phys - MODELS[k].native) <= 20){ m = MODELS[k]; break; }
+  }
+  if (m){
+    out.model = m;                                  // backing matches native 1:1 (Default mode)
+  } else if (dpr > 2.06){
+    out.zoomed = true; out.zoom = dpr / 2;          // real browser page zoom
+    out.model = guessModel(w) || MODELS['15'];
+    if (!guessModel(w)) out.unknown = true;
+  } else {
+    out.scaled = true;                              // macOS scaled mode (2× backing or fractional-dpr quirk)
+    out.model = guessModel(w) || MODELS['15'];
+    if (!guessModel(w)) out.unknown = true;
+  }
+  if (vvScale > 1.01){ out.pinch = vvScale; out.zoomed = true; }   // trackpad pinch zoom (Chrome)
+  const corr = out.zoom * out.pinch;
+  out.pxPerMm = (w / corr) / out.model.panelMm;
+  return out;
+}
+window.__detect = detect;   // smoke-test hook
+
+function render(){
+  const vv = window.visualViewport;
+  const c = detect(screen.width, window.devicePixelRatio || 1, vv ? vv.scale : 1);
+  if (manual) c.model = MODELS[manual];
+  const pxPerMm = c.pxPerMm;
+
+  const W = dims.w, H = dims.h;
+  const rectW = W * pxPerMm, rectH = H * pxPerMm;
+
+  rectEl.style.width = rectW + 'px';
+  rectEl.style.height = rectH + 'px';
+  gridEl.style.backgroundSize = (10*pxPerMm) + 'px ' + (10*pxPerMm) + 'px';
+  $('label').textContent = `${W} × ${H} mm`;
+  $('h1dims').textContent = `${W} × ${H} mm`;
+  document.title = `True size — ${W} × ${H} mm`;
+
+  // ---- mm ruler along the long edge (adaptive tick density) ----
+  const minor = pxPerMm >= 2.5 ? 1 : (pxPerMm >= 1 ? 5 : 10);
+  const labelEvery = (10 * pxPerMm >= 26) ? 10 : 50;
+  let ticks = '';
+  for (let mm = 0; mm <= W; mm += minor){
+    const x = mm * pxPerMm;
+    if (mm % labelEvery === 0 && mm > 0 && labelEvery * pxPerMm >= 26){
+      ticks += `<line x1="${x.toFixed(2)}" y1="17" x2="${x.toFixed(2)}" y2="30" stroke="#ff4d00" stroke-width="1"/>`;
+      ticks += `<text x="${(x+3).toFixed(2)}" y="13.5" fill="#8a8f98" font-size="9" font-family="ui-monospace,Menlo,monospace">${mm}</text>`;
+    } else if (mm % 5 === 0){
+      ticks += `<line x1="${x.toFixed(2)}" y1="22" x2="${x.toFixed(2)}" y2="30" stroke="#454a55" stroke-width="1"/>`;
+    } else {
+      ticks += `<line x1="${x.toFixed(2)}" y1="26" x2="${x.toFixed(2)}" y2="30" stroke="#2f333b" stroke-width="1"/>`;
+    }
+  }
+  rulerEl.setAttribute('width', rectW.toFixed(2));
+  rulerEl.innerHTML = ticks;
+
+  // ---- references ----
+  barEl.style.width = (100 * pxPerMm) + 'px';
+  cardEl.style.width = (85.6 * pxPerMm) + 'px';
+  cardEl.style.height = (54 * pxPerMm) + 'px';
+
+  // ---- readout ----
+  $('r-display').textContent = `${c.model.name} · ${c.model.label} ${manual ? '(manual)' : '(auto-detected)'}`;
+  let scr = `${screen.width}×${screen.height} looks-like · dpr ${(window.devicePixelRatio||1).toFixed(3)}`;
+  if (!c.scaled && !c.zoomed && !c.unknown) scr += ` · native ${c.phys}×${screen.height*2}`;
+  else if (c.scaled) scr += ` · ${c.phys.toFixed(0)}×${(screen.height*(window.devicePixelRatio||1)).toFixed(0)} backing → OS rescales`;
+  if (c.zoomed) scr += ` · zoom ~${(c.zoom*c.pinch*100).toFixed(0)}%`;
+  $('r-screen').textContent = scr;
+  $('r-scale').textContent = `${pxPerMm.toFixed(3)} css px / mm  (1 mm ≈ ${pxPerMm.toFixed(1)} px)`;
+  $('r-rect').textContent = `${rectW.toFixed(1)} × ${rectH.toFixed(1)} css px  =  ${W} × ${H} mm`;
+
+  const st = $('r-status');
+  if (c.unknown && !manual){
+    st.className = 'v warn';
+    st.textContent = '⚠ display not recognized (external monitor?) — pick a model above, or use the 100 mm bar to verify';
+  } else if (c.zoomed){
+    st.className = 'v warn';
+    st.textContent = `⚠ zoom ~${(c.zoom*c.pinch*100).toFixed(0)}% detected — size auto-corrected, but press ⌘0 for exactness`;
+  } else if (c.scaled){
+    st.className = 'v ok';
+    st.textContent = '✓ macOS scaled display mode — no zoom, OS rescale already accounted for. Check with a ruler';
+  } else {
+    st.className = 'v ok';
+    st.textContent = '✓ sized for the built-in display at 100% zoom — check with a ruler';
+  }
+
+  $('b13').classList.toggle('on', c.model.label === '13″');
+  $('b15').classList.toggle('on', c.model.label === '15″');
+}
+
+// ---- dimension editing ----
+function readDims(){
+  const w = parseFloat($('w').value), h = parseFloat($('h').value);
+  dims.w = (isFinite(w) && w > 0) ? Math.min(w, 3000) : dims.w;
+  dims.h = (isFinite(h) && h > 0) ? Math.min(h, 3000) : dims.h;
+}
+$('w').addEventListener('input', () => { readDims(); render(); });
+$('h').addEventListener('input', () => { readDims(); render(); });
+$('swap').onclick = () => {
+  const t = $('w').value; $('w').value = $('h').value; $('h').value = t;
+  readDims(); render();
+};
+document.querySelectorAll('.presets button').forEach(b => {
+  b.onclick = () => {
+    $('w').value = b.dataset.w; $('h').value = b.dataset.h;
+    readDims(); render();
+  };
+});
+
+$('b13').onclick = () => { manual = '13'; render(); };
+$('b15').onclick = () => { manual = '15'; render(); };
+$('bcard').onclick = () => {
+  cardEl.style.display = cardEl.style.display === 'none' ? '' : 'none';
+  $('bcard').classList.toggle('on', cardEl.style.display !== 'none');
+};
+document.addEventListener('keydown', e => {
+  if (e.key === '1'){ manual = '13'; render(); }
+  if (e.key === '2'){ manual = '15'; render(); }
+  if (e.key === 'c'){ $('bcard').click(); }
+});
+window.addEventListener('resize', render);
+if (window.visualViewport) window.visualViewport.addEventListener('resize', render);
+render();
+</script>
+</body>
+</html>

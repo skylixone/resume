@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cymatics Lab — Standing Wave Convection</title>
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/sidebar.css">
+<link rel="stylesheet" href="css/controls.css">
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<button id="tab" title="toggle panel">&#9776;</button>
+
+<div id="panel">
+  <div class="sec">
+    <div class="sec-title">Presets</div>
+    <div class="preset-grid">
+      <button class="preset" data-p="honeycomb">Honeycomb</button>
+      <button class="preset" data-p="flower">RGB Flower</button>
+      <button class="preset" data-p="psyche">Psychedelic</button>
+      <button class="preset" data-p="filament">Filament Web</button>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title">Wave field</div>
+    <div class="row"><label>frequency</label><input type="range" id="freq" min="40" max="600" step="1"><output id="freq-v"></output></div>
+    <div class="row"><label>resonance</label><input type="range" id="gamma" min="2" max="140" step="1"><output id="gamma-v"></output></div>
+    <div class="row"><label>amplitude</label><input type="range" id="amp" min="0" max="2.5" step="0.01"><output id="amp-v"></output></div>
+    <div class="row"><label>surface relief</label><input type="range" id="hscale" min="0.05" max="2" step="0.01"><output id="hscale-v"></output></div>
+    <div class="row"><label>drift speed</label><input type="range" id="speed" min="0" max="2" step="0.01"><output id="speed-v"></output></div>
+    <div class="row"><label>droplets</label><input type="range" id="dropMix" min="0" max="1" step="0.01"><output id="dropMix-v"></output></div>
+    <div class="row"><label>cell density</label><input type="range" id="dropScale" min="4" max="30" step="0.5"><output id="dropScale-v"></output></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title">Optics</div>
+    <div class="row"><label>dispersion</label><input type="range" id="disp" min="0" max="0.06" step="0.001"><output id="disp-v"></output></div>
+    <div class="row"><label>caustic web</label><input type="range" id="web" min="0" max="3" step="0.01"><output id="web-v"></output></div>
+    <div class="row"><label>exposure</label><input type="range" id="expo" min="0.2" max="4" step="0.01"><output id="expo-v"></output></div>
+    <div class="row"><label>glow</label><input type="range" id="glow" min="0" max="1.5" step="0.01"><output id="glow-v"></output></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title">Lights (below dish)</div>
+    <div class="row"><label>light 1</label><input type="color" id="lc0"><label style="flex:0 0 34px">light 2</label><input type="color" id="lc1"></div>
+    <div class="row"><label>light 3</label><input type="color" id="lc2"><label style="flex:0 0 34px">orbit</label><input type="checkbox" id="orbit"></div>
+    <div class="row"><label>intensity</label><input type="range" id="lint" min="0" max="3" step="0.01"><output id="lint-v"></output></div>
+  </div>
+
+  <div class="sec">
+    <button class="btn" id="playpause">&#10074;&#10074;&nbsp; pause</button>
+    <button class="btn" id="savepng">&#8681;&nbsp; save png</button>
+    <button class="btn" id="exportpresets">&#8801;&nbsp; export presets</button>
+    <div class="note">Audio-reactive drive (mic / file) planned for the next iteration &mdash; the wave field API already accepts external excitation.</div>
+  </div>
+</div>
+
+<div id="err"></div>
+
+<script>
+"use strict";
+window.onerror = (m, s, l) => {
+  const e = document.getElementById("err");
+  e.style.display = "flex"; e.textContent = "JS error: " + m + " @" + l;
+};
+/* ============================================================================
+   CYMATICS LAB
+   Analytic circular-membrane standing waves (Bessel modes) rendered through a
+   fake-refraction optics pass: point lights below the dish, chromatic
+   dispersion, and a free Helmholtz Laplacian caustic term.
+   ========================================================================== */
+
+/* ---------------- Bessel mode table ---------------- */
+/* First roots of J_m(x) = 0 : alpha[m][n] */
+const ROOTS = [
+  [2.40483, 5.52008, 8.65373, 11.79153, 14.93092],   // m=0
+  [3.83171, 7.01559, 10.17347, 13.32369, 16.47063],  // m=1
+  [5.13562, 8.41724, 11.61984, 14.79595, 17.95982],  // m=2
+  [6.38016, 9.76102, 13.01520, 16.22347, 19.40942],  // m=3
+  [7.58834, 11.06471, 14.37254, 17.61597, 20.82693], // m=4
+  [8.77148, 12.33860, 15.70017, 18.98013, 22.21780], // m=5
+  [9.93611, 13.58929, 17.00382, 20.32079],           // m=6
+  [11.08637, 14.82127, 18.28758, 21.64154],          // m=7
+  [12.22509, 16.03777, 19.55454, 22.94517],          // m=8
+  [13.35430, 17.24122, 20.80705],                    // m=9
+];
+
+function besselJ(m, x){
+  if (x === 0) return m === 0 ? 1 : 0;
+  let sum = Math.pow(x/2, m) / factorial(m);
+  let term = sum;
+  for (let k = 0; k < 80; k++){
+    term *= -(x*x/4) / ((k+1)*(k+m+1));
+    sum += term;
+    if (Math.abs(term) < 1e-14) break;
+  }
+  return sum;
+}
+function factorial(n){ let f=1; for(let i=2;i<=n;i++) f*=i; return f; }
+function besselJp(m, x){ // d/dx J_m
+  if (m === 0) return -besselJ(1, x);
+  return 0.5 * (besselJ(m-1, x) - besselJ(m+1, x));
+}
+
+/* Flatten mode list: [{m, alpha}] */
+const MODES = [];
+for (let m = 0; m < ROOTS.length; m++)
+  for (const a of ROOTS[m]) MODES.push({ m, alpha: a });
+MODES.splice(40);            // shader uniform array is sized 40
+const NMODES = MODES.length;
+
+/* ---------------- radial profile texture ---------------- */
+const TEXW = 512; // radius samples
+
+function buildProfileData(){
+  // For each mode: normalized J_m(alpha*r) and its r-derivative (same norm)
+  const rows = new Float32Array(NMODES * TEXW * 2);
+  for (let i = 0; i < NMODES; i++){
+    const { m, alpha } = MODES[i];
+    const tmp = new Float64Array(TEXW), dtp = new Float64Array(TEXW);
+    let maxAbs = 0;
+    for (let j = 0; j < TEXW; j++){
+      const r = j / (TEXW - 1);
+      tmp[j] = besselJ(m, alpha * r);
+      dtp[j] = alpha * besselJp(m, alpha * r);
+      if (Math.abs(tmp[j]) > maxAbs) maxAbs = Math.abs(tmp[j]);
+    }
+    const inv = maxAbs > 0 ? 1 / maxAbs : 1;
+    for (let j = 0; j < TEXW; j++){
+      rows[(i * TEXW + j) * 2 + 0] = tmp[j] * inv;
+      rows[(i * TEXW + j) * 2 + 1] = dtp[j] * inv;
+    }
+  }
+  return rows;
+}
+
+/* float32 -> float16 */
+function toHalf(v){
+  const f32 = toHalf._f32 || (toHalf._f32 = new Float32Array(1));
+  const u32 = toHalf._u32 || (toHalf._u32 = new Uint32Array(f32.buffer));
+  f32[0] = v; const x = u32[0];
+  const sign = (x >> 16) & 0x8000;
+  let e = ((x >> 23) & 0xff) - 112;
+  let m = x & 0x7fffff;
+  if (e <= 0) return sign;            // flush tiny to zero
+  if (e >= 31) return sign | 0x7bff;  // clamp
+  return sign | (e << 10) | (m >> 13);
+}
+function floatToHalfArray(f32){
+  const out = new Uint16Array(f32.length);
+  for (let i = 0; i < f32.length; i++) out[i] = toHalf(f32[i]);
+  return out;
+}
+</script>
+
+<script>
+"use strict";
+/* ---------------- shaders ---------------- */
+
+const VERT = `#version 300 es
+void main(){
+  vec2 v = vec2(float((gl_VertexID << 1) & 2), float(gl_VertexID & 2));
+  gl_Position = vec4(v * 2.0 - 1.0, 0.0, 1.0);
+}`;
+
+const FRAG = `#version 300 es
+precision highp float;
+
+uniform vec2  uRes;
+uniform float uTime;
+
+uniform sampler2D uModes;          // RG16F: (profile, dProfile/dr), rows = modes
+uniform int   uCount;
+uniform vec4  uModeA[${"40"}];     // m, alpha, amplitude, phase
+uniform float uHScale;             // relief scale
+
+uniform int   uLights;             // 0..4
+uniform vec3  uLPos[4];            // dish coords, z < 0 (below surface)
+uniform vec3  uLCol[4];
+uniform float uLSharp;
+uniform float uLHalo;
+
+uniform float uDisp;               // chromatic dispersion delta
+uniform float uWebK;               // caustic web strength
+uniform vec3  uWebCol;
+uniform float uExpo;
+uniform float uGlow;
+uniform vec3  uEnvA;               // ambient env gradient (psychedelic look)
+uniform vec3  uEnvB;
+uniform float uEnvK;
+
+uniform float uDropMix;            // 0 = smooth liquid, 1 = droplet field
+uniform float uDropScale;          // cells across dish diameter
+uniform float uDropDome;           // dome steepness
+uniform int   uDebug;              // 1 = visualize droplet mask
+uniform float uSpecK;
+
+out vec4 outColor;
+
+const float ETA0 = 0.7518;         // 1 / 1.33
+
+/* standing-wave field: returns (h, grad.x, grad.y, laplacian) */
+vec4 field(vec2 p){
+  float r = length(p);
+  float theta = atan(p.y, p.x);
+  float h = 0.0;
+  vec2  grad = vec2(0.0);
+  float lapl = 0.0;
+  vec2 rhat = r > 1e-4 ? p / r : vec2(1.0, 0.0);
+  vec2 that = vec2(-rhat.y, rhat.x);
+  float invR = 1.0 / max(r, 0.03);
+
+  for (int i = 0; i < 40; i++){
+    if (i >= uCount) break;
+    float m     = uModeA[i].x;
+    float alpha = uModeA[i].y;
+    float amp   = uModeA[i].z;
+    float ph    = uModeA[i].w;
+    vec2 pr = texture(uModes, vec2(clamp(r, 0.0, 1.0), (float(i) + 0.5) / 40.0)).rg;
+    float ang = m * theta + ph;
+    float ca = cos(ang), sa = sin(ang);
+    h    += amp * pr.x * ca;
+    grad += amp * (pr.y * ca) * rhat + amp * pr.x * (-m * sa) * invR * that;
+    lapl += -alpha * alpha * amp * pr.x * ca;   // Helmholtz: lapl(mode) = -k^2 mode
+  }
+  return vec4(h, grad, lapl);
+}
+
+vec3 shade(vec2 p){
+  vec4 F = field(p);
+  float h = F.x;
+  vec2 grad = F.yz;
+  float lapl = F.w;
+
+  vec3 N = normalize(vec3(-grad * uHScale, 1.0));
+  float surfMask = 1.0;   // 1 = liquid surface visible, 0 = dark gap
+  float rimRing = 0.0;    // droplet edge highlight
+
+  /* ---- droplet layer: hex lattice of lens domes, sized by the carrier wave ---- */
+  if (uDropMix > 0.001){
+    vec2 sp = p * uDropScale;
+    const vec2 S = vec2(1.0, 1.7320508);
+    vec2 a = mod(sp, S) - 0.5 * S;
+    vec2 b = mod(sp - 0.5 * S, S) - 0.5 * S;
+    vec2 gv = dot(a, a) < dot(b, b) ? a : b;       // vector to cell centre
+    vec2 center = (sp - gv) / uDropScale;          // dish coords of centre
+    float Fc = abs(field(center).x);               // carrier amplitude there
+    float Rc = 0.34 + 0.26 * clamp(Fc * 1.7, 0.0, 1.0);
+    float d = length(gv) / Rc;
+    float inD = 1.0 - smoothstep(0.9, 1.05, d);
+    /* spherical-cap dome normal, gently perturbed by the carrier wave */
+    vec3 Nd = normalize(vec3(gv / Rc * uDropDome, 1.0));
+    Nd = normalize(Nd + vec3(-grad * uHScale * 0.25, 0.0));
+    N = normalize(mix(N, Nd, uDropMix * inD));
+    surfMask = mix(1.0, inD, uDropMix);
+    rimRing = exp(-pow((d - 0.98) * 7.0, 2.0)) * uDropMix;
+  }
+
+  vec3 P = vec3(p, 0.0);
+  vec3 I = vec3(0.0, 0.0, -1.0);   // camera ray into surface
+
+  vec3 col = vec3(0.0);
+  vec3 dbgLights = vec3(0.0);
+
+  /* ---- point lights seen through the wavy surface (refraction + dispersion) ---- */
+  for (int l = 0; l < 4; l++){
+    if (l >= uLights) break;
+    vec3 ld = normalize(uLPos[l] - P);
+    vec3 acc = vec3(0.0);
+    for (int c = 0; c < 3; c++){
+      float dEta = (c == 0) ? uDisp : (c == 2 ? -uDisp : 0.0);
+      vec3 refr = refract(I, N, ETA0 * (1.0 + dEta));
+      float a = max(dot(normalize(refr), ld), 0.0);
+      float core = pow(a, uLSharp);
+      float halo = pow(a, uLSharp * 0.08) * uLHalo;
+      acc[c] = core + halo;
+    }
+    dbgLights += uLCol[l] * acc * surfMask;
+  }
+  if (uDebug == 2) return dbgLights;
+  col += dbgLights;
+
+  /* ---- caustic filament web along nodal contours (bounded Lorentzian) ---- */
+  float web = uWebK * 0.5 / (1.0 + pow(uWebK * lapl * 0.045, 2.0));
+  col += uWebCol * web * mix(1.0, 0.4, uDropMix);
+
+  /* ---- droplet rim glints ---- */
+  col += uWebCol * rimRing * 0.25;
+
+  /* ---- top-side glints on crests ---- */
+  vec3 L = normalize(vec3(0.35, 0.5, 0.8));
+  float spec = pow(max(dot(reflect(-L, N), vec3(0.0, 0.0, 1.0)), 0.0), 90.0);
+  col += vec3(0.9, 0.95, 1.0) * spec * 0.35 * surfMask * uSpecK;
+
+  /* ---- ambient refracted environment (colour wash) ---- */
+  vec3 refr = refract(I, N, ETA0);
+  col += mix(uEnvA, uEnvB, refr.y * 0.5 + 0.5) * uEnvK * (0.4 + 0.6 * abs(h)) * surfMask;
+
+  return col;
+}
+
+void main(){
+  float mn = min(uRes.x, uRes.y);
+  vec2 p = (gl_FragCoord.xy * 2.0 - uRes) / mn;
+  float r = length(p);
+
+  vec3 col;
+  float rim = 0.0;
+  if (r <= 1.0){
+    col = shade(p);
+    /* dish vignette */
+    col *= 1.0 - 0.25 * smoothstep(0.75, 1.0, r);
+    /* rim highlight ring */
+    rim = exp(-pow((r - 0.985) * 90.0, 2.0)) * 0.5;
+  } else {
+    /* outside the dish: near-black falloff */
+    col = vec3(0.004, 0.004, 0.008) * exp(-(r - 1.0) * 3.0);
+    rim = exp(-pow((r - 1.0) * 120.0, 2.0)) * 0.8;
+  }
+  col += vec3(0.75, 0.85, 1.0) * rim;
+
+  /* glow (soft bloom approximation) */
+  float lum = dot(col, vec3(0.299, 0.587, 0.114));
+  col += col * smoothstep(0.35, 1.6, lum) * uGlow;
+
+  /* tonemap + gamma */
+  col = vec3(1.0) - exp(-col * uExpo);
+  col = pow(col, vec3(1.0 / 2.2));
+
+  /* grain */
+  float g = fract(sin(dot(gl_FragCoord.xy + uTime * 61.7, vec2(12.9898, 78.233))) * 43758.5453);
+  col += (g - 0.5) * 0.028;
+
+  outColor = vec4(col, 1.0);
+}`;
+
+/* ---------------- GL setup ---------------- */
+const canvas = document.getElementById("gl");
+const gl = canvas.getContext("webgl2", { preserveDrawingBuffer: true, antialias: false });
+
+function fail(msg){
+  const e = document.getElementById("err");
+  e.style.display = "flex"; e.textContent = msg;
+  throw new Error(msg);
+}
+if (!gl) fail("WebGL2 is not available in this browser.");
+
+function compile(type, src){
+  const s = gl.createShader(type);
+  gl.shaderSource(s, src); gl.compileShader(s);
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS))
+    fail("Shader error: " + gl.getShaderInfoLog(s));
+  return s;
+}
+const prog = gl.createProgram();
+gl.attachShader(prog, compile(gl.VERTEX_SHADER, VERT));
+gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FRAG));
+gl.linkProgram(prog);
+if (!gl.getProgramParameter(prog, gl.LINK_STATUS))
+  fail("Link error: " + gl.getProgramInfoLog(prog));
+gl.useProgram(prog);
+gl.bindVertexArray(gl.createVertexArray());
+
+/* mode profile texture */
+const modeTex = gl.createTexture();
+gl.bindTexture(gl.TEXTURE_2D, modeTex);
+gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+gl.texImage2D(gl.TEXTURE_2D, 0, gl.RG16F, TEXW, NMODES, 0, gl.RG, gl.HALF_FLOAT,
+              floatToHalfArray(buildProfileData()));
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+gl.uniform1i(gl.getUniformLocation(prog, "uModes"), 0);
+gl.activeTexture(gl.TEXTURE0);
+
+/* uniform locations */
+const U = {};
+["uRes","uTime","uCount","uHScale","uLights","uLSharp","uLHalo","uDisp","uWebK",
+ "uWebCol","uExpo","uGlow","uEnvA","uEnvB","uEnvK","uModeA","uLPos","uLCol",
+ "uDropMix","uDropScale","uDropDome","uDebug","uSpecK"]
+  .forEach(n => U[n] = gl.getUniformLocation(prog, n));
+</script>
+
+<script>
+"use strict";
+/* ---------------- excitation model ----------------
+   eigenfrequency ~ alpha (scaled); Lorentzian resonance around drive freq.
+   External audio driver can later write state.freq / state.amp directly.   */
+const FSCALE = 28;               // Hz per unit alpha
+const EIG = MODES.map(md => md.alpha * FSCALE);
+
+function hash(i){ const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
+
+/* ---------------- state + presets ---------------- */
+const state = {
+  freq: 300, gamma: 55, amp: 1.1, hscale: 0.6, speed: 0.3,
+  disp: 0.012, web: 0.35, expo: 1.4, glow: 0.5,
+  lint: 1.0, orbit: false,
+  lightCol: ["#ffb040", "#c02010", "#401858"],
+  envA: [0.0, 0.0, 0.0], envB: [0.0, 0.0, 0.0], envK: 0.0,
+  lightPos: [ [0.15, 0.05, -0.6], [-0.7, 0.6, -1.2], [0.5, -0.6, -1.0] ],
+  lsharp: 60, lhalo: 0.35,
+  webCol: [1.0, 0.85, 0.6],
+  dropMix: 0, dropScale: 14, dropDome: 2.2,
+  specK: 1.0,
+  playing: true,
+};
+
+function hex2rgb(h){
+  return [parseInt(h.slice(1,3),16)/255, parseInt(h.slice(3,5),16)/255, parseInt(h.slice(5,7),16)/255];
+}
+function rgb2hex(c){
+  return "#" + c.map(v => Math.round(Math.max(0,Math.min(1,v))*255).toString(16).padStart(2,"0")).join("");
+}
+
+/* Built-in fallback presets (used when presets.json is missing). */
+let PRESETS = {
+  honeycomb: {
+    freq: 330, gamma: 70, amp: 1.25, hscale: 0.62, speed: 0.25,
+    disp: 0.014, web: 0.4, expo: 1.65, glow: 0.45, lint: 1.6, orbit: false,
+    lsharp: 120, lhalo: 0.08,
+    lightPos: [[0.12, 0.06, -0.55], [-0.75, 0.65, -1.3], [0.6, -0.7, -1.1]],
+    lightCol: ["#ffc258", "#c2320e", "#3a1408"],
+    webCol: [1.0, 0.8, 0.5], envA: [0,0,0], envB: [0,0,0], envK: 0,
+    dropMix: 1.0, dropScale: 11, dropDome: 2.6, specK: 0.7,
+  },
+  flower: {
+    freq: 95, gamma: 14, amp: 1.6, hscale: 1.1, speed: 0.18,
+    disp: 0.016, web: 0.05, expo: 1.2, glow: 0.35, lint: 0.75, orbit: true,
+    lsharp: 130, lhalo: 0.10, specK: 0.8,
+    lightPos: [[0.58, 0.0, -0.9], [-0.29, 0.5, -0.9], [-0.29, -0.5, -0.9]],
+    lightCol: ["#ff2038", "#22ff5e", "#2e5bff"],
+    webCol: [0.7, 0.8, 1.0], envA: [0,0,0], envB: [0,0,0], envK: 0,
+    dropMix: 0, dropScale: 14, dropDome: 2.2,
+  },
+  psyche: {
+    freq: 250, gamma: 95, amp: 1.5, hscale: 0.9, speed: 0.45,
+    disp: 0.034, web: 0.08, expo: 1.0, glow: 0.4, lint: 0.55, orbit: true,
+    lsharp: 45, lhalo: 0.15, specK: 0.9,
+    lightPos: [[0.55, 0.3, -0.8], [-0.5, 0.45, -0.9], [-0.1, -0.6, -0.8]],
+    lightCol: ["#ff2e88", "#22d3ff", "#ffae00"],
+    webCol: [0.9, 0.5, 1.0],
+    envA: [0.35, 0.05, 0.45], envB: [0.05, 0.25, 0.5], envK: 0.22,
+    dropMix: 0, dropScale: 14, dropDome: 2.2,
+  },
+  filament: {
+    freq: 260, gamma: 40, amp: 0.9, hscale: 0.7, speed: 0.3,
+    disp: 0.006, web: 3.0, expo: 2.0, glow: 0.25, lint: 0.2, orbit: false,
+    lsharp: 120, lhalo: 0.1, specK: 0.3,
+    lightPos: [[0.1, 0.1, -0.7], [-0.6, -0.5, -1.4], [0.7, -0.4, -1.4]],
+    lightCol: ["#9fc4ff", "#181c26", "#201409"],
+    webCol: [0.92, 0.96, 1.0], envA: [0,0,0], envB: [0,0,0], envK: 0,
+    dropMix: 0, dropScale: 14, dropDome: 2.2,
+  },
+};
+
+/* Fetch presets.json to override the built-ins. Pushing presets.json updates defaults. */
+async function loadPresets(){
+  try {
+    const r = await fetch("presets.json", { cache: "no-store" });
+    if (r.ok) PRESETS = await r.json();
+  } catch(e){ /* keep built-ins */ }
+}
+
+function deepEqual(a, b){
+  if (a === b) return true;
+  if (typeof a !== typeof b || a == null || b == null) return false;
+  if (Array.isArray(a)){
+    if (!Array.isArray(b) || a.length !== b.length) return false;
+    return a.every((v, i) => deepEqual(v, b[i]));
+  }
+  if (typeof a === "object"){
+    const ka = Object.keys(a), kb = Object.keys(b);
+    if (ka.length !== kb.length) return false;
+    return ka.every(k => kb.includes(k) && deepEqual(a[k], b[k]));
+  }
+  return false;
+}
+
+let activePreset = "filament";
+
+/* Export all presets as presets.json only if they differ from GitHub's copy.
+   The current UI state is written back into the active preset first. */
+async function exportPresets(){
+  const s = JSON.parse(JSON.stringify(state));
+  delete s.playing;
+  PRESETS[activePreset] = s;
+  let changed = true;
+  try {
+    const r = await fetch("https://raw.githubusercontent.com/skylixone/cymatics/main/presets.json", { cache: "no-store" });
+    if (r.ok) changed = !deepEqual(PRESETS, await r.json());
+  } catch(e){ /* assume changed if we cannot reach GitHub */ }
+  if (!changed){ console.log("Presets match GitHub — nothing to export."); return; }
+  const blob = new Blob([JSON.stringify(PRESETS, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "presets.json";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  console.log("presets.json exported. Commit and push it to update defaults.");
+}
+
+/* ---------------- UI wiring ---------------- */
+const SLIDERS = ["freq","gamma","amp","hscale","speed","disp","web","expo","glow","lint","dropMix","dropScale"];
+const $ = id => document.getElementById(id);
+const qs = new URLSearchParams(location.search);
+
+function syncUI(){
+  for (const k of SLIDERS){ $(k).value = state[k]; $(k + "-v").textContent = fmt(k, state[k]); }
+  for (let i = 0; i < 3; i++) $("lc" + i).value = hexOr(state.lightCol[i]);
+  $("orbit").checked = state.orbit;
+  $("playpause").innerHTML = state.playing ? "&#10074;&#10074;&nbsp; pause" : "&#9654;&nbsp; play";
+}
+function hexOr(c){ return Array.isArray(c) ? rgb2hex(c) : c; }
+function fmt(k, v){
+  if (k === "freq") return Math.round(v) + "Hz";
+  if (k === "disp") return v.toFixed(3);
+  return (+v).toFixed(2);
+}
+for (const k of SLIDERS){
+  $(k).addEventListener("input", e => {
+    state[k] = parseFloat(e.target.value);
+    $(k + "-v").textContent = fmt(k, state[k]);
+  });
+}
+for (let i = 0; i < 3; i++){
+  $("lc" + i).addEventListener("input", e => { state.lightCol[i] = e.target.value; });
+}
+$("orbit").addEventListener("change", e => state.orbit = e.target.checked);
+
+function applyPreset(name){
+  const p = PRESETS[name];
+  Object.assign(state, JSON.parse(JSON.stringify(p)));
+  state.playing = state.playing; // keep
+  activePreset = name;
+  document.querySelectorAll(".preset").forEach(b =>
+    b.classList.toggle("active", b.dataset.p === name));
+  syncUI();
+}
+document.querySelectorAll(".preset").forEach(b =>
+  b.addEventListener("click", () => applyPreset(b.dataset.p)));
+
+$("playpause").addEventListener("click", () => {
+  state.playing = !state.playing; syncUI();
+});
+$("savepng").addEventListener("click", () => {
+  canvas.toBlob(b => {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(b);
+    a.download = "cymatics-" + Date.now() + ".png";
+    a.click(); URL.revokeObjectURL(a.href);
+  });
+});
+$("tab").addEventListener("click", () => $("panel").classList.toggle("hidden"));
+$("exportpresets").addEventListener("click", exportPresets);
+
+/* URL params for reproducible stills: ?preset=honeycomb&freeze=2.5 */
+let FREEZE = null;
+(async function boot(){
+  await loadPresets();
+  if (qs.get("preset") && PRESETS[qs.get("preset")]) applyPreset(qs.get("preset"));
+  else applyPreset("filament");
+  /* tuning overrides: ?freq=420&web=1.2&lsharp=120... */
+  for (const k of ["freq","gamma","amp","hscale","speed","disp","web","expo","glow","lint","lsharp","lhalo","dropMix","dropScale","dropDome","specK"])
+    if (qs.has(k)) state[k] = parseFloat(qs.get(k));
+  FREEZE = qs.has("freeze") ? parseFloat(qs.get("freeze")) : null;
+
+  requestAnimationFrame(frame);
+})();
+
+/* ---------------- per-frame excitation ---------------- */
+const modeA = new Float32Array(40 * 4);
+const lpos  = new Float32Array(4 * 3);
+const lcol  = new Float32Array(4 * 3);
+
+function excite(t){
+  let maxW = 0;
+  const w = new Float32Array(NMODES);
+  for (let i = 0; i < NMODES; i++){
+    const d = (state.freq - EIG[i]) / state.gamma;
+    w[i] = state.amp / (1 + d * d) * (0.65 + 0.7 * hash(i));
+    if (w[i] > maxW) maxW = w[i];
+  }
+  const norm = maxW > 1e-6 ? state.amp / maxW : 0;
+  for (let i = 0; i < NMODES; i++){
+    const dir = hash(i + 50) > 0.5 ? 1 : -1;
+    const drift = state.speed * dir * (0.15 + 0.5 * hash(i + 90));
+    modeA[i*4+0] = MODES[i].m;
+    modeA[i*4+1] = MODES[i].alpha;
+    modeA[i*4+2] = w[i] * norm;
+    modeA[i*4+3] = hash(i + 7) * 6.2832 + t * drift;
+  }
+}
+
+/* ---------------- render loop ---------------- */
+function resize(){
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const w = Math.round(canvas.clientWidth * dpr), h = Math.round(canvas.clientHeight * dpr);
+  if (canvas.width !== w || canvas.height !== h){
+    canvas.width = w; canvas.height = h;
+    gl.viewport(0, 0, w, h);
+  }
+}
+window.addEventListener("resize", resize);
+
+let t0 = performance.now(), simT = FREEZE ?? 0, last = t0;
+
+function frame(now){
+  const dt = Math.min((now - last) / 1000, 0.1);
+  last = now;
+  if (FREEZE === null && state.playing) simT += dt;
+
+  resize();
+  excite(simT);
+
+  /* lights */
+  const nL = 3;
+  for (let i = 0; i < 3; i++){
+    let [x, y, z] = state.lightPos[i];
+    if (state.orbit){
+      const a = simT * 0.25 + i * 2.094;
+      const rr = Math.hypot(x, y);
+      x = rr * Math.cos(a); y = rr * Math.sin(a);
+    }
+    lpos[i*3+0] = x; lpos[i*3+1] = y; lpos[i*3+2] = z;
+    const c = hex2rgb(hexOr(state.lightCol[i]));
+    lcol[i*3+0] = c[0] * state.lint; lcol[i*3+1] = c[1] * state.lint; lcol[i*3+2] = c[2] * state.lint;
+  }
+
+  gl.uniform2f(U.uRes, canvas.width, canvas.height);
+  gl.uniform1f(U.uTime, simT);
+  gl.uniform1i(U.uCount, NMODES);
+  gl.uniform4fv(U.uModeA, modeA);
+  gl.uniform1f(U.uHScale, state.hscale);
+  gl.uniform1i(U.uLights, nL);
+  gl.uniform3fv(U.uLPos, lpos);
+  gl.uniform3fv(U.uLCol, lcol);
+  gl.uniform1f(U.uLSharp, state.lsharp);
+  gl.uniform1f(U.uLHalo, state.lhalo);
+  gl.uniform1f(U.uDisp, state.disp);
+  gl.uniform1f(U.uWebK, state.web);
+  gl.uniform3fv(U.uWebCol, state.webCol);
+  gl.uniform1f(U.uExpo, state.expo);
+  gl.uniform1f(U.uGlow, state.glow);
+  gl.uniform3fv(U.uEnvA, state.envA);
+  gl.uniform3fv(U.uEnvB, state.envB);
+  gl.uniform1f(U.uEnvK, state.envK);
+  gl.uniform1f(U.uDropMix, state.dropMix);
+  gl.uniform1f(U.uDropScale, state.dropScale);
+  gl.uniform1f(U.uDropDome, state.dropDome);
+  gl.uniform1i(U.uDebug, qs.has("debug") ? parseInt(qs.get("debug")) : 0);
+  gl.uniform1f(U.uSpecK, (qs.has("nospec") ? 0 : 1) * state.specK);
+
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+  requestAnimationFrame(frame);
+}
+</script>
+</body>
+</html>
