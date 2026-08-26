@@ -16,7 +16,7 @@
   --border-bright: #87590b;
   --border-solid: #f59e0b;
   --border-muted: #1a1a1a;
-  --border-input: #333333;
+  --border-input: #807d7d;
   --border-focus: #f59e0b;
 
   /* Text */
@@ -455,7 +455,7 @@ body {
 .input {
   font-family: var(--font-mono);
   font-size: var(--text-base);
-  color: var(--text);
+  color: var(--accent);
   background: var(--bg-input);
   border: 1px solid var(--border-input);
   padding: 10px 14px;
@@ -470,10 +470,12 @@ body {
 
 .input::placeholder {
   color: var(--text-muted);
+  opacity: 0.6;
 }
 
 .input.error {
   border-color: var(--red);
+  color: var(--red);
 }
 
 .input-hint {
@@ -2422,7 +2424,6 @@ ul.list.list-triple-dash li {
 
 /* Focus-visible ring for all interactive elements */
 .btn:focus-visible,
-.input:focus-visible,
 .tab:focus-visible,
 .check-group input:focus-visible,
 .toggle input:focus-visible + .toggle-track,
@@ -2433,7 +2434,6 @@ ul.list.list-triple-dash li {
 
 /* Remove default outline when not keyboard-navigating */
 .btn:focus:not(:focus-visible),
-.input:focus:not(:focus-visible),
 .tab:focus:not(:focus-visible) {
   outline: none;
 }
@@ -2509,6 +2509,7 @@ ul.list.list-triple-dash li {
 /* Success state */
 .input.success {
   border-color: var(--green);
+  color: var(--green);
 }
 
 .input-success {
@@ -2520,6 +2521,7 @@ ul.list.list-triple-dash li {
 .input:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+  color: var(--border-input);
 }
 
 /* ── TOGGLE & CHECK STATES ── */

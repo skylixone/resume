@@ -2,3 +2,6 @@
 index_old.html
 .cf-pages-deploy*
 .secrets/
+
+# Cloudflare API config (secrets — never commit)
+cloudflareAPI.config
