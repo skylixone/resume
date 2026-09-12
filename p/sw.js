@@ -1,7 +1,7 @@
 /* Selective Color — service worker (app shell cache, SPEC C20).
  * Scope is /p/. Everything the app needs to boot lives under that scope.
  */
-const VERSION = 'sc-v1';
+const VERSION = 'sc-v2';   // bump on EVERY release: the shell is cache-first
 const SHELL = `${VERSION}-shell`;
 const FONTS = `${VERSION}-fonts`;
 
@@ -20,6 +20,10 @@ const SHELL_URLS = [
   './icons/apple-touch-icon.png',
   './samples/neon-street.webp',
   './samples/skyline.webp',
+  // The Aerospace UI Kit stylesheet lives outside this worker's scope but on the same origin.
+  // A worker may cache any same-origin URL; scope only limits which pages it controls. Without
+  // this entry the offline shell renders unstyled (found in the 1.0.1 review).
+  '../aerospace-ui/style.css',
 ];
 
 self.addEventListener('install', (event) => {

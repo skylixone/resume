@@ -104,7 +104,8 @@
   background: var(--bg);
   color: var(--text-dim);
   cursor: pointer;
-  min-height: 34px;
+  /* 44px: iOS thumb target. Measured at 34px until 2026-09-12 (G9 finding). */
+  min-height: 44px;
   gap: 4px;
   -webkit-user-select: none;
   user-select: none;
@@ -150,7 +151,7 @@
 
 .sc-slider-value {
   min-width: 52px;
-  min-height: 32px;
+  min-height: 44px;   /* 44px: iOS thumb target (G9 finding, 2026-09-12) */
   padding: 4px 10px;
   background: var(--bg-input);
   border: 1px solid var(--border-muted);
@@ -202,6 +203,10 @@
 }
 .sc-actions .btn,
 .sc-actions .input { min-height: 44px; justify-content: center; width: 100%; }
+
+/* the footer "Copy link" is a real control on a phone: same 44px target. */
+.sc-footer .btn { min-height: 44px; }
+.sc-import input[type="file"] { min-height: 44px; }
 
 .sc-import { position: relative; overflow: hidden; }
 .sc-import input[type="file"] {
