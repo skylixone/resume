@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Selective Color</title>
+<meta name="description" content="Photoshop's Selective Color adjustment in the browser. 9 ranges, Cyan/Magenta/Yellow/Black, relative and absolute. Nothing is uploaded.">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Selective">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icons/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../aerospace-ui/style.css">
+<link rel="stylesheet" href="./app.css">
+</head>
+<body class="sc-app">
+
+<header class="sc-header">
+  <div class="sc-header-row">
+    <h1 class="sc-title">Selective Color</h1>
+    <span class="tag tag-accent sc-badge">9 ranges</span>
+  </div>
+  <p class="sc-status" id="status" role="status" aria-live="polite">loading&#8230;</p>
+</header>
+
+<main class="sc-main">
+  <section class="sc-viewport" id="viewport" aria-label="Image preview. Pinch to zoom, drag to pan, press and hold to compare.">
+    <canvas id="preview" class="sc-canvas" width="16" height="9" aria-label="Adjustment preview"></canvas>
+    <p class="sc-hint">hold to compare &#183; pinch to zoom</p>
+  </section>
+
+  <section class="panel sc-panel">
+    <div class="panel-header">
+      <span>Range</span>
+      <span class="sc-range-name" id="range-name">Reds</span>
+    </div>
+    <div class="panel-body sc-body">
+
+      <div class="sc-chips" id="chips" role="group" aria-label="Colour ranges"></div>
+      <p class="sc-help">long-press a range to reset it</p>
+
+      <div class="sc-sliders" id="sliders"></div>
+
+      <div class="tabs tabs-segmented sc-mode" role="tablist" aria-label="Correction method">
+        <button type="button" class="tab active" role="tab" aria-selected="true" data-mode="relative"
+                aria-label="Relative correction method">Relative</button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-mode="absolute"
+                aria-label="Absolute correction method">Absolute</button>
+      </div>
+
+      <div class="sc-actions">
+        <label class="btn btn-secondary sc-import">
+          Import
+          <input id="file" type="file" accept="image/*" aria-label="Import an image from the photo library">
+        </label>
+        <button type="button" class="btn btn-ghost" id="act-sample" aria-label="Load a bundled sample image">Sample</button>
+        <button type="button" class="btn btn-ghost" id="act-pick" aria-pressed="false"
+                aria-label="Sample a pixel from the image (eyedropper)">Pick</button>
+        <label class="sc-format">
+          <span class="sc-format-label">Export as</span>
+          <select class="input" id="format" aria-label="Export format">
+            <option value="image/png">PNG</option>
+            <option value="image/jpeg">JPEG 92%</option>
+          </select>
+        </label>
+        <button type="button" class="btn btn-primary" id="act-export" aria-label="Export the adjusted image">Export</button>
+        <button type="button" class="btn btn-danger" id="act-reset" aria-label="Reset all ranges to zero">Reset all</button>
+      </div>
+
+      <div class="panel-footer sc-footer">
+        <span>Values are in percent, like Photoshop.</span>
+        <button type="button" class="btn btn-sm btn-ghost" id="act-copy" aria-label="Copy a link to these settings">Copy link</button>
+      </div>
+    </div>
+  </section>
+
+  <p class="sc-note">
+    Runs entirely in your browser &#8212; no upload, no account, no tracking. Matches the reference
+    implementation exactly; Photoshop blends corrections between adjacent ranges, this app classifies hard.
+  </p>
+</main>
+
+<script type="module" src="./app.js"></script>
+</body>
+</html>

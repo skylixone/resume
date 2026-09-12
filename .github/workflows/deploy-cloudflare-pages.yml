@@ -11,6 +11,7 @@ on:
       - "resume/**"
       - "dither/**"
       - "aerospace-ui/**"
+      - "p/**"
       - "nesamovyto/**"
       - "khartiya/**"
       - "light/**"
@@ -47,6 +48,7 @@ jobs:
           cp -r resume .cf-pages-deploy/resume
           cp -r dither .cf-pages-deploy/dither
           cp -r aerospace-ui .cf-pages-deploy/aerospace-ui
+          cp -r p .cf-pages-deploy/p
           cp -r nesamovyto .cf-pages-deploy/nesamovyto
           cp -r khartiya .cf-pages-deploy/khartiya
           cp -r light .cf-pages-deploy/light
