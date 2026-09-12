@@ -42,21 +42,43 @@
 
   <section class="panel sc-panel">
     <div class="panel-header">
-      <span>Range</span>
-      <span class="sc-range-name" id="range-name">Reds</span>
+      <span>Stage</span>
+      <span class="sc-range-name" id="range-name">Light</span>
     </div>
     <div class="panel-body sc-body">
 
-      <div class="sc-chips" id="chips" role="group" aria-label="Colour ranges"></div>
-      <p class="sc-help">long-press a range to reset it</p>
+      <!-- SPEC L10: the stage switcher. LIGHT runs first (SPEC §7.2 L2). -->
+      <div class="tabs tabs-segmented sc-stages" role="tablist" aria-label="Adjustment stage">
+        <button type="button" class="tab active" role="tab" id="tab-light" aria-selected="true"
+                aria-controls="pane-light" data-stage="light"
+                aria-label="Light stage: exposure and white balance">Light</button>
+        <button type="button" class="tab" role="tab" id="tab-selective" aria-selected="false"
+                aria-controls="pane-selective" data-stage="selective"
+                aria-label="Selective Color stage: nine CMYK ranges">Selective</button>
+      </div>
 
-      <div class="sc-sliders" id="sliders"></div>
+      <div class="sc-pane" id="pane-light" role="tabpanel" aria-labelledby="tab-light">
+        <div class="sc-sliders" id="light-sliders"></div>
+        <p class="sc-help sc-light-note">
+          Exposure is in stops. Above 0 EV a highlight shoulder rolls the brightest tones off:
+          pure white renders at 250/255 instead of clipping. Temperature is the light the scene
+          was shot under &#8212; low values cool the image, high values warm it.
+        </p>
+      </div>
 
-      <div class="tabs tabs-segmented sc-mode" role="tablist" aria-label="Correction method">
-        <button type="button" class="tab active" role="tab" aria-selected="true" data-mode="relative"
-                aria-label="Relative correction method">Relative</button>
-        <button type="button" class="tab" role="tab" aria-selected="false" data-mode="absolute"
-                aria-label="Absolute correction method">Absolute</button>
+      <div class="sc-pane" id="pane-selective" role="tabpanel" aria-labelledby="tab-selective" hidden>
+
+        <div class="sc-chips" id="chips" role="group" aria-label="Colour ranges"></div>
+        <p class="sc-help">long-press a range to reset it</p>
+
+        <div class="sc-sliders" id="sliders"></div>
+
+        <div class="tabs tabs-segmented sc-mode" role="tablist" aria-label="Correction method">
+          <button type="button" class="tab active" role="tab" aria-selected="true" data-mode="relative"
+                  aria-label="Relative correction method">Relative</button>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-mode="absolute"
+                  aria-label="Absolute correction method">Absolute</button>
+        </div>
       </div>
 
       <div class="sc-actions">

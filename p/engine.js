@@ -1,15 +1,23 @@
 /* Selective Color — WebGL2 preview renderer. ES module, no dependencies.
  *
- * The fragment shader mirrors selective.js exactly: integer Ω (SPEC C4),
+ * The fragment shader runs two stages in order (SPEC §7.2): the LIGHT stage
+ * (sRGB decode -> per-channel white-balance gains -> x2^EV -> highlight
+ * shoulder when EV > 0 -> sRGB encode, SPEC L2-L6) and then the Selective
+ * Color pass, which mirrors selective.js exactly: integer Ω (SPEC C4),
  * float32 arithmetic in the SPEC C5 order, roundEven() (C lrintf semantics),
  * cumulation across the 9 ranges in RANGES order (C6).
  *
- * The exported CPU-verified path for files is selective.js; this module is the
- * interactive preview (SPEC C10: export goes through the CPU path so the
- * exported bytes are bit-exact regardless of driver float behaviour).
+ * A neutral LIGHT stage is short-circuited inside the shader by u_light == 0
+ * (SPEC L7), so nothing about the existing behaviour changes.
+ *
+ * The exported CPU-verified path for files is selective.js (+ light.js for the
+ * light stage); this module is the interactive preview (SPEC C10: export goes
+ * through the CPU path so the exported bytes are bit-exact regardless of
+ * driver float behaviour).
  */
 
 import { RANGES } from './selective.js';
+import { isNeutral, lightGains } from './light.js';
 
 const VERT = `#version 300 es
 in vec2 a_pos;
@@ -26,11 +34,35 @@ precision highp int;
 uniform sampler2D u_image;
 uniform vec4 u_adj[9];      // reds, yellows, greens, cyans, blues, magentas, whites, neutrals, blacks
 uniform int u_mode;         // 0 = absolute, 1 = relative
+uniform int u_light;        // 0 = LIGHT stage neutral (skip entirely, SPEC L7), 1 = active
+uniform vec3 u_wb;          // per-channel white-balance gains (SPEC L6), float32
+uniform float u_ev;         // exposure in stops
 
 in vec2 v_uv;
 out vec4 fragColor;
 
 const float INV255 = 1.0 / 255.0;
+const float KNEE = 0.9;             // SPEC L4 highlight shoulder knee
+
+// ---- LIGHT stage (SPEC L2) -------------------------------------------------
+// Decode, white balance, exposure, shoulder, encode. The 8-bit encode here is
+// the quantisation that separates this stage from Selective Color.
+float srgbDecode(float c) {
+  return c <= 0.04045 ? c / 12.92 : pow((c + 0.055) / 1.055, 2.4);
+}
+float srgbEncode(float l) {
+  return l <= 0.0031308 ? 12.92 * l : 1.055 * pow(l, 1.0 / 2.4) - 0.055;
+}
+float shoulder(float x) {
+  return x <= KNEE ? x : 1.0 - (1.0 - KNEE) * exp(-(x - KNEE) / (1.0 - KNEE));
+}
+vec3 lightStage(vec3 rgb) {
+  vec3 lin = vec3(srgbDecode(rgb.r), srgbDecode(rgb.g), srgbDecode(rgb.b));
+  lin = lin * u_wb * exp2(u_ev);       // same order as light.js: gains, then exposure
+  if (u_ev > 0.0) lin = vec3(shoulder(lin.r), shoulder(lin.g), shoulder(lin.b));
+  lin = clamp(lin, 0.0, 1.0);
+  return clamp(vec3(srgbEncode(lin.r), srgbEncode(lin.g), srgbEncode(lin.b)), 0.0, 1.0);
+}
 
 float compAdjust(int scale, float valueNorm, float adjust, float k, float rel) {
   // NOTE: the GPU may contract this expression into an FMA, which shifts the last
@@ -56,7 +88,10 @@ void addRange(vec4 adj, int scale, float rn, float gn, float bn, float rel,
 
 void main() {
   vec4 tex = texture(u_image, v_uv);
-  ivec3 c = ivec3(tex.rgb * 255.0 + 0.5);
+  // LIGHT runs first (SPEC §7.2); the encoded result is the 8-bit input of the
+  // Selective Color pass below. Neutral short-circuits to the texel untouched.
+  vec3 base = u_light == 1 ? lightStage(tex.rgb) : tex.rgb;
+  ivec3 c = ivec3(base * 255.0 + 0.5);
   int r = c.r, g = c.g, b = c.b;
 
   int mn = min(r, min(g, b));
@@ -143,17 +178,26 @@ export function createEngine() {
     const uImage = gl.getUniformLocation(prog, 'u_image');
     const uAdj = gl.getUniformLocation(prog, 'u_adj[0]');
     const uMode = gl.getUniformLocation(prog, 'u_mode');
+    const uLight = gl.getUniformLocation(prog, 'u_light');
+    const uWb = gl.getUniformLocation(prog, 'u_wb');
+    const uEv = gl.getUniformLocation(prog, 'u_ev');
     const flat = new Float32Array(RANGES.length * 4);
+    const gains = new Float32Array([1, 1, 1]);
     gl.uniform1i(uImage, 0);
+    gl.uniform1i(uLight, 0);
+    gl.uniform3fv(uWb, gains);
+    gl.uniform1f(uEv, 0);
 
     const engine = {
       canvas,
       get maxTextureSize() { return gl.getParameter(gl.MAX_TEXTURE_SIZE); },
       label: 'GPU',
 
-      /** Draw `src` (canvas/bitmap/image) through the adjustment.
+      /** Draw `src` (canvas/bitmap/image) through the LIGHT stage (SPEC §7.2)
+       *  and then the adjustment.
+       *  @param light {object} light settings; neutral skips the stage (L7).
        *  @returns the WebGL canvas, display-ready (drawImage it). */
-      render(src, settings, mode) {
+      render(src, settings, mode, light) {
         const w = src.width, h = src.height;
         if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
         for (let i = 0; i < RANGES.length; i++) {
@@ -161,11 +205,21 @@ export function createEngine() {
           flat[i * 4] = a[0] || 0; flat[i * 4 + 1] = a[1] || 0;
           flat[i * 4 + 2] = a[2] || 0; flat[i * 4 + 3] = a[3] || 0;
         }
+        const lightOn = !isNeutral(light);
+        if (lightOn) {
+          const g = lightGains(light);            // float32, one fround per gain
+          gains[0] = g[0]; gains[1] = g[1]; gains[2] = g[2];
+        }
         gl.viewport(0, 0, w, h);
         gl.bindTexture(gl.TEXTURE_2D, tex);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, src);
         gl.uniform4fv(uAdj, flat);
         gl.uniform1i(uMode, mode === 'relative' ? 1 : 0);
+        gl.uniform1i(uLight, lightOn ? 1 : 0);
+        if (lightOn) {
+          gl.uniform3fv(uWb, gains);
+          gl.uniform1f(uEv, Number(light.ev) || 0);
+        }
         gl.bindVertexArray(vao);
         gl.drawArrays(gl.TRIANGLES, 0, 3);
         gl.flush();
@@ -173,9 +227,9 @@ export function createEngine() {
       },
 
       /** GPU render read back as a top-down RGBA byte array (parity harness). */
-      renderPixels(src, settings, mode) {
+      renderPixels(src, settings, mode, light) {
         const w = src.width, h = src.height;
-        const out = this.render(src, settings, mode);
+        const out = this.render(src, settings, mode, light);
         const buf = new Uint8Array(w * h * 4);
         gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, buf);  // row 0 = bottom
         const flipped = new Uint8ClampedArray(w * h * 4);

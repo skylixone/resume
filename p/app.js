@@ -5,12 +5,24 @@
 import { RANGES, createSettings, applyImageData, rangeScales,
          matchingRanges, isIdentity } from './selective.js';
 import { createEngine } from './engine.js';
+import { createLightSettings, applyImageDataLight, isNeutral, sanitizeLight }
+  from './light.js';
 
 const CHANNELS = ['Cyan', 'Magenta', 'Yellow', 'Black'];
 const LABEL = {
   reds: 'Reds', yellows: 'Yellows', greens: 'Greens', cyans: 'Cyans', blues: 'Blues',
   magentas: 'Magentas', whites: 'Whites', neutrals: 'Neutrals', blacks: 'Blacks',
 };
+
+/* LIGHT panel (SPEC L1/L10): key, label, slider range, neutral value, display. */
+const LIGHT_CONTROLS = [
+  { key: 'ev', label: 'Exposure', min: -5, max: 5, step: 0.1, neutral: 0,
+    fmt: (v) => `${v.toFixed(1)} EV`, text: (v) => `${v.toFixed(1)} stops (EV)` },
+  { key: 'temp', label: 'Temperature', min: 2000, max: 12000, step: 50, neutral: 6500,
+    fmt: (v) => `${v} K`, text: (v) => `${v} kelvin` },
+  { key: 'tint', label: 'Tint', min: -100, max: 100, step: 1, neutral: 0,
+    fmt: (v) => String(v), text: (v) => `${v} (100 is maximum magenta)` },
+];
 const SAMPLES = ['./samples/neon-street.webp', './samples/skyline.webp'];
 const PREVIEW_MAX = 2048;   // C12
 const EXPORT_MAX = 4096;    // C13
@@ -28,6 +40,8 @@ const eyedropperBtn = $('act-pick');
 
 const state = {
   settings: createSettings(),
+  light: createLightSettings(),   // SPEC §7.2: the stage that runs first
+  stage: 'light',                 // 'light' | 'selective' (which panel is showing)
   mode: 'relative',            // Photoshop's default
   active: 'reds',
   source: null,                // { bitmap, w, h, name, stem }
@@ -56,6 +70,10 @@ function initEngine() {
 
 function serialize() {
   const parts = [`m=${state.mode}`];
+  const L = state.light;                                    // SPEC L11
+  if ((Number(L.ev) || 0) !== 0) parts.push(`ev=${Number(L.ev).toFixed(1)}`);
+  if ((Number(L.temp) || 6500) !== 6500) parts.push(`temp=${Math.round(Number(L.temp))}`);
+  if ((Number(L.tint) || 0) !== 0) parts.push(`tint=${Math.round(Number(L.tint) * 100)}`);
   for (const name of RANGES) {
     const a = state.settings[name];
     if (a.some((v) => v)) parts.push(`${name}=${a.map((v) => Math.round(v * 100)).join(',')}`);
@@ -65,6 +83,7 @@ function serialize() {
 
 function deserialize(text) {
   const next = createSettings();
+  const light = createLightSettings();
   let mode = null;
   for (const pair of String(text).replace(/^#/, '').split('&')) {
     const eq = pair.indexOf('=');
@@ -72,12 +91,20 @@ function deserialize(text) {
     const key = pair.slice(0, eq);
     const val = pair.slice(eq + 1);
     if (key === 'm') { if (val === 'absolute' || val === 'relative') mode = val; continue; }
+    if (key === 'ev' || key === 'temp' || key === 'tint') {           // L11
+      const n = Number(val);
+      if (!Number.isFinite(n)) continue;
+      if (key === 'tint') light.tint = n / 100; else light[key] = n;
+      continue;
+    }
     if (!RANGES.includes(key)) continue;
     const nums = val.split(',').map(Number);
     if (nums.length !== 4 || nums.some((n) => !Number.isFinite(n))) continue;
     next[key] = nums.map((n) => Math.max(-100, Math.min(100, Math.round(n))) / 100);
   }
-  return { settings: next, mode };
+  const safe = sanitizeLight(light);
+  light.ev = safe.ev; light.temp = safe.temp; light.tint = safe.tint;
+  return { settings: next, mode, light };
 }
 
 function loadState() {
@@ -85,6 +112,7 @@ function loadState() {
   if (hash) {                                        // hash wins (C19)
     const parsed = deserialize(hash);
     state.settings = parsed.settings;
+    state.light = parsed.light;                      // L11: the light settings too
     if (parsed.mode) state.mode = parsed.mode;
     return;
   }
@@ -100,6 +128,8 @@ function loadState() {
       }
       state.settings = next;
     }
+    if (saved.light) state.light = sanitizeLight(saved.light);
+    if (saved.stage === 'light' || saved.stage === 'selective') state.stage = saved.stage;
     if (saved.mode === 'absolute' || saved.mode === 'relative') state.mode = saved.mode;
     if (RANGES.includes(saved.active)) state.active = saved.active;
   } catch (_) { /* corrupt storage: start clean */ }
@@ -108,7 +138,8 @@ function loadState() {
 function saveState() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
-      settings: state.settings, mode: state.mode, active: state.active,
+      settings: state.settings, light: state.light, stage: state.stage,
+      mode: state.mode, active: state.active,
     }));
   } catch (_) { /* private mode / quota */ }
 }
@@ -290,13 +321,14 @@ function renderNow() {
   if (!pv) return;
   const ctx = canvasEl.getContext('2d', { willReadFrequently: true });
 
-  if (state.showingOriginal || isIdentity(state.settings)) {
+  // L11: Compare shows the image with NO stage applied.
+  if (state.showingOriginal || (isIdentity(state.settings) && isNeutral(state.light))) {
     ctx.drawImage(pv.canvas, 0, 0);
     return;
   }
   if (engine && !engineDown) {
     try {
-      const gl = engine.render(pv.canvas, state.settings, state.mode);
+      const gl = engine.render(pv.canvas, state.settings, state.mode, state.light);
       ctx.drawImage(gl, 0, 0);
       return;
     } catch (err) {
@@ -309,6 +341,7 @@ function renderNow() {
     pv.out = new ImageData(new Uint8ClampedArray(pv.data.data.length), pv.data.width, pv.data.height);
   }
   pv.out.data.set(pv.data.data);
+  applyImageDataLight(pv.out, state.light);      // LIGHT first: SPEC L2 pipeline order
   applyImageData(pv.out, state.settings, state.mode);
   ctx.putImageData(pv.out, 0, 0);
 }
@@ -320,10 +353,24 @@ function setStatus() {
   const dims = s ? `${s.w}\u00d7${s.h}` : 'no image';
   const mode = state.mode === 'absolute' ? 'Absolute' : 'Relative';
   const parts = [dims, engineLabel(), mode];
+  if (!isNeutral(state.light)) parts.push(lightSummary());
   if (state.note) parts.push(state.note);
   if (state.exportCapped) parts.push('exported at 4096 px');
   statusEl.textContent = parts.join(' \u00b7 ');
   statusEl.dataset.engine = engineLabel();
+}
+
+/** e.g. "+0.7 EV \u00b7 3200 K \u00b7 tint +30" — only the non-neutral axes. */
+function lightSummary() {
+  const L = state.light;
+  const out = [];
+  if (Number(L.ev)) out.push(`${Number(L.ev) > 0 ? '+' : ''}${Number(L.ev).toFixed(1)} EV`);
+  if (Number(L.temp) !== 6500) out.push(`${Math.round(Number(L.temp))} K`);
+  if (Number(L.tint)) {
+    const t = Math.round(Number(L.tint) * 100);
+    out.push(`tint ${t > 0 ? '+' : ''}${t}`);
+  }
+  return out.join(' \u00b7 ');
 }
 
 function syncChips() {
@@ -338,6 +385,40 @@ function syncChips() {
   });
 }
 
+/** SPEC L10 — the LIGHT | SELECTIVE switcher: which panel is on screen. */
+function syncStages() {
+  document.querySelectorAll('.sc-stages .tab').forEach((el) => {
+    const on = el.dataset.stage === state.stage;
+    el.classList.toggle('active', on);
+    el.setAttribute('aria-selected', String(on));
+  });
+  const lp = $('pane-light'), sp = $('pane-selective');
+  if (lp) lp.hidden = state.stage !== 'light';
+  if (sp) sp.hidden = state.stage !== 'selective';
+  rangeNameEl.textContent = state.stage === 'light' ? 'Light' : LABEL[state.active];
+}
+
+function syncLight() {
+  const L = state.light;
+  for (const c of LIGHT_CONTROLS) {
+    const v = c.key === 'tint' ? Math.round(Number(L.tint) * 100) : Number(L[c.key]);
+    const shown = c.key === 'temp' ? Math.round(v) : (c.key === 'ev' ? Number(v.toFixed(1)) : v);
+    const input = $(`lsl-${c.key}`);
+    if (input) {
+      input.value = String(shown);
+      input.style.setProperty('--slider-fill',
+        `${((shown - c.min) / (c.max - c.min)) * 100}%`);
+      input.setAttribute('aria-valuetext', c.text(shown));
+    }
+    const out = $(`lval-${c.key}`);
+    if (out) {
+      out.textContent = c.fmt(shown);
+      out.setAttribute('aria-label',
+        `Reset ${c.label} to ${c.fmt(c.neutral)} (currently ${c.fmt(shown)})`);
+    }
+  }
+}
+
 function syncSliders(full) {
   const vals = state.settings[state.active];
   CHANNELS.forEach((_, i) => {
@@ -350,7 +431,7 @@ function syncSliders(full) {
     out.textContent = v > 0 ? `+${v}` : String(v);
     out.setAttribute('aria-label', `Reset ${CHANNELS[i]} to 0 percent (currently ${v})`);
   });
-  rangeNameEl.textContent = LABEL[state.active];
+  rangeNameEl.textContent = state.stage === 'light' ? 'Light' : LABEL[state.active];
   if (full) syncChips();
 }
 
@@ -409,12 +490,57 @@ function buildControls() {
     row.querySelector('button').addEventListener('click', () => resetSlider(i));
   });
 
+  /* SPEC L10 — the LIGHT panel: three sliders, same 44 px targets and the same
+   * double-tap-to-reset behaviour as the Selective Color panel. */
+  const lightBox = $('light-sliders');
+  if (lightBox) {
+    LIGHT_CONTROLS.forEach((c) => {
+      const row = document.createElement('div');
+      row.className = 'sc-slider-row';
+      row.innerHTML = `
+        <div class="sc-slider-head">
+          <span class="sc-slider-label" id="llbl-${c.key}">${c.label}</span>
+          <button type="button" class="sc-slider-value" id="lval-${c.key}">${c.fmt(c.neutral)}</button>
+        </div>
+        <input class="sc-lslider" type="range" id="lsl-${c.key}" min="${c.min}" max="${c.max}"
+               step="${c.step}" value="${c.neutral}" aria-labelledby="llbl-${c.key}"
+               aria-valuetext="${c.text(c.neutral)}">`;
+      lightBox.appendChild(row);
+      const input = row.querySelector('input');
+      input.addEventListener('input', () => {
+        const raw = Number(input.value);
+        if (c.key === 'tint') state.light.tint = Math.round(raw) / 100;
+        else if (c.key === 'temp') state.light.temp = Math.round(raw / 50) * 50;
+        else state.light.ev = Math.round(raw * 10) / 10;
+        syncLight(); render(); setStatus(); saveState();
+      });
+      input.addEventListener('dblclick', () => resetLight(c.key));
+      row.querySelector('button').addEventListener('click', () => resetLight(c.key));
+    });
+  }
+
+  document.querySelectorAll('.sc-stages .tab').forEach((el) => {
+    el.addEventListener('click', () => {
+      state.stage = el.dataset.stage === 'selective' ? 'selective' : 'light';
+      syncStages(); setStatus(); saveState();
+    });
+  });
+
   document.querySelectorAll('.sc-mode .tab').forEach((el) => {
     el.addEventListener('click', () => {
       state.mode = el.dataset.mode;
       syncMode(); render(); setStatus(); saveState();
     });
   });
+}
+
+/** SPEC L7 / L10 — one light axis back to neutral. */
+function resetLight(key) {
+  const c = LIGHT_CONTROLS.find((x) => x.key === key);
+  if (!c) return;
+  state.light[key] = c.neutral;
+  state.note = `${c.label} reset`;
+  syncLight(); render(); setStatus(); saveState();
 }
 
 function resetSlider(i) {
@@ -431,8 +557,9 @@ function resetRange(name) {
 
 function resetAll() {
   state.settings = createSettings();
+  state.light = createLightSettings();        // L11: the light stage resets too
   state.note = 'all ranges reset';
-  syncSliders(true); render(); setStatus(); saveState();
+  syncSliders(true); syncLight(); render(); setStatus(); saveState();
   history.replaceState(null, '', location.pathname + location.search);
 }
 
@@ -479,6 +606,7 @@ async function doExport() {
   ctx.drawImage(s.bitmap, 0, 0, d.w, d.h);
 
   const id = ctx.getImageData(0, 0, d.w, d.h);
+  applyImageDataLight(id, state.light);             // LIGHT first (SPEC L11/L2)
   applyImageData(id, state.settings, state.mode);   // CPU path: exact (C10)
   ctx.putImageData(id, 0, 0);
 
@@ -523,6 +651,8 @@ function init() {
   initEngine();
   syncMode();
   syncSliders(true);
+  syncStages();
+  syncLight();
   setStatus();
 
   $('file').addEventListener('change', (e) => loadFile(e.target.files && e.target.files[0]));

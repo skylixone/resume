@@ -163,18 +163,23 @@
 }
 .sc-slider-value:focus-visible { outline: 2px solid var(--border-focus); outline-offset: 1px; }
 
-/* 44px touch target; the kit draws a 2px hairline track, we widen the thumb. */
-.sc-slider {
+/* 44px touch target; the kit draws a 2px hairline track, we widen the thumb.
+   .sc-lslider is the LIGHT panel's slider (SPEC L10) — deliberately NOT the
+   .sc-slider class: the Selective Color panel's slider count is a contract. */
+.sc-slider,
+.sc-lslider {
   height: 44px;
   touch-action: none;
   background: transparent;
 }
-.sc-slider::-webkit-slider-runnable-track {
+.sc-slider::-webkit-slider-runnable-track,
+.sc-lslider::-webkit-slider-runnable-track {
   height: 4px;
   background: linear-gradient(to right, var(--accent) var(--slider-fill, 50%),
                               var(--border-muted) var(--slider-fill, 50%));
 }
-.sc-slider::-webkit-slider-thumb {
+.sc-slider::-webkit-slider-thumb,
+.sc-lslider::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 26px;
   height: 26px;
@@ -183,13 +188,28 @@
   border: 2px solid var(--accent);
   border-radius: 0;
 }
-.sc-slider::-moz-range-track { height: 4px; background: var(--border-muted); }
-.sc-slider::-moz-range-progress { height: 4px; background: var(--accent); }
-.sc-slider::-moz-range-thumb {
+.sc-slider::-moz-range-track,
+.sc-lslider::-moz-range-track { height: 4px; background: var(--border-muted); }
+.sc-slider::-moz-range-progress,
+.sc-lslider::-moz-range-progress { height: 4px; background: var(--accent); }
+.sc-slider::-moz-range-thumb,
+.sc-lslider::-moz-range-thumb {
   width: 22px; height: 22px; border-radius: 0;
   background: var(--bg); border: 2px solid var(--accent);
 }
-.sc-slider:focus-visible { outline: 2px solid var(--border-focus); outline-offset: 4px; }
+.sc-slider:focus-visible,
+.sc-lslider:focus-visible { outline: 2px solid var(--border-focus); outline-offset: 4px; }
+
+/* ── stage tabs + LIGHT panel (SPEC §7.2 L10) ───────────────────────────── */
+
+/* The stage switcher sits at the top of the control panel; the LIGHT tab is the
+   first stage of the pipeline, so it is the one that opens. */
+.sc-stages { width: 100%; margin: 0 0 var(--space-md); }
+.sc-stages .tab { flex: 1; min-height: 44px; }
+
+.sc-pane[hidden] { display: none; }
+
+.sc-light-note { margin-bottom: 0; line-height: 1.5; }
 
 /* ── mode + actions ─────────────────────────────────────────────────────── */
 

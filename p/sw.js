@@ -1,7 +1,7 @@
 /* Selective Color — service worker (app shell cache, SPEC C20).
  * Scope is /p/. Everything the app needs to boot lives under that scope.
  */
-const VERSION = 'sc-v2';   // bump on EVERY release: the shell is cache-first
+const VERSION = 'sc-v3';   // bump on EVERY release: the shell is cache-first
 const SHELL = `${VERSION}-shell`;
 const FONTS = `${VERSION}-fonts`;
 
@@ -11,6 +11,8 @@ const SHELL_URLS = [
   './app.css',
   './app.js',
   './engine.js',
+  './locus.js',
+  './light.js',
   './selective.js',
   './manifest.webmanifest',
   './icons/favicon.svg',
