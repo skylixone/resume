@@ -35,7 +35,9 @@
 
 .sc-export-top {
   flex: none;
-  min-height: 32px;   /* reachable at the top of an iPhone screen without growing the header */
+  /* SPEC C6: every control clears 44 px, and this one sits at the top of an iPhone screen. */
+  min-height: 44px;
+  padding: 0 16px;
 }
 
 .sc-status {
