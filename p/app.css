@@ -91,7 +91,6 @@
 .sc-panel { border-left: none; border-right: none; }
 .sc-body { padding: var(--space-md) var(--space-md) var(--space-sm); }
 
-.sc-range-name { color: var(--accent); font-size: var(--text-xs); letter-spacing: 0.18em; }
 
 .sc-chips {
   display: flex;

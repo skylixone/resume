@@ -35,7 +35,6 @@ const $ = (id) => document.getElementById(id);
 const canvasEl = $('preview');
 const viewportEl = $('viewport');
 const statusEl = $('status');
-const rangeNameEl = $('range-name');
 const eyedropperBtn = $('act-pick');
 
 const state = {
@@ -395,7 +394,6 @@ function syncStages() {
   const lp = $('pane-light'), sp = $('pane-selective');
   if (lp) lp.hidden = state.stage !== 'light';
   if (sp) sp.hidden = state.stage !== 'selective';
-  rangeNameEl.textContent = state.stage === 'light' ? 'Light' : LABEL[state.active];
 }
 
 function syncLight() {
@@ -431,7 +429,6 @@ function syncSliders(full) {
     out.textContent = v > 0 ? `+${v}` : String(v);
     out.setAttribute('aria-label', `Reset ${CHANNELS[i]} to 0 percent (currently ${v})`);
   });
-  rangeNameEl.textContent = state.stage === 'light' ? 'Light' : LABEL[state.active];
   if (full) syncChips();
 }
 
