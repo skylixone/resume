@@ -20,7 +20,7 @@
 
 .sc-header-row {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: var(--space-sm);
 }
@@ -33,7 +33,10 @@
   color: var(--text-bright);
 }
 
-.sc-badge { flex: none; }
+.sc-export-top {
+  flex: none;
+  min-height: 32px;   /* reachable at the top of an iPhone screen without growing the header */
+}
 
 .sc-status {
   margin-top: 2px;

@@ -29,7 +29,10 @@
 <header class="sc-header">
   <div class="sc-header-row">
     <h1 class="sc-title">Selective Color</h1>
-    <span class="tag tag-accent sc-badge">9 ranges</span>
+    <!-- Export lives in the header: it is the one action worth reaching from the top of the
+         screen, and the badge it replaced ("9 ranges") said nothing the panel does not. -->
+    <button type="button" class="btn btn-sm btn-primary sc-export-top" id="act-export"
+            aria-label="Export the adjusted image">Export</button>
   </div>
   <p class="sc-status" id="status" role="status" aria-live="polite">loading&#8230;</p>
 </header>
@@ -96,7 +99,6 @@
             <option value="image/jpeg">JPEG 92%</option>
           </select>
         </label>
-        <button type="button" class="btn btn-primary" id="act-export" aria-label="Export the adjusted image">Export</button>
         <button type="button" class="btn btn-danger" id="act-reset" aria-label="Reset all ranges to zero">Reset all</button>
       </div>
 
