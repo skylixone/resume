@@ -53,12 +53,24 @@ input[type=range]::-moz-range-thumb {
 }
 
 input[type=color] {
+  -webkit-appearance: none;
+  appearance: none;
   width: var(--swatch-width);
   height: var(--swatch-height);
+  border: none;
   border-radius: var(--radius-sm);
   background: none;
   padding: 0;
   cursor: pointer;
+}
+
+/* Safari wraps the color chip in a native swatch with its own border/padding */
+input[type=color]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+input[type=color]::-webkit-color-swatch {
+  border: none;
+  border-radius: var(--radius-sm);
 }
 
 /* caustic color well in the Optics rows (bigger than control swatches) */
