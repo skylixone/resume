@@ -1,0 +1,238 @@
+{
+  "honeycomb": {
+    "freq": 141,
+    "gamma": 25,
+    "amp": 2.05,
+    "hscale": 1.06,
+    "speed": 0.42,
+    "disp": 0.06,
+    "web": 1.16,
+    "webOp": 0.8,
+    "expo": 1.65,
+    "glow": 1.21,
+    "lint": 2.61,
+    "orbit": true,
+    "orbitSpeed": 0.03,
+    "lightCol": [
+      "#ff7b00",
+      "#be0416",
+      "#b30c00"
+    ],
+    "envA": [
+      0,
+      0,
+      0
+    ],
+    "envB": [
+      0,
+      0,
+      0
+    ],
+    "envK": 0,
+    "lightPos": [
+      [
+        0.12,
+        0.06,
+        -0.55
+      ],
+      [
+        -0.75,
+        0.65,
+        -1.3
+      ],
+      [
+        0.6,
+        -0.7,
+        -1.1
+      ]
+    ],
+    "lsharp": 120,
+    "lhalo": 0.08,
+    "webCol": [
+      0.30196078431372547,
+      0.1803921568627451,
+      0
+    ],
+    "dropMix": 0.09,
+    "dropScale": 10,
+    "dropDome": 2.6,
+    "specK": 0.7
+  },
+  "flower": {
+    "freq": 95,
+    "gamma": 14,
+    "amp": 1.6,
+    "hscale": 1.1,
+    "speed": 0.18,
+    "disp": 0.016,
+    "web": 0.05,
+    "webOp": 0.8,
+    "expo": 1.2,
+    "glow": 0.35,
+    "lint": 0.75,
+    "orbit": true,
+    "orbitSpeed": 0.12,
+    "lightCol": [
+      "#ff2038",
+      "#22ff5e",
+      "#2e5bff"
+    ],
+    "envA": [
+      0,
+      0,
+      0
+    ],
+    "envB": [
+      0,
+      0,
+      0
+    ],
+    "envK": 0,
+    "lightPos": [
+      [
+        0.58,
+        0,
+        -0.9
+      ],
+      [
+        -0.29,
+        0.5,
+        -0.9
+      ],
+      [
+        -0.29,
+        -0.5,
+        -0.9
+      ]
+    ],
+    "lsharp": 130,
+    "lhalo": 0.1,
+    "webCol": [
+      0.7,
+      0.8,
+      1
+    ],
+    "dropMix": 0,
+    "dropScale": 14,
+    "dropDome": 2.2,
+    "specK": 0.8
+  },
+  "psyche": {
+    "freq": 121,
+    "gamma": 11,
+    "amp": 0.88,
+    "hscale": 0.81,
+    "speed": 0.42,
+    "disp": 0.06,
+    "web": 1.75,
+    "webOp": 1,
+    "expo": 1.29,
+    "glow": 0.4,
+    "lint": 2.08,
+    "orbit": true,
+    "orbitSpeed": 0.11,
+    "lightCol": [
+      "#ff2e88",
+      "#00ccff",
+      "#ffdd00"
+    ],
+    "envA": [
+      0.35,
+      0.05,
+      0.45
+    ],
+    "envB": [
+      0.05,
+      0.25,
+      0.5
+    ],
+    "envK": 0.22,
+    "lightPos": [
+      [
+        0.55,
+        0.3,
+        -0.8
+      ],
+      [
+        -0.5,
+        0.45,
+        -0.9
+      ],
+      [
+        -0.1,
+        -0.6,
+        -0.8
+      ]
+    ],
+    "lsharp": 45,
+    "lhalo": 0.15,
+    "webCol": [
+      0.8549019607843137,
+      0.2784313725490196,
+      1
+    ],
+    "dropMix": 0,
+    "dropScale": 14,
+    "dropDome": 2.2,
+    "specK": 0.9
+  },
+  "filament": {
+    "freq": 260,
+    "gamma": 40,
+    "amp": 0.9,
+    "hscale": 0.98,
+    "speed": 0.3,
+    "disp": 0.019,
+    "web": 3,
+    "webOp": 1,
+    "expo": 2,
+    "glow": 0.25,
+    "lint": 0.2,
+    "orbit": true,
+    "orbitSpeed": 0.08,
+    "lightCol": [
+      "#9fc4ff",
+      "#4260ae",
+      "#201409"
+    ],
+    "envA": [
+      0,
+      0,
+      0
+    ],
+    "envB": [
+      0,
+      0,
+      0
+    ],
+    "envK": 0,
+    "lightPos": [
+      [
+        0.1,
+        0.1,
+        -0.7
+      ],
+      [
+        -0.6,
+        -0.5,
+        -1.4
+      ],
+      [
+        0.7,
+        -0.4,
+        -1.4
+      ]
+    ],
+    "lsharp": 120,
+    "lhalo": 0.1,
+    "webCol": [
+      0.92,
+      0.96,
+      1
+    ],
+    "dropMix": 0,
+    "dropScale": 14,
+    "dropDome": 2.2,
+    "specK": 0.3
+  }
+}

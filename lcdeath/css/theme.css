@@ -1,0 +1,111 @@
+/* ================================================================
+   DESIGN TOKENS — every adjustable UI value lives here.
+   Two tiers: PRIMITIVES (raw scale, top) feed the SEMANTIC tokens
+   (component-facing, bottom). Component stylesheets (base.css,
+   sidebar.css, controls.css) only reference these tokens — no raw
+   values. Restyle the whole UI from this file only.
+
+   Visual language: 3mdash.net/aerospace-ui kit — amber on black,
+   mono throughout, one-pixel borders, no shadows, no rounding.
+   ================================================================ */
+:root {
+  /* ---------- PRIMITIVES ---------- */
+
+  /* spacing scale — 4px base unit */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+
+  /* type scale — 10px base */
+  --fs-base: 11px;
+  --fs-sm:    10px;   /* fine print */
+  --fs-md:   16px;   /* title / error */
+  --fs-lg:   18px;   /* tab glyph */
+
+  /* radius — the kit squares everything off */
+  --radius-sm: 2px;
+  --radius-md: 2px;
+
+  /* ---------- COLOR (aerospace-ui kit palette) ---------- */
+  --color-bg:            #000000;   /* page / canvas backdrop */
+  --color-text:          #e8e8e8;   /* primary text */
+  --color-text-dim:      #dddddd;   /* slider values */
+  --color-text-faint:    #888888;   /* labels */
+  --color-text-xfaint:   #6f6f6f;   /* notes */
+  --color-heading:       #ffffff;
+  --color-accent:        #f59e0b;   /* amber — values, thumbs, focus */
+  --color-accent-hover:  #fbbf24;
+  --color-accent-dim:    #f59e0b55; /* amber 33% — toggle-on track, tag border */
+  --color-danger:        #ff7b7b;   /* error overlay text */
+
+  /* ---------- SURFACES & BORDERS ---------- */
+  --surface-panel:   rgba(10,10,10,.5);
+  --surface-fill:    #0e0e0e;           /* inputs, buttons */
+  --surface-hover:   #141414;
+  --surface-active:  #f59e0b11;
+  --border-panel:    #291e0a;           /* amber-dim hairline */
+  --border:          #f59e0b44;         /* amber-tinted hairline */
+  --border-input:    #807d7d;
+  --border-hover:    var(--color-accent);
+  --bg-error:        #0a0a0a;
+
+  /* ---------- TYPOGRAPHY — mono throughout ---------- */
+  --font-sans:  "Geist Mono", ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+  --font-mono:  "Geist Mono", ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+
+  /* font sizes */
+  --sidebar-font-size: var(--fs-base);   /* base font size for the sidebar */
+  --title-size:        var(--fs-md);
+  --section-size:      12px;
+  --label-size:        var(--sidebar-font-size);
+  --value-size:        var(--sidebar-font-size);
+  --button-size:       var(--sidebar-font-size);
+  --note-size:         var(--fs-sm);
+  --tab-font-size:     var(--fs-lg);
+  --error-size:        var(--fs-md);
+
+  /* letter-spacing (tracking) */
+  --title-tracking:    .18em;
+  --section-tracking:  .12em;
+  --sub-tracking:      .05em;
+  --cell-tracking:     .04em;
+  --button-tracking:   .10em;
+
+  /* ---------- LAYOUT ---------- */
+  --sidebar-width: 400px;
+  --sidebar-blur:  5px;
+  --label-width:   110px;
+  --value-width:   44px;
+  --error-padding: 40px;
+
+  /* ---------- SPACING — margins / paddings / gaps ---------- */
+  --sidebar-padding:    16px;
+  --button-padding:     var(--space-2);   /* action button padding */
+  --button-gap:         6px;              /* between stacked buttons */
+  --row-gap:            16px;
+  --row-margin:         16px;
+  --grid-gap:           6px;
+  --section-gap:        32px;
+  --title-gap:          2px;
+  --section-title-gap:  16px;
+  --section-title-pad:  var(--space-1);
+  --sub-gap:            var(--space-4);
+  --note-margin-top:    var(--space-1);
+
+  /* ---------- CONTROLS ---------- */
+  --slider-height:   4px;
+  --slider-radius:   2px;
+  --slider-track:    #674100;
+  --thumb-size:      12px;
+  --thumb-color:     var(--color-accent);
+  --swatch-width:    72px;
+  --swatch-height:   56px;
+  --tab-size:        31px;
+  --tab-offset:     20px;
+
+  /* ---------- MOTION ---------- */
+  --speed:        .15s;    /* hover transitions */
+  --speed-panel:  .45s;    /* panel slide */
+  --ease-panel:   cubic-bezier(.4,0,.2,1);
+}
