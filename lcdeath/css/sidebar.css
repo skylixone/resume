@@ -115,3 +115,21 @@ flex;gap:8px}
   border-color: var(--color-accent);
   color: var(--color-accent);
 }
+
+/* ---------- mobile / portrait ---------- */
+@media (max-width: 640px) {
+  :root {
+    --value-width: 60px;   /* room for full "0.00" readouts on narrow screens */
+  }
+  #panel {
+    right: 0;
+    left: 0;
+    width: 100%;
+    border-left: none;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  #panel.hidden {
+    transform: translateX(100%);
+  }
+}
