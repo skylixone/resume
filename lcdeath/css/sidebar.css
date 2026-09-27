@@ -132,4 +132,7 @@ flex;gap:8px}
   #panel.hidden {
     transform: translateX(100%);
   }
+  #statepick {
+    width: calc(100% - 48px);   /* leave room for the fixed hamburger tab */
+  }
 }
