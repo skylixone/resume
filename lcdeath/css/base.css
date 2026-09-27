@@ -3,7 +3,7 @@
    Consumes tokens from theme.css; no raw values here.
    ================================================================ */
 
-* {#
+* {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
